@@ -4,15 +4,11 @@
 
 == Installing the tools
 
-== An embedded "Hello, world"
+== An embedded "`Hello, world`"
 
 On a general purpose computer the stereotypical first program in a language displays `Hello, world!` on the screen. In the world of microcontrollers the equivalent is to flash an LED. This is also called a heartbeat program. It is a simple way to indicate that your microcontroller is alive and you are able to transfer a simple program to it. Most development boards will have one or more integrated LEDs, so no external connections are necessary. The https://www.nordicsemi.com/Products/Development-hardware/nRF52840-DK[Nordic Semiconductor nRF52840 DK] that will be our example development board has four integrated LEDs. The first program will flash one of these, labeled LED1, off and on forever (or as long as the microcontroller is powered). Flow charts are a useful tool for planning and documenting code, so before we jump into the code itself we start with a flow chart for this first program.
 
 ```mermaid
-%%{ init: {'theme':'light',
-    'themeVariables': {
-	    'lineColor': '#5E81AC'
-} } }%%
 graph TD
   A("main()") --> B[Initialize LED1]
   B --> C{Is it true?}
@@ -57,5 +53,5 @@ int main() {  // <4>
 <1> Zephyr is designed to be lightweight so only the components you need are included. These import Zephyr's Kernel and GPIO APIs.
 <2> Information about the hardware is stored in something called the devicetree. This looks up the identifier for the LED associated with the alias `led0`.
 <3> This creates a container called `led` that holds information about a GPIO pin.
-<4>The Zephyr RTOS looks for a user-defined function called `main` to run after it completes its start-up. This is often the heart of your application.
+<4> The Zephyr RTOS looks for a user-defined function called `main` to run after it completes its start-up. This is often the heart of your application.
 <5> The GPIO pin linked to LED1 is configured as an output and set to be in the active (on) state.
