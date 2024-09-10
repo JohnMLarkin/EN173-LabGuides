@@ -4,6 +4,7 @@
 :listing-caption: Program
 :example-caption: Exercise
 :icons: font
+:icon-set: fas
 :experimental:
 = Lab 1
 
