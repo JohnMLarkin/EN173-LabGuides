@@ -1,3 +1,4 @@
+:lab: 1
 :sectnums:
 :source-language: c
 :listing-caption: Program
@@ -111,3 +112,21 @@ graph LR                                        // <6>
 <6> This flowchart is arranged from left to right. Another common arrangement is top to bottom (`TB`).
 <7> Nodes are named (the letters) and labeled (the text inside the various delimiters). Connections between nodes are given by `-\->`. Different delimiters create different shapes of nodes. Conditional branching is traditionally inside of a diamond, created in mermaid with `{` and `}` delimiters.
 <8> Text can be place along a connecting line by placing it inside of a pair of `|` after the connector code (`-\->`).
+
+=== Modifying the first program
+
+====
+[[exercise-sweep-internal-led-flow]]
+.Exercise {lab}.{counter:exercise}
+Create a new application called `cycle-blinky`. In this project, create a `README.md` file. Use the README file for <<program-blink-internal-LED>> as template and modify as appropriate.
+
+Create a flow chart for a program that would light the four integrated LEDs in the sequence LED1 -> LED2 -> LED3 -> LED4 (and then repeat forever).  Each LED should be lit for 0.25 s and it should appear that only one is on at a time (though there might actually be some very small overlap).
+====
+
+====
+[[exercise-sweep-internal-led-program]]
+.Exercise {lab}.{counter:exercise}
+Starting with <<program-blink-internal-LED>>, change the code so that it implements the logic shown in the flow chart created for <<exercise-sweep-internal-led-flow>>.
+====
+
+IMPORTANT: Show your flow chart and working program when you are done.
