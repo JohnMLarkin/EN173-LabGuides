@@ -50,7 +50,7 @@ int main() {  // <4>
 		k_msleep(250);
 		gpio_pin_set_dt(&led,0); // 0 = INACTIVE = OFF
 		k_msleep(250);
-  }
+	}
 }
 ----
 <1> Zephyr is designed to be lightweight so only the components you need are included. These import Zephyr's Kernel and GPIO APIs.
