@@ -1,1 +1,2 @@
 * xref:index.adoc[]
+* xref:lab1.adoc[Lab 1]
