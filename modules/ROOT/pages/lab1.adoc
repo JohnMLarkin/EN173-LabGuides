@@ -3,6 +3,7 @@
 :source-language: c
 :listing-caption: Program
 :example-caption: Exercise
+:icons: font
 :experimental:
 = Lab 1
 
