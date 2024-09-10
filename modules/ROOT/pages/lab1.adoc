@@ -3,8 +3,7 @@
 :source-language: c
 :listing-caption: Program
 :example-caption: Exercise
-:icons: font
-:icon-set: fas
+:xrefstyle: short
 :experimental:
 = Lab 1
 
