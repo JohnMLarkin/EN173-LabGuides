@@ -1,0 +1,4 @@
+= Lab guides for _Introduction to Embedded Systems_
+:navtitle: Home
+
+This is the start page.

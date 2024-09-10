@@ -1,0 +1,5 @@
+name: lab-guides
+title: Lab Guides
+version: '2025'
+nav:
+- modules/ROOT/nav.adoc
