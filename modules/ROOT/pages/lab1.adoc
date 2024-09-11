@@ -157,7 +157,7 @@ graph TB
   I -- No --> D
 ....
 
-The code to implement this flow chart uses `while` loops that test for a condition.  While the condition is true, the content of the loop is repeated.  Create a new project (`Two Hearts`) with this code and verify that it works as claimed.
+The code to implement this flow chart uses `while` loops that test for a condition.  While the condition is true, the content of the loop is repeated.  Create a new project (`two-hearts`) with this code and verify that it works as claimed.
 
 
 [source]
