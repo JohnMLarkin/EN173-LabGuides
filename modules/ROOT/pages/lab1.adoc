@@ -131,3 +131,80 @@ Starting with <<program-blink-internal-LED>>, change the code so that it impleme
 ====
 
 IMPORTANT: Show your flow chart and working program when you are done.
+
+== Extending the "`Hello, world`" program
+
+The next challenge is to modify the "`Hello, world`" program to produce a more complicated LED blinking behavior.  It will flash the leftmost LED five times and then flash the rightmost LED five times, and then repeat forever.  The flow chart for this program is shown in <<img-program2-flowchart>>.
+
+[#img-program2-flowchart]
+.Flow chart for the two alternating LEDs blink program.
+[mermaid,fetch-users]
+....
+graph TB
+  B("main()") --> C[Set i to 0]
+  C --> D{Do it forever?}
+  D -- Yes --> E{Is i < 5?}
+  E -- Yes --> F[Turn LED1 on]
+  E -- No --> K{Is i > 0?}
+  F --> G([Sleep])
+  G --> H[Turn LED1 off]
+  H --> I([Sleep])
+  I --> J(Increase i by 1)
+  J --> E
+  K -- Yes --> L[Turn LED2 on]
+  L --> M([Sleep])
+  M --> N[Turn LED2 off]
+  N --> O([Sleep])
+  O --> P(Decrease i by 1)
+  P --> K
+  K -- No --> D
+....
+
+The code to implement this flow chart uses `while` loops that test for a condition.  While the condition is true, the content of the loop is repeated.  Create a new project (`Two Hearts`) with this code and verify that it works as claimed.
+
+
+[source]
+[[program-blink-LED-while-loops]]
+.Exploring `while` loops with blinking LEDs.
+----
+/********************************
+ * Left-right alternating blink
+ * 
+ * Flashes left LED 5 times, then
+ * right LED 5 times. Repeat.
+ *******************************/
+#include <mbed.h>
+
+#define SLEEP_TIME 250ms  <1>
+
+DigitalOut leftLED(LED1); // <2>
+DigitalOut rightLED(LED4);
+
+int main() {
+  int i = 0;    <3>
+  while (1) {
+    while (i<5) { // Flash the left LED five times
+      leftLED = 1;  // <4>
+      ThisThread::sleep_for(SLEEP_TIME);
+      leftLED = 0;
+      ThisThread::sleep_for(SLEEP_TIME);
+      i = i + 1;
+    }   // <5>
+    while (i>0) { // Flash the right LED five times
+      rightLED = 1;   // <6>
+      ThisThread::sleep_for(SLEEP_TIME);
+      rightLED = 0;
+      ThisThread::sleep_for(SLEEP_TIME);
+      i = i - 1;
+    }   // <7>
+  }     // <8>
+}
+----
+<1> The `#define` pre-compiler directive associates a name, `SLEEP_TIME`, with a value, `250ms`. Before the program is compiled, the pre-compiler will replace all occurences of `SLEEP_TIME` with its value. This means that no variable memory space is associated with `SLEEP_TIME`. In this program `SLEEP_TIME` is used to control the on/off time for the LEDs. If a different on/off time was desired, only this definition would need to be changed rather than hunting through the code for all occurrences of a particular number.
+<2> There is usually only one connection to any particular hardware element.  Therefore, our usual design style will be to declare all objects that connect to hardware _outside_ of the `main` function.  This means that they are *global* variables accessible by any function. 
+<3> The integer variable `i` is declared within the `main` function.  This means that this particular definition of `i` is *local*.  We will explore this in more detail later.
+<4> The inner `while` loop for flashing the left LED begins here. This also illustrates the `DigitalOut` method shortcut for `write`: `leftLED = 1` does the same thing as `leftLED.write(1)`.
+<5> The `while` loop for flashing the left LED ends here.  If `i` is less than 5, jump up to the top of this loop.
+<6> The inner `while` loop for flashing the right LED begins here.
+<7> The `while` loop for flashing the right LED ends here.  If `i` is greater than 0, jump up to the top of this loop.
+<8> The never-ending outer `while` loop repeats when it reaches this point.
