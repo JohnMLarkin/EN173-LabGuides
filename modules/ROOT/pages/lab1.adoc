@@ -175,10 +175,10 @@ The code to implement this flow chart uses `while` loops that test for a conditi
 
 #define SLEEP_TIME_MS 250  // <1>
 
-#define LED0_NODE DT_ALIAS(led0)
-#define LED1_NODE DT_ALIAS(led1)
-static const struct gpio_dt_spec leftLED = GPIO_DT_SPEC_GET(LED0_NODE, gpios); // <2>
-static const struct gpio_dt_spec rightLED = GPIO_DT_SPEC_GET(LED1_NODE, gpios);
+#define LED0_NI DT_ALIAS(led0)
+#define LED1_NI DT_ALIAS(led1)
+static const struct gpio_dt_spec leftLED = GPIO_DT_SPEC_GET(LED0_NI, gpios); // <2>
+static const struct gpio_dt_spec rightLED = GPIO_DT_SPEC_GET(LED1_NI, gpios);
 
 int main() {
 	int i = 0; // <3>
