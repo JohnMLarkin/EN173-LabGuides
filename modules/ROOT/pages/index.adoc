@@ -7,6 +7,7 @@ This is a collection of lab guides for the course _EN 173: Introduction to Embed
 .xref::lab1.adoc[Lab 1 -- Getting Started]
 [%collapsible]
 ====
+****
 In this set of activities you will:
 
 * install the development environment
@@ -14,5 +15,5 @@ In this set of activities you will:
 * transfer that program to the development board
 
 Additional hardware required: none
+****
 ====
-
