@@ -9,7 +9,7 @@ This is a collection of lab guides for the course _EN 173: Introduction to Embed
 [discrete]
 == xref::lab1.adoc[Lab 1 -- Getting Started]
 
-In this set of activites you will:
+In this set of activities you will:
 
 * install the development environment
 * create a simple program to flash an LED on the development board

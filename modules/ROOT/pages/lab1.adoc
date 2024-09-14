@@ -31,7 +31,7 @@ graph LR
 
 Replace the contents of `main.c` (in the `src` folder) with the following code. **Always** type the code from these lab guides into the editor yourself; don't copy and paste it. You will pay more attention to the details of the code and learn it better if you type it.
 
-[source]
+[source,c]
 [[program-blink-internal-LED]]
 .A program to blink an internal LED.
 ----
