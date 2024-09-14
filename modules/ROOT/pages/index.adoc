@@ -4,15 +4,15 @@ John M. Larkin <jlarkin@whitworth.edu>
 
 This is a collection of lab guides for the course _EN 173: Introduction to Embedded Systems_ taught by John Larkin at Whitworth University. The development board used throughout these guides is https://www.nordicsemi.com/Products/Development-hardware/nRF52840-DK[Nordic Semiconductor's nRF52840 DK]. In addition, Nordic Semiconductor's https://www.nordicsemi.com/Products/Development-software/nRF-Connect-SDK[nRF Connect SDK] and the associated https://www.nordicsemi.com/Products/Development-tools/nRF-Connect-for-VS-Code[Visual Studio Code extension] are used to provide a development environment that is relatively accessible for a student first encountering embedded systems. However, the course also targets the https://zephyrproject.org/[Zephyr RTOS] which is designed to be portable across a broad selection of platforms so much of what is found in these guides should be applicable to other microcontrollers with only minor changes.
 
-[.panel]
---
-[discrete]
-== xref::lab1.adoc[Lab 1 -- Getting Started]
-
+.xref::lab1.adoc[Lab 1 -- Getting Started]
+[%collapsible]
+====
 In this set of activities you will:
 
 * install the development environment
 * create a simple program to flash an LED on the development board
 * transfer that program to the development board
---
+
+Additional hardware required: none
+====
 
