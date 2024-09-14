@@ -10,9 +10,9 @@ This is a collection of lab guides for the course _EN 173: Introduction to Embed
 ****
 In this set of activities you will:
 
-* install the development environment
-* create a simple program to flash an LED on the development board
-* transfer that program to the development board
+* install the development environment,
+* create a simple program to flash an LED on the development board, and
+* transfer that program to the development board.
 
 Additional hardware required: none
 ****
