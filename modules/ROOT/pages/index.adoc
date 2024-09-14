@@ -14,6 +14,22 @@ In this set of activities you will:
 * create a simple program to flash an LED on the development board, and
 * transfer that program to the development board.
 
-Additional hardware required: none
+**Additional hardware required:** none
+
+**C topics introduced:** `while` loop
 ****
 ====
+
+.Lab 2 -- Digital Input and Output
+[%collapsible]
+====
+****
+In this set of activities you will:
+
+**Additional hardware required:** none
+
+**C topics introduced:** `if` statement
+****
+====
+
+
