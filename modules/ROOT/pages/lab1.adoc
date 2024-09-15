@@ -6,6 +6,8 @@
 :example-caption: Exercise
 :xrefstyle: short
 :experimental:
+:nrf-toolchain: v2.6.1
+:nrf-sdk: 2.6.1
 = Lab 1
 
 == Installing the tools
@@ -14,8 +16,8 @@
 
 Nordic Semiconductor provides a collection of tools in a package called **nRF Command Line Tools** that perform important tasks including the transfer of a program from your development computer to the microcontroller. We will not use them directly, but they are required for the other tools that we will use.
 
-1. Download the https://www.nordicsemi.com/Products/Development-tools/nRF-Command-Line-Tools/Download[nRF Command Line Tools] from Nordic Semiconductor.
-2. Install the tools. This also includes a separate installer for the required SEGGER J-Link software.
+. Download the https://www.nordicsemi.com/Products/Development-tools/nRF-Command-Line-Tools/Download[nRF Command Line Tools] from Nordic Semiconductor.
+. Install the tools. This also includes a separate installer for the required SEGGER J-Link software.
 
 === Visual Studio Code
 
@@ -28,13 +30,27 @@ Once you have VS Code running, you need to install several extensions:
 * https://marketplace.visualstudio.com/items?itemName=nordic-semiconductor.nrf-connect-extension-pack[nRF Connect for VS Code Extension Pack]
 * https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare[Live Share] (only required for pair programming activities)
 
-You can install by following the links above or from within VS Code using the Extensions panel. You open this by clicking on the Extensions icon in the Activity bar.
+You can install by following the links above or from within VS Code using the Extensions side bar. You open this by clicking on the Extensions icon in the Activity bar.
 
 [#img-vscode-activitybar-extensions]
 .Activity bar in Visual Studio Code with Extensions icon highlighted.
 image::vs-code-extension-panel-icon.png[Activity Bar, 47, 285]
 
-From the Extensions panel you can search for the extensions listed above and then install from their page within VS Code.
+From the Extensions side bar you can search for the extensions listed above and then install from their page within VS Code.
+
+=== Select an nRF Connect toolchain and SDK 
+
+. Open the nRF Connect side bar by clicking on its icon in the Activity bar.
+. Click on **Manage Toolchains** and then select the **Install Toolchain** action.
+.. These guides were tested using {nrf-toolchain}. Avoid using a more recent major version (a different leading number) even if one is available but it should be safe to use a more recent minor version (a greater number after the first `.`) if you prefer.  
+.. Once all selections have been made, it triggers a substantial download and install process so be prepared to wait for several minutes.
+. Click on **Manage SDKs** and then select the **Install SDK** action.
+.. These guides were tested using SDK {nrf-sdk}. You want a version that matches that of the toolchain you just installed. Avoid `main` or numbered versions ending in `-dev` or `-cs` as these are not intended for widespread use.
+.. You will be asked to select a location for the SDK. The goal is to have a short path name and avoid folder names that have spaces.
+
+[#img-manage-toolchain-sdk]
+.Manage the nRF Connect toolchain and SDK from the nRF Connect side bar.
+image::nrf-connect-manage-toolchain-sdk.png[Activity Bar, 284, 465]
 
 === Git and GitHub
 
