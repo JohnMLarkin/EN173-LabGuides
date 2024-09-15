@@ -41,6 +41,11 @@ From the Extensions side bar you can search for the extensions listed above and 
 === Select an nRF Connect toolchain and SDK 
 
 . Open the nRF Connect side bar by clicking on its icon in the Activity bar.
++
+[#img-manage-toolchain-sdk]
+.Manage the nRF Connect toolchain and SDK from the nRF Connect side bar.
+image::nrf-connect-manage-toolchain-sdk.png[Activity Bar, 284, 465]
++
 . Click on **Manage Toolchains** and then select the **Install Toolchain** action.
 .. These guides were tested using {nrf-toolchain}. Avoid using a more recent major version (a different leading number) even if one is available but it should be safe to use a more recent minor version (a greater number after the first `.`) if you prefer.  
 .. Once all selections have been made, it triggers a substantial download and install process so be prepared to wait for several minutes.
@@ -48,9 +53,7 @@ From the Extensions side bar you can search for the extensions listed above and 
 .. These guides were tested using SDK {nrf-sdk}. You want a version that matches that of the toolchain you just installed. Avoid `main` or numbered versions ending in `-dev` or `-cs` as these are not intended for widespread use.
 .. You will be asked to select a location for the SDK. The goal is to have a short path name and avoid folder names that have spaces.
 
-[#img-manage-toolchain-sdk]
-.Manage the nRF Connect toolchain and SDK from the nRF Connect side bar.
-image::nrf-connect-manage-toolchain-sdk.png[Activity Bar, 284, 465]
+
 
 === Git and GitHub
 
