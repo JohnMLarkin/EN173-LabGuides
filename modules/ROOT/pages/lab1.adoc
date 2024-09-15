@@ -1,4 +1,5 @@
 :lab: 1
+:imagesdir: ../images
 :sectnums:
 :source-language: c
 :listing-caption: Program
@@ -8,6 +9,47 @@
 = Lab 1
 
 == Installing the tools
+
+=== nRF Command Line Tools
+
+Nordic Semiconductor provides a collection of tools in a package called **nRF Command Line Tools** that perform important tasks including the transfer of a program from your development computer to the microcontroller. We will not use them directly, but they are required for the other tools that we will use.
+
+1. Download the https://www.nordicsemi.com/Products/Development-tools/nRF-Command-Line-Tools/Download[nRF Command Line Tools] from Nordic Semiconductor.
+2. Install the tools. This also includes a separate installer for the required SEGGER J-Link software.
+
+=== Visual Studio Code
+
+We will be using Visual Studio Code throughout these activities. If you do not already have it installed, download it from https://code.visualstudio.com/.
+
+Once you have VS Code running, you need to install several extensions:
+
+* https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools[C/C++]
+* https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid[Markdown Preview Mermaid Support]
+* https://marketplace.visualstudio.com/items?itemName=nordic-semiconductor.nrf-connect-extension-pack[nRF Connect for VS Code Extension Pack]
+* https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare[Live Share] (only required for pair programming activities)
+
+You can install by following the links above or from within VS Code using the Extensions panel. You open this by clicking on the Extensions icon in the Activity bar.
+
+[#img-vscode-activitybar-extensions]
+.Activity bar in Visual Studio Code with Extensions icon highlighted.
+image::vs-code-extension-panel-icon.png[Activity Bar, 47, 285]
+
+From the Extensions panel you can search for the extensions listed above and then install from their page within VS Code.
+
+=== Git and GitHub
+
+We will be using Git throughout these activities. If you do not already have it installed, download it from https://git-scm.com/downloads/.
+
+You also need a https://github.com/[GitHub] account.
+
+After you have installed Git and created a GitHub account, open a terminal in VS Code by typing kbd:[Ctrl+`]. Note that this is the **left** single quote, typically located on the same key as kbd:[~]. It is not the right single quote/apostrophe (located on the same key as kbd:["]). You are now ready to tell the computer about the GitHub username that you are using and your email address.
+[source,shell]
+----
+git config --global user.name "yourusername" <1>
+git config --global user.email "email@youremail.com" <2>
+----
+<1> `yourusername` should replaced with your GitHub username.
+<2> `email@youremail.com` should be replaced with the email address associated with your GitHub account.
 
 == An embedded "`Hello, world`"
 
