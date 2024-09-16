@@ -86,6 +86,16 @@ graph LR
 
 === Creating a new application
 
+. Create a folder to hold all of your programs that will be associated with this series of lab guides. It should be close to the root of a drive and have a short name that is all lowercase and does not contain any spaces. An example would be `C:\embedlabs`.
+. Open the nRF Connect side bar by clicking on its icon in the Activity bar.
++
+[#img-create-new-application]
+.Create a new application from the nRF Connect side bar.
+image::nrf-connect-create-new-app.png[Create new application, 790, 371]
++
+. Select **Create a new application** from the Welcome section.
+. Enter the name of the folder you have selected to store your programs and then the name of the folder for this particular activity (for example, `C:\embedlabs\lab1-prog1`).
+
 === Entering the code
 
 Replace the contents of `main.c` (in the `src` folder) with the following code. **Always** type the code from these lab guides into the editor yourself; don't copy and paste it. You will pay more attention to the details of the code and learn it better if you type it.
@@ -108,6 +118,7 @@ static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);  // <
 int main(void) {  // <4>
 	gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);  // <5>
 	while (true) {
+    printk("Test");
 		gpio_pin_set_dt(&led,1); // 1 = ACTIVE = ON
 		k_msleep(250);
 		gpio_pin_set_dt(&led,0); // 0 = INACTIVE = OFF
