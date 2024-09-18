@@ -17,8 +17,7 @@ In this set of activities you will:
 Additional hardware required: none
 ****
 ====
-
-.Lab 2 -- Digital Input and Output
+.xref::lab2.adoc[Lab 2 -- Digital Input and Output]
 [%collapsible]
 ====
 ****
