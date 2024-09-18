@@ -98,8 +98,9 @@ image::nrf-connect-create-new-app.png[Create new application, 790, 371]
 
 === Entering the code
 
-Replace the contents of `main.c` (in the `src` folder) with the following code. **Always** type the code from these lab guides into the editor yourself; don't copy and paste it. You will pay more attention to the details of the code and learn it better if you type it.
+Replace the contents of `main.c` (in the `src` folder) with the following code. You are encouraged to **type** the code from these lab guides into the editor yourself; don't copy and paste it. You will pay more attention to the details of the code and learn it better if you do this.
 
+// Verified with SDK 2.6.1 and nRF52840 DK on 9/16/2024
 [source,c]
 [[program-blink-internal-LED]]
 .A program to blink an internal LED.
@@ -109,11 +110,11 @@ Replace the contents of `main.c` (in the `src` folder) with the following code. 
  * 
  * Flashes an internal LED
  *******************************/
-#include <zephyr/kernel.h>        // <1>
+#include <zephyr/kernel.h>    // <1>
 #include <zephyr/drivers/gpio.h>
 
-#define LED0_NODE DT_ALIAS(led0)  // <2>
-static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);  // <3>
+#define LED0_NI DT_ALIAS(led0)    // <2>
+static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NI, gpios);  // <3>
 
 int main(void) {  // <4>
 	gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);  // <5>
@@ -126,7 +127,7 @@ int main(void) {  // <4>
 }
 ----
 <1> Zephyr is designed to be lightweight so only the components you need are included. These import Zephyr's Kernel and GPIO APIs.
-<2> Information about the hardware is stored in something called the devicetree. This looks up the identifier for the LED associated with the alias `led0`.
+<2> Information about the hardware is stored in something called the devicetree. This looks up the node identifier for the LED associated with the alias `led0`.
 <3> This creates a container called `led` that holds information about a GPIO pin.
 <4> The Zephyr RTOS looks for a user-defined function called `main` to run after it completes its start-up. This is often the heart of your application.
 <5> The GPIO pin linked to LED1 is configured as an output and set to be in the active (on) state.
@@ -134,13 +135,24 @@ int main(void) {  // <4>
 
 
 === Documenting the first program
-Create a new file called `README.md` in the `src` folder. This is where you will put some human-friendly documentation using a simple and widely used markup language called https://guides.github.com/features/mastering-markdown/[Markdown]. We will also supplement Markdown with  https://mermaid-js.github.io/[mermaid], a diagram-drawing language that will let us include graphics like flowcharts in our documentation.
+Create a new file called `README.md` in the top level folder (at the same level as the `prj.conf` file). To do this:
+. open the Explorer side bar,
+. click in the empty area below `proj.conf` to select the top level folder,
+. hover over the title of this application (**LAB1-PROJ1** if you followed the naming suggestions) to reveal more options,
+. click on the **New file...** icon, and
+. name this file `README.md`
+
+[#img-create-new-file]
+.Create a new file from the Explorer side bar.
+image::vs-code-explorer-create-new-file.png[Create new file, 228, 250]
+
+This is where you will put some human-friendly documentation using a simple and widely used markup language called https://guides.github.com/features/mastering-markdown/[Markdown]. We will also supplement Markdown with  https://mermaid-js.github.io/[mermaid], a diagram-drawing language that will let us include graphics like flowcharts in our documentation.
 
 Before you start adding contents to this file, turn on VS Code's Markdown previewer by clicking on the "`Open Preview to the Side`" button (or type kbd:[Ctrl+k] and then kbd:[v]).
 
-// [#img-vscode-markdown-preview]
-// .VS Code button for Markdown preview.
-// image::vscode-markdown-preview.png[Button that opens a Markdown preview in side pane, 655, 31]
+[#img-vscode-markdown-preview]
+.VS Code button for Markdown preview.
+image::vs-code-markdown-preview.png[Button that opens a Markdown preview in side pane, 406, 45]
 
 Entering the following code into the `README.md` file.
 [source,markdown]
