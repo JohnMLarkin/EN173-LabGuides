@@ -136,11 +136,12 @@ int main(void) {  // <4>
 
 After you have entered the code (and saved it), it is necessary to compile it. 
 This transforms it from relatively human-friendly C code into microcontroller-friendly machine language. That machine language depends on the particular microcontroller so the next step is to specify the **build configuration**.
+
 . Open the nRF Connect side bar.
 . In the **APPLICATIONS** section, click on btn:[Add build configuration] under the name of your application.
 +
-// .Add a build configuration from the nRF Connect side bar.
-// [#img-add-build-config]
+[#img-add-build-config]
+.Add a build configuration from the nRF Connect side bar.
 image::nrf-connect-add-build-config.png[Add build configuration, 222, 154]
 +
 . Next, set the board target to match your microcontroller. If you are using the nRF52840 DK board you should select `nrf52840dk_nrf52840`.
@@ -172,6 +173,7 @@ IMPORTANT: Demonstrate that you have successfully compiled and run the embedded 
 
 === Documenting the first program
 Create a new file called `README.md` in the top level folder (at the same level as the `prj.conf` file). To do this:
+
 . open the Explorer side bar,
 . click in the empty area below `proj.conf` to select the top level folder,
 . hover over the title of this application (**LAB1-PROJ1** if you followed the naming suggestions) to reveal more options,
