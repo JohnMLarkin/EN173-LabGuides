@@ -2,7 +2,6 @@
 :imagesdir: ../images
 :sectnums:
 :source-language: c
-:source-indent: 2
 :listing-caption: Program
 :example-caption: Exercise
 :xrefstyle: short
@@ -303,21 +302,21 @@ static const struct gpio_dt_spec leftLED = GPIO_DT_SPEC_GET(LED0_NI, gpios); // 
 static const struct gpio_dt_spec rightLED = GPIO_DT_SPEC_GET(LED1_NI, gpios);
 
 int main(void) {
-	int i = 0; // <3>
-	gpio_pin_configure_dt(&leftLED, GPIO_OUTPUT_INACTIVE);  // <4>
-	gpio_pin_configure_dt(&rightLED, GPIO_OUTPUT_INACTIVE);
-	while (true) {
-		while (i<10) { // Flash the left LED five times
-			gpio_pin_toggle_dt(&leftLED);  // <5>
-			k_msleep(SLEEP_TIME_MS);
-			i = i + 1;
-		}  // <6>
-		while (i>0) { // Flash the right LED five times
-			gpio_pin_toggle_dt(&rightLED); // <7>
-			k_msleep(SLEEP_TIME_MS);
-			i = i - 1;
-		}  // <8>
-	}  // <9>
+  int i = 0; // <3>
+  gpio_pin_configure_dt(&leftLED, GPIO_OUTPUT_INACTIVE);  // <4>
+  gpio_pin_configure_dt(&rightLED, GPIO_OUTPUT_INACTIVE);
+  while (true) {
+    while (i<10) { // Flash the left LED five times
+      gpio_pin_toggle_dt(&leftLED);  // <5>
+      k_msleep(SLEEP_TIME_MS);
+      i = i + 1;
+    }  // <6>
+    while (i>0) { // Flash the right LED five times
+      gpio_pin_toggle_dt(&rightLED); // <7>
+      k_msleep(SLEEP_TIME_MS);
+      i = i - 1;
+    }  // <8>
+  }  // <9>
 }
 ----
 <1> The `#define` pre-compiler directive associates a name, `SLEEP_TIME_MS`, with a value, `250`. Before the program is compiled, the pre-compiler will replace all occurrences of `SLEEP_TIME_MS` with its value. This means that no variable memory space is associated with `SLEEP_TIME_MS`. In this program `SLEEP_TIME` is used to control the on/off time for the LEDs. If a different on/off time was desired, only this definition would need to be changed rather than hunting through the code for all occurrences of a particular number.
