@@ -120,10 +120,10 @@ static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NI, gpios);  // <3>
 int main(void) {  // <4>
 	gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);  // <5>
 	while (true) {
-		gpio_pin_set_dt(&led,1); // 1 = ACTIVE = ON
-		k_msleep(250);
-		gpio_pin_set_dt(&led,0); // 0 = INACTIVE = OFF
-		k_msleep(250);
+    gpio_pin_set_dt(&led,1); // 1 = ACTIVE = ON
+    k_msleep(250);
+    gpio_pin_set_dt(&led,0); // 0 = INACTIVE = OFF
+    k_msleep(250);
 	}
 }
 ----
