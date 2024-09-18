@@ -2,6 +2,7 @@
 :imagesdir: ../images
 :sectnums:
 :source-language: c
+:source-indent: 2
 :listing-caption: Program
 :example-caption: Exercise
 :xrefstyle: short
