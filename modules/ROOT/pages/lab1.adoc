@@ -46,10 +46,10 @@ From the Extensions side bar you can search for the extensions listed above and 
 .Manage the nRF Connect toolchain and SDK from the nRF Connect side bar.
 image::nrf-connect-manage-toolchain-sdk.png[Activity Bar, 284, 465]
 +
-. Click on **Manage Toolchains** and then select the **Install Toolchain** action.
+. Click on btn:[Manage Toolchains] and then select the btn:[Install Toolchain] action.
 .. These guides were tested using {nrf-toolchain}. Avoid using a more recent major version (a different leading number) even if one is available but it should be safe to use a more recent minor version (a greater number after the first `.`) if you prefer.  
 .. Once all selections have been made, it triggers a substantial download and install process so be prepared to wait for several minutes.
-. Click on **Manage SDKs** and then select the **Install SDK** action.
+. Click on btn:[Manage SDKs] and then select the btn:[Install SDK] action.
 .. These guides were tested using SDK {nrf-sdk}. You want a version that matches that of the toolchain you just installed. Avoid `main` or numbered versions ending in `-dev` or `-cs` as these are not intended for widespread use.
 .. You will be asked to select a location for the SDK. The goal is to have a short path name and avoid folder names that have spaces.
 
@@ -132,7 +132,43 @@ int main(void) {  // <4>
 <4> The Zephyr RTOS looks for a user-defined function called `main` to run after it completes its start-up. This is often the heart of your application.
 <5> The GPIO pin linked to LED1 is configured as an output and set to be in the active (on) state.
 
+=== Building and flashing the application
 
+After you have entered the code (and saved it), it is necessary to compile it. 
+This transforms it from relatively human-friendly C code into microcontroller-friendly machine language. That machine language depends on the particular microcontroller so the next step is to specify the **build configuration**.
+. Open the nRF Connect side bar.
+. In the **APPLICATIONS** section, click on btn:[Add build configuration] under the name of your application.
++
+[#img-add-build-config]
+.Add a build configuration from the nRF Connect side bar.
+image::nrf-connect-add-build-config.png[Add build configuration, 222, 154]
++
+. Next, set the board target to match your microcontroller. If you are using the nRF52840 DK board you should select `nrf52840dk_nrf52840`.
++
+[#img-set-board-target]
+.Add a build configuration from the nRF Connect side bar.
+image::nrf-connect-set-board-target.png[Set board target, 541, 198]
++
+. Scroll to the bottom of this window and verify that the box before **Build after generating configuration** is checked.
++
+[#img-set-board-target]
+.Set build after configuration option.
+image::nrf-connect-set-build-configuration.png[Set build configuration, 523, 204]
++
+. Finish by clicking the btn:[Build Configuration] button. The initial generation of a configuration and building of an application may take several minutes.
+. After a build configuration has been generated you will have new entries in the nRF Connect side bar. These new sections are labeled **BUILD** and **ACTIONS**.
+. If you get an error message related to your code, try to find the error in the `main.c` file. After fixing it, save the file and click on the btn:[Build] action. This will go much faster than the original build process.
+. Connect the microcontroller to the computer via a USB cable. The nRF52840 DK board has two micro USB ports. You want to use the one labeled **IMCU USB**.
+. Turn on the microcontroller via the ON/OFF switch on a corner of the board near the USB connection. Shortly after you do this you should observe that a section called **CONNECTED DEVICES** in the nRF Connect side bar is a new numbered entry (corresponding to the serial number of your board).
++
+[#img-new-nrf-connect-sections]
+.New sections are available in nRF Connect after selecting a build configuration and attaching a microcontroller.
+image::nrf-connect-build-actions-connecteddevices.png[New sections in the nRF Connect side bar, 179, 390]
++
+. With a connected and powered microcontroller, you are now ready to transfer the program to it. Click on the btn:[Flash] action.
+. If all goes well LED1 on your development board will begin to flash twice a second.
+
+IMPORTANT: Demonstrate that you have successfully compiled and run the embedded system "`Hello, world`" program.
 
 === Documenting the first program
 Create a new file called `README.md` in the top level folder (at the same level as the `prj.conf` file). To do this:
@@ -140,7 +176,7 @@ Create a new file called `README.md` in the top level folder (at the same level 
 . click in the empty area below `proj.conf` to select the top level folder,
 . hover over the title of this application (**LAB1-PROJ1** if you followed the naming suggestions) to reveal more options,
 . click on the **New file...** icon, and
-. name this file `README.md`
+. name this file `README.md`.
 
 [#img-create-new-file]
 .Create a new file from the Explorer side bar.
@@ -148,7 +184,7 @@ image::vs-code-explorer-create-new-file.png[Create new file, 228, 250]
 
 This is where you will put some human-friendly documentation using a simple and widely used markup language called https://guides.github.com/features/mastering-markdown/[Markdown]. We will also supplement Markdown with  https://mermaid-js.github.io/[mermaid], a diagram-drawing language that will let us include graphics like flowcharts in our documentation.
 
-Before you start adding contents to this file, turn on VS Code's Markdown previewer by clicking on the "`Open Preview to the Side`" button (or type kbd:[Ctrl+k] and then kbd:[v]).
+Before you start adding contents to this file, turn on VS Code's Markdown previewer by clicking on the **Open Preview to the Side** button (or type kbd:[Ctrl+k] and then kbd:[v]).
 
 [#img-vscode-markdown-preview]
 .VS Code button for Markdown preview.
@@ -161,9 +197,11 @@ Entering the following code into the `README.md` file.
 ----
 # Program 1: Heartbeat                              // <1>
 **Author:** John M. Larkin <jlarkin@whitworth.edu>  // <2>
+
 **Date:** December 31, 2024
 
 **Modified by:** 
+
 **Date:**
 
 **Purpose:** This program flashes an internal LED on the nRF52840 DK
@@ -288,3 +326,67 @@ int main(void) {
 <7> The inner `while` loop for flashing the right LED begins here.
 <8> The `while` loop for flashing the right LED ends here.  If `i` is greater than 0, jump up to the top of this loop.
 <9> The never-ending outer `while` loop repeats when it reaches this point.
+
+== Your Turn
+
+The remaining activities today will be done as pair programming assignments (that is, with a partner). Go to Blackboard and look up your partner assignment for today. You will also find the GitHub Classroom assignment links there.
+
+====
+[[assignment-internal-led-while-loops]]
+.Assignment {lab}.{counter:assignment}
+
+. If your last name comes first alphabetically on your team, you are the team lead for this assignment. It is your job to access the GitHub Classroom assignment link first and create the team name (as found on Blackboard).
+. The following steps must be followed by the team lead.
+.. A code repository for your team was created when you accessed the assignment. Copy the URL for the repository.
+.. Open the Source Control side bar in VS Code.
++
+[#img-vs-code-clone-repo]
+.Clone a repository from the Source Control side bar.
+image::vs-code-clone-repo.png[Clone a repository in the Source Control side bar, 283, 266]
++
+.. Click on btn:[Clone Repository].
+.. Paste the URL you copied into the box that opens up.
+. After the team lead has completed this, the other members of the team need to follow the link to the GitHub Classroom assignment and join the team.
+. Here are some tips for making your pair programming collaboration be more effective:
+.. It often works best if one person is the "`driver`" (doing the typing, setting the focus, etc.) and the other person is the "`navigator`" (keeping an eye on how this all contributes to the overall task, looking for possible errors, and asking questions). The "`driver`" is also encouraged to ask questions (e.g., does the navigator see another way to accomplish something). The roles should be periodically swapped (at least once every 25 minutes).
+.. Ask questions about why the other person did something when you don't understand or think is wrong. A question is a better start than "`That's wrong.`"
+.. When you do spot an error, wait until the person typing has finished the current line before drawing attention to it. They might spot their own mistake along the way and fix it without you calling it out.
+.. If you are the more experienced coder, take some responsibility for helping your partner learn the material. If they aren't asking questions while you are the "`driver`", periodically stop and make sure they are following what you are doing. When you are the "`navigator`" encourage them to try something and _then_ give feedback afterward. Remember, the goal of the activity is learning for both of you (not speedy accumulation of points). 
+.. If you are the less experienced coder and have the "`driver`" role, it is important that you suggest something, even though it may not be perfect, rather than simply dictating what they say. When you are the "`navigator`", don't be passive. Ask questions and be willing to suggest things. You might not know how to implement it in code, but your strategy for solving a problem might actually be better.
+.. Work on coding tasks with someone else in this format can be intense work. Break it up into 25 minute sessions with five minute breaks (walk around, check your text messages or social media, etc.). You will remain more productive for longer with this pattern.
+.. Avoid solo work. If it is time for a break, you should both stop working on the code. It is important for you to both be engaged in this work together and it is more difficult for someone to catch up and feel fully part of the work if you have been doing things while they were gone.
+.. Avoid solo work. At this point in the class, you should both be looking at and thinking about the same thing. Don't split up tasks and go your separate ways. We will do that later on when it is appropriate, but that is not the case this week.
+. Start with the `README.md` file. Your first task is to update the flow chart so it describes the logic needed to do the following:
+.. Flash the left LED 10 times with on/off times of 0.5 s.
+.. Then flash the right LED 5 times with on/off times of 0.25 s.
+.. Then repeat (forever).
+. Update the rest of the `README.md` file.
+. Click on the Source Control icon in the left side bar to open the Source Control panel. There should be a section labeled Changes that lists `README.md`. Hover over this line and then select the plus icon to stage the changes.
+. Go to the Message box and enter a short description of the changes that were made. Something like "`Updated flow chart`" would be appropriate. Then press kbd:[Ctrl+Enter] to commit this change (make it part of the tracked history of this project).
+. Next to the name of the project you should see an up arrow and the number 1 (if you have only made one commit). Click on this to send these changes off to GitHub (this is called a "`push`" because it is going from your computer to the remote repository).
+. Update `main.c` so it implements the logic shown in the flow chart. You may only use programming constructs introduced so far in this course (so `for` loops are forbidden).
+. Again, commit these changes and push to the remote repository.
+. Specify the correct build configuration and then build the application.
+. Flash the code to the microcontroller for testing. Does it do what it is supposed to do?
+. If there are problems, fix those. Once everything works properly, edit the `README.md` file and add a `**Completed:** ` line with the current date and time.
+. Stage all changes and commit with the message "`Done`".
+. If you were not the lead on this project:
+.. Open the Source Control panel in VS Code. Synchronize your copy of the project with the remote repository by clicking on the sync symbol (circle made of two arrows). This should perform a "`pull`" (moving material from the remote repository to your local copy).
+.. Compile the code and upload it to your microcontroller. It should work properly.
+====
+
+====
+[[assignment-while-loops-challenge]]
+.Assignment {lab}.{counter:assignment}
+The process for this assignment is similar to the previous one but there is a new GitHub Classroom link.
+
+Your task is to modify the program so that it:
+
+* Flashes the left LED ten times in a row, but the time of each flash increases, starting from 0.1 s and going up to 1.0 s, in steps of 0.1 s.
+* Then flashes the right LED five times in a row, but the time of each flash decreases, starting from 1.0 s and decreasing in 0.2 s steps to 0.2 s.
+* Repeats forever.
+* Use no more than four `k_msleep` commands.
+* Uses `while` loops (only C commands already encountered in the course are allowed so things like `for` loops and user-defined functions are forbidden).
+
+Remember to update the `README.md` as well as `main.c` files. Push commits to the remote repository. The final commit should be the message "`Done`".
+====
