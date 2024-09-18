@@ -139,8 +139,8 @@ This transforms it from relatively human-friendly C code into microcontroller-fr
 . Open the nRF Connect side bar.
 . In the **APPLICATIONS** section, click on btn:[Add build configuration] under the name of your application.
 +
-[#img-add-build-config]
 .Add a build configuration from the nRF Connect side bar.
+[#img-add-build-config]
 image::nrf-connect-add-build-config.png[Add build configuration, 222, 154]
 +
 . Next, set the board target to match your microcontroller. If you are using the nRF52840 DK board you should select `nrf52840dk_nrf52840`.
