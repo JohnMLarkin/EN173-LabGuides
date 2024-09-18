@@ -152,7 +152,7 @@ image::nrf-connect-set-board-target.png[Set board target, 541, 198]
 +
 . Scroll to the bottom of this window and verify that the box before **Build after generating configuration** is checked.
 +
-[#img-set-board-target]
+[#img-set-build-configuration]
 .Set build after configuration option.
 image::nrf-connect-set-build-configuration.png[Set build configuration, 523, 204]
 +
