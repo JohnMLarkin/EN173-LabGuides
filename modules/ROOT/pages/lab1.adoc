@@ -312,9 +312,9 @@ int main(void) {
             i = i + 1;
         }  // <6>
         while (i>0) { // Flash the right LED five times
-        gpio_pin_toggle_dt(&rightLED); // <7>
-        k_msleep(SLEEP_TIME_MS);
-        i = i - 1;
+            gpio_pin_toggle_dt(&rightLED); // <7>
+            k_msleep(SLEEP_TIME_MS);
+            i = i - 1;
         }  // <8>
     }  // <9>
 }
