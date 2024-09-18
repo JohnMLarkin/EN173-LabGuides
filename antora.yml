@@ -1,5 +1,5 @@
-name: lab-guides
-title: Lab Guides
+name: en173-lab-guides
+title: EN 173 Lab Guides
 version: '2025'
 nav:
 - modules/ROOT/nav.adoc
