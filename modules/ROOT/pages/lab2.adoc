@@ -35,7 +35,7 @@ static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NI, gpios);
 static const struct gpio_dt_spec btn = GPIO_DT_SPEC_GET(BTN0_NI, gpios); // <2>
 
 int main(void) {
-    bool btn_pressed; // <3>
+    int btn_pressed; // <3>
 
     if (gpio_is_ready_dt(&led)) { // <4>
         gpio_pin_configure_dt(&led, GPIO_OUTPUT_INACTIVE);
@@ -56,7 +56,15 @@ int main(void) {
     }
 }
 ----
-
+<1> The node identifier for BUTTON1 is obtained using its alias: `sw0`.
+<2> Buttons, like LEDs, are controlled by GPIO pins. The process of getting the GPIO specifications is the same for buttons as it is for LEDs.
+<3> A integer variable is declared to hold the state of the button, where 0 will represent released and 1 is pressed.
+<4> Although it was not done in the xref:lab1.adoc[Lab 1] examples, it is best practice to always check that peripherals are ready for use before attempting to use them. The function `gpio_is_ready_dt` returns `true` if the specified GPIO pin is ready. The code that follow in the curly braces will only be executed if the GPIO pin connected to the LED is ready for use.
+<5> The `else` statement marks the beginning of code that will be executed if `gpio_is_ready_dt` returns `false`.
+<6> The `return` command causes the `main` function to be exited, sending a value of `-1` to the kernel (the code that called `main` at startup). A return value of 0 is usually used to signal success and negative values indicate various types of errors.
+<7> The pin connected to BUTTON1 is configured as an input.
+<8> The state of the button is read and its value (0 for released and 1 for pressed) is saved in the variable `btn_pressed`.
+<9> The LED is set to have the same value as the button (on if pressed, off if released).
 == Controlling external LEDs
 
 Light-emitting diodes (LEDs) do not have a constant resistance.  For low voltages, they have a nearly infinite resistance (allow no current to flow).  However, once the voltage exceeds a color-specific threshold, the resistance drops rapidly to nearly zero, allowing small changes in the voltage to create large changes in the current.  If too much current flows through the LED, it will overheat and die.  To prevent this, we will almost always connect a resistor in series with the LED.  A 330 {Omega} resistor keeps the current to a safe level for the LEDs we will be using and with the voltage that our microcontroller can supply.  A 330 {Omega} resistor has the color bands orange-orange-brown.  The gold band indicates that the manufacturer guarantees that the actual resistance is within 5% of the indicated value.
