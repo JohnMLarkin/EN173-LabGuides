@@ -61,10 +61,14 @@ int main(void) {
 <3> A integer variable is declared to hold the state of the button.
 <4> Although it was not done in the xref:lab1.adoc[Lab 1] examples, it is best practice to always check that peripherals are ready before attempting to use them. The function `gpio_is_ready_dt` returns `true` if the specified GPIO pin is ready. The code that follows in the curly braces will only be executed if the GPIO pin connected to the LED is ready for use.
 <5> The `else` statement marks the beginning of code that will be executed if `gpio_is_ready_dt` returns `false`.
-<6> The `return` command causes the `main` function to be exited, sending a value of `-1` to the kernel (the code that called `main` at startup). A return value of 0 is usually used to signal success and negative values indicate various types of errors.
+<6> The `return` command causes the `main` function to be exited, sending a value of -1 to the kernel (the code that called `main` at startup). A return value of 0 is usually used to signal success and negative values indicate various types of errors.
 <7> The pin connected to BUTTON1 is configured as an input.
 <8> The state of the button is read and its value (0 for released and 1 for pressed) is saved in the variable `btn_pressed`.
 <9> The LED is set to have the same value as the button (on if pressed, off if released).
++
+. Add the build configuration through the nRF Connect side bar and build the application.
+. Connect the development board to the computer and then use the btn:[Flash] action to send the program to it.
+. Verify that LED1 is only lit while BUTTON1 is held down.
 
 == Controlling external LEDs
 
