@@ -10,6 +10,53 @@
 
 = Lab 2
 
+== Internal buttons
+
+The nRF52840 DK board has five buttons. The button set off by itself resets the board. The four buttons in a cluster are ones available for use in our code. On the board they have labels BUTTON1 through BUTTON4, but their aliases in code are `sw0` through `sw3`. If you have not encountered it before, _sw_ is a common abbreviation for _switch_ in electronics.
+
+. Create a new application called `led-enabler`.
+. Enter the following code into `main.c`.
++
+[source,c]
+[[program-led-enabler]]
+.Use a button to turn on an LED.
+----
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/gpio.h>
+
+#define SLEEP_TIME_MS   100
+
+/* Get node identifiers for hardware */
+#define LED0_NI DT_ALIAS(led0)
+#define BTN0_NI DT_ALIAS(sw0)
+
+/* Get gpio specs */
+static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NI, gpios);
+static const struct gpio_dt_spec button = GPIO_DT_SPEC_GET(BTN0_NI, gpios); // <2>
+
+int main(void) {
+    bool btn_pressed;
+
+    if (gpio_is_ready_dt(&led)) { // <3>
+        gpio_pin_configure_dt(&led, GPIO_OUTPUT_INACTIVE);
+    } else {
+        return -1;
+    }
+
+    if (gpio_is_ready_dt(&button)) { // <4>
+        gpio_pin_configure_dt(&button, GPIO_INPUT); // <5>
+    } else {
+        return -1;
+    }
+    
+    while (true) {
+        btn_pressed = gpio_pin_get_dt(&button); // <6>
+        gpio_pin_set_dt(&led, btn_pressed); // <7>
+        k_msleep(SLEEP_TIME_MS);
+    }
+}
+----
+
 == Controlling external LEDs
 
 Light-emitting diodes (LEDs) do not have a constant resistance.  For low voltages, they have a nearly infinite resistance (allow no current to flow).  However, once the voltage exceeds a color-specific threshold, the resistance drops rapidly to nearly zero, allowing small changes in the voltage to create large changes in the current.  If too much current flows through the LED, it will overheat and die.  To prevent this, we will almost always connect a resistor in series with the LED.  A 330 {Omega} resistor keeps the current to a safe level for the LEDs we will be using and with the voltage that our microcontroller can supply.  A 330 {Omega} resistor has the color bands orange-orange-brown.  The gold band indicates that the manufacturer guarantees that the actual resistance is within 5% of the indicated value.

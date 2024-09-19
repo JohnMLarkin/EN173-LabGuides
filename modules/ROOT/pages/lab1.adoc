@@ -241,7 +241,7 @@ graph LR                                        // <6>
 ====
 [[exercise-sweep-internal-led-flow]]
 .Exercise {lab}.{counter:exercise}
-Create a new application called `cycle-blinky`. In this project, create a `README.md` file. Use the README file for <<program-blink-internal-LED>> as template and modify as appropriate.
+Create a new application called `cycle-blinky`. In this project, create a `README.md` file. Use the README file for <<program-blink-internal-LED>> as a template and modify as appropriate.
 
 Create a flow chart for a program that would light the four integrated LEDs in the sequence LED1 -> LED2 -> LED3 -> LED4 (and then repeat forever).  Each LED should be lit for 0.25 s and it should appear that only one is on at a time (though there might actually be some very small overlap).
 ====
