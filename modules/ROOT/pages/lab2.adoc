@@ -28,30 +28,30 @@ The nRF52840 DK board has five buttons. The button set off by itself resets the 
 
 /* Get node identifiers for hardware */
 #define LED0_NI DT_ALIAS(led0)
-#define BTN0_NI DT_ALIAS(sw0)
+#define BTN0_NI DT_ALIAS(sw0) // <1>
 
 /* Get gpio specs */
 static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NI, gpios);
-static const struct gpio_dt_spec button = GPIO_DT_SPEC_GET(BTN0_NI, gpios); // <2>
+static const struct gpio_dt_spec btn = GPIO_DT_SPEC_GET(BTN0_NI, gpios); // <2>
 
 int main(void) {
-    bool btn_pressed;
+    bool btn_pressed; // <3>
 
-    if (gpio_is_ready_dt(&led)) { // <3>
+    if (gpio_is_ready_dt(&led)) { // <4>
         gpio_pin_configure_dt(&led, GPIO_OUTPUT_INACTIVE);
-    } else {
-        return -1;
+    } else { // <5>
+        return -1; // <6>
     }
 
-    if (gpio_is_ready_dt(&button)) { // <4>
-        gpio_pin_configure_dt(&button, GPIO_INPUT); // <5>
+    if (gpio_is_ready_dt(&btn)) {
+        gpio_pin_configure_dt(&btn, GPIO_INPUT); // <7>
     } else {
         return -1;
     }
     
     while (true) {
-        btn_pressed = gpio_pin_get_dt(&button); // <6>
-        gpio_pin_set_dt(&led, btn_pressed); // <7>
+        btn_pressed = gpio_pin_get_dt(&btn); // <8>
+        gpio_pin_set_dt(&led, btn_pressed); // <9>
         k_msleep(SLEEP_TIME_MS);
     }
 }
