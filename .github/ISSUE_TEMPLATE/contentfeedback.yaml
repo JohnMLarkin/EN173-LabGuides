@@ -2,6 +2,9 @@ name: Content Feedback
 description: Provide feedback on page content
 title: "[Feedback]: "
 body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to provide feedback.
   - type: input
     id: pageurl
     attributes:
@@ -19,8 +22,6 @@ body:
         - Lack of clarity
         - New content request
         - Other
-      validations:
-        required: false
   - type: textarea
     id: feedback
     attributes:
@@ -28,6 +29,4 @@ body:
       placeholder: Tell me more.
     validations:
       required: true
-  - type: markdown
-    attributes:
-      value: Thanks for taking the time to provide feedback.
+
