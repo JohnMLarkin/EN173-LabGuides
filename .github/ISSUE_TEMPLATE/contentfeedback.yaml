@@ -2,26 +2,21 @@ name: Content Feedback
 description: Provide feedback on page content
 title: "[Feedback]: "
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for taking the time to provide feedback.
   - type: input
     id: pageurl
     attributes:
-      label: Page URL
-      description: URL of the page on which you are providing feedback
+      label: Page reference
+      description: Partial URL of the page (should autofill)
     validations:
       required: true
-  - type: dropdown
+  - type: checkboxes
     id: feedback-type
     attributes:
       label: Type of feedback
-      multiple: true
       options:
         - Error in source code
+        - Spelling or grammar errors
         - Lack of clarity
-        - Spelling or grammar
         - New content request
         - Other
   - type: textarea
@@ -31,3 +26,7 @@ body:
       placeholder: Tell me more.
     validations:
       required: true
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to provide feedback.
