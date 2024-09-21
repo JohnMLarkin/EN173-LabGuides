@@ -3,3 +3,6 @@ title: EN 173 Lab Guides
 version: '2025'
 nav:
 - modules/ROOT/nav.adoc
+asciidoc:
+  attributes:
+    page-license: Available under the MIT license.
