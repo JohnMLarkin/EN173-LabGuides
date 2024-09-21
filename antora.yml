@@ -6,3 +6,5 @@ nav:
 asciidoc:
   attributes:
     page-license: Available under the MIT license.
+    page-feedbacktype: github
+    page-feedbackurl: https://github.com/JohnMLarkin/EN173-LabGuides/issues
