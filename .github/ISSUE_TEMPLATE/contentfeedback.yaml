@@ -19,6 +19,8 @@ body:
         - Lack of clarity
         - New content request
         - Other
+      validations:
+        required: false
   - type: textarea
     id: feedback
     attributes:
@@ -28,5 +30,4 @@ body:
       required: true
   - type: markdown
     attributes:
-      value: |
-        Thanks for taking the time to provide feedback.
+      value: Thanks for taking the time to provide feedback.
