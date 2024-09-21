@@ -1,6 +1,6 @@
 :lab: 2
 :sectnums:
-:imagesdir: ../images/lab2
+:imagesdir: ../images
 :source-language: c
 :listing-caption: Program
 :example-caption: Exercise
