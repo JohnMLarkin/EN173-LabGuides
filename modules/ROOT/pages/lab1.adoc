@@ -1,5 +1,5 @@
 :lab: 1
-:imagesdir: ../images
+:imagesdir: ../images/lab1
 :sectnums:
 :source-language: c
 :listing-caption: Program

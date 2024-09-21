@@ -1,13 +1,15 @@
 :lab: 2
 :sectnums:
+:imagesdir: ../images/lab2
 :source-language: c
 :listing-caption: Program
 :example-caption: Exercise
 :xrefstyle: short
 :experimental:
+:nrf-toolchain: v2.6.1
+:nrf-sdk: 2.6.1
 :Omega: &#937;
 :Delta: &#916;
-
 = Lab 2
 
 == Internal buttons
@@ -76,4 +78,16 @@ Light-emitting diodes (LEDs) do not have a constant resistance.  For low voltage
 
 LEDs are also unidirectional devices.  That is, they have a preferred direction for the flow of current.  It takes a much larger voltage to cause a current to flow the "`wrong`" way (and the LED won't usually survive the experience if it does manage to happen).  To help us know which  direction they should be connected, manufacturers almost always make the legs of LEDs different lengths.  The longer leg goes on the side closer to the higher voltage and the shorter leg goes on the side closer to ground.
 
-Construct the circuit shown in <<img-circuit1-breadboardview>> on your breadboard. The ground connection (pin 1 of the mbed) should be connected to the bus strip that is marked with the blue (or black, depending on the breadboard manufacturer) line.  We will be consistent about doing this throughout the course because it will make debugging your circuits easier (and it is the convention in this field).  The apparent lengths of the LED legs in this diagram are solely due to how far they had to travel to reach their proper holes.  So, even though it appears that a longer leg is attached to the ground bus strip, that is not the case.  The *short* leg of each LED should be connected to the ground bus.
+Construct the circuit shown in <<img-circuit1-breadboardview>> on your breadboard. The ground connection (one of the header sockets marked **GND** on the development board) should be connected to the bus strip that is marked with the blue (or black, depending on the breadboard manufacturer) line.  We will be consistent about doing this throughout the course because it will make debugging your circuits easier (and it is the convention in this field).  The apparent lengths of the LED legs in this diagram are solely due to how far they had to travel to reach their proper holes.  So, even though it appears that a longer leg is attached to the ground bus strip, that is not the case.  The *short* leg of each LED should be connected to the ground bus.
+
+[#img-circuit1-breadboardview]
+.View of the breadboard for the two LED circuit.
+image::two-led-breadboard-view.png[Breadboard view of circuit 1,605,331]
+
+Professionals would never draw a picture like <<img-circuit1-breadboardview>> to show how a circuit is connected.  Instead, a more abstract circuit diagram would be used. The diagram in <<img-circuit1-diagram>> is how they would draw this circuit.
+
+[#img-circuit1-diagram]
+.Circuit diagram for the two LED circuit.
+image::two-led-circuit-diagram.png[Circuit diagram for circuit 1,282,263]
+
+After you have assembled this circuit on the breadboard, create a new PlatformIO project. Copy `mbed_app.json` from one of your previous projects to this one (or get it from Blackboard). Then enter <<program-red-green-LEDs>>. 
