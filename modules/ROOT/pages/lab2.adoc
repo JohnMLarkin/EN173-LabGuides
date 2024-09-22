@@ -90,4 +90,54 @@ Professionals would never draw a picture like <<img-circuit1-breadboardview>> to
 .Circuit diagram for the two LED circuit.
 image::two-led-circuit-diagram.png[Circuit diagram for circuit 1,282,263]
 
-After you have assembled this circuit on the breadboard, create a new PlatformIO project. Copy `mbed_app.json` from one of your previous projects to this one (or get it from Blackboard). Then enter <<program-red-green-LEDs>>. 
+After you have assembled this circuit on the breadboard, create a new application. Then enter <<program-red-green-LEDs>>.
+
+. Assembly this circuit on the breadboard.
+. Create a new application called `external-leds`.
+. Enter the following code into `main.c`.
++
+[source, c]
+[[program-red-green-LEDs]]
+.Flash red and green LED in an alternating pattern.
+----
+
+----
+. Select btn:[Add build configuration panel] through the nRF Connect side bar and select our board as the target. In a change from past procedure, uncheck the **Build after generating configuration** box. This will change the final button to btn:[Generate Configuration]. Click on this button.
++
+[#img-generate-config-not-build]
+.Generate the configuration but do not build the application.
+image::nrf-connect-generate-configuration.png[Generate configuration,526,207]
++
+. In the **Actions** section of the nRF Connect side panel, hover over the **Devicetree** entry to reveal the more options indicator (three dots) on the right. From that, select **Create overlay**.
+. Select btn:[Skip] as the next step from the **Overlay file created** dialog.
+. Add the following to the `nrf52840dk_nrf52840.overlay` file that was created.
++
+[source, dts]
+[[dtoverlay-red-green-LEDs]]
+.The overlay file allows us to configure pins for use.
+----
+/{
+  leds {
+    red_led: led_4 {
+      gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+      label = "External red LED";
+    };
+    green_led: led_5 {
+      gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+      label = "External green LED";
+    };
+  };
+  aliases {
+    redled = &red_led;
+    greenled = &green_led;
+  };
+};
+----
++
+. You now want to perform a **pristine build** (a more complete build process that is required after altering the devicetree description of the hardware). The pristine build option can be found in the **Actions** section of the nRF Connect side panel. Hovering over **Build** will reveal the pristine build icon (a circular arrow) on the right. Click on this icon.
++
+[#img-pristine-build]
+.The pristine build icon appears on the right hand side of the Build action upon hovering.
+image::nrf-connect-pristine-build-icon.png[Pristine build icon,481,201]
++
+. Use the **Flash** action to send the program to your board. If everything has been done correctly, you should see lit red and green LEDs alternating.
