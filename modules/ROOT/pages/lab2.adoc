@@ -243,11 +243,18 @@ image:waveforms-screen-scope-channel1-config.png[Channel 1 configuration,112,49]
 . Uncheck the Noise option.  This should remove the pale yellow region and just leave the bold yellow line.
 . To activate the Measurements tab, select menu:View[Measurements].
 . To display the average value of the "`on`" state, select menu:Add[Defined Measurement > Channel 1 > Vertical > High] and then click btn:[Add].  You are done (for now) configuring measurements, so click btn:[Close].
-. I will routinely refer to the microcontroller's output as being 3.3 V, but that is just an approximate value.  Use the oscilloscope to measure the actual output voltage of your microcontroller.  Record the total potential difference {Delta}V~total~ (between P0.29 and ground).  This is what has been measured by the *High* setting.
-. Measure the potential difference across the resistor by moving the *1-* flywire to the right side of the resistor (at the junction between the resistor and the LED).  The ground flywire should remain connected to the ground bus strip.  Record the potential difference {Delta}V~R~ across the resistor.
-. Measure the potential difference across the LED by moving the *1+* and *1-* flywires to be on either side of the LED.  Record the potential difference {Delta}V~LED~.
-. Kirchhoff's voltage law tells us that stem:[\Delta V_\mathrm{total} = \Delta V_R + \Delta V_\mathrm{LED}] {Delta}V~total~ = {Delta}V~R~ + {Delta}V~LED~ (assuming there are insignificant voltage drops at the various junctions).  Do your measurements agree?
-. Calculate the current through the resistor using Ohm's law:  I = {Delta}V~R~ / R. This same current also flows through the LED because the resistor and LED are connected in series.
+. I will routinely refer to the microcontroller's output as being 3.3 V, but that is just an approximate value.  Use the oscilloscope to measure the actual output voltage of your microcontroller.  Record the total potential difference stem:[\Delta V_\mathrm{total}] (between P0.29 and ground).  This is what has been measured by the *High* setting.
+. Measure the potential difference across the resistor by moving the *1-* flywire to the right side of the resistor (at the junction between the resistor and the LED).  The ground flywire should remain connected to the ground bus strip.  Record the potential difference stem:[\Delta V_R] across the resistor.
+. Measure the potential difference across the LED by moving the *1+* and *1-* flywires to be on either side of the LED.  Record the potential difference stem:[\Delta V_\mathrm{LED}].
+. Kirchhoff's voltage law tells us that stem:[\Delta V_\mathrm{total} = \Delta V_R + \Delta V_\mathrm{LED}] (assuming there are insignificant voltage drops at the various junctions).  Do your measurements agree?
+. Calculate the current through the resistor using Ohm's law:
++
+[stem]
+++++
+I = \frac{\Delta V_R}{R}.
+++++
++
+This same current also flows through the LED because the resistor and LED are connected in series.
 . Repeat these steps for P0.03 and the green LED.
 ====
 
