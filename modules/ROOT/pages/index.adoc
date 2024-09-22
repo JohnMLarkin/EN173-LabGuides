@@ -35,7 +35,7 @@ In this set of activities you will:
 Additional hardware required:
 
 * two LEDs (described as red and green in instructions)
-* two 330 {Ohm} resistors
+* two 330 {Omega} resistors
 * oscilloscope (instructions describe usage of Digilent's _Analog Discovery 2_)
 
 WARNING: **Your Turn** section is not complete
@@ -51,7 +51,7 @@ In this set of activities you will:
 Additional hardware required:
 
 * two LEDs (described as red and green in instructions)
-* two 330 {Ohm} resistors
+* two 330 {Omega} resistors
 * oscilloscope (instructions describe usage of Digilent's _Analog Discovery 2_)
 
 ****
