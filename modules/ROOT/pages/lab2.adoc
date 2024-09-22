@@ -11,7 +11,7 @@
 :nrf-sdk: 2.6.1
 :Omega: &#937;
 :Delta: &#916;
-= Lab 2
+= Lab 2: Basic Digital Input and Output
 
 == Internal buttons
 

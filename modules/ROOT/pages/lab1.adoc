@@ -8,7 +8,7 @@
 :experimental:
 :nrf-toolchain: v2.6.1
 :nrf-sdk: 2.6.1
-= Lab 1
+= Lab 1: Getting Started
 
 == Installing the tools
 
