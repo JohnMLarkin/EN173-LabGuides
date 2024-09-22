@@ -6,6 +6,7 @@
 :example-caption: Exercise
 :xrefstyle: short
 :experimental:
+:stem: latexmath
 :nrf-toolchain: v2.6.1
 :nrf-sdk: 2.6.1
 :Omega: &#937;
@@ -245,7 +246,7 @@ image:waveforms-screen-scope-channel1-config.png[Channel 1 configuration,112,49]
 . I will routinely refer to the microcontroller's output as being 3.3 V, but that is just an approximate value.  Use the oscilloscope to measure the actual output voltage of your microcontroller.  Record the total potential difference {Delta}V~total~ (between P0.29 and ground).  This is what has been measured by the *High* setting.
 . Measure the potential difference across the resistor by moving the *1-* flywire to the right side of the resistor (at the junction between the resistor and the LED).  The ground flywire should remain connected to the ground bus strip.  Record the potential difference {Delta}V~R~ across the resistor.
 . Measure the potential difference across the LED by moving the *1+* and *1-* flywires to be on either side of the LED.  Record the potential difference {Delta}V~LED~.
-. Kirchhoff's voltage law tells us that $\Delta V_\mathrm{total} = \Delta V_R + \Delta V_\mathrm{LED}$ {Delta}V~total~ = {Delta}V~R~ + {Delta}V~LED~ (assuming there are insignificant voltage drops at the various junctions).  Do your measurements agree?
+. Kirchhoff's voltage law tells us that stem:[\Delta V_\mathrm{total} = \Delta V_R + \Delta V_\mathrm{LED}] {Delta}V~total~ = {Delta}V~R~ + {Delta}V~LED~ (assuming there are insignificant voltage drops at the various junctions).  Do your measurements agree?
 . Calculate the current through the resistor using Ohm's law:  I = {Delta}V~R~ / R. This same current also flows through the LED because the resistor and LED are connected in series.
 . Repeat these steps for P0.03 and the green LED.
 ====
