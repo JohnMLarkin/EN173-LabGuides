@@ -218,3 +218,50 @@ E --> C
 ----
 
 IMPORTANT: Demonstrate that you have successfully assembled this circuit and downloaded this program.
+
+=== Exploring GPIO output with an oscilloscope
+
+====
+[[exercise-oscilloscope-digitalout]]
+.Exercise {lab}.{counter:exercise}
+In this exercise you will use a compact oscilloscope, the _Analog Discovery 2_, to learn more about the voltages in this circuit.  The results of your measurements should be written on the <<exercise-oscilloscope-digitalout>> worksheet and turned in when you are done.
+
+. Start by connecting an _Analog Discovery 2_ to a computer with the WaveForms program (freely available from https://store.digilentinc.com/waveforms-download-only/[Digilent]).
+. Connect the flywire labeled *1+* (top left, orange) to the same column as the junction between the wire from p5 and the resistor.  Connect the flywire labeled *1-* (bottom left, orange with white stripe) to the ground bus strip.  Also connect a flywire labeled ground (black wire) to the ground bus strip.
+. Start the WaveForms program. Click on the Scope button on the left side of the screen.
+. You are only using channel 1 of the oscilloscope so turn off the channel 2 display by unchecking its box on the right side of the screen, as shown below. +
+image:waveforms-screen-scope-channel2.png[Disable Channel 2,225,195]
+. All of the voltages you will be measuring should be positive so we want the position of 0 volts to be at the bottom of the display, not at the center.  To accomplish this, change the Channel 1 offset to -2 V.
+. Just above the channels settings are the time settings (the horizontal axis).  Set Base to 50 ms/div.
+. The oscilloscope needs to know when to capture the voltage that will be displayed. This is done by setting a *trigger* condition (which channel to monitor, whether to activate on a rising or falling voltage, and at what particular voltage).  We want channel 1, rising, and 1 V.  The defaults should be channel 1 and rising so you only need to change the level in the trigger settings above the main display. +
+image:waveforms-screen-scope-trigger-settings.png[Trigger level setting,535,23]
+. Click the Single acquisition button. +
+image:waveforms-screen-scope-single.png[Single acquisition button,138,19]
+. The main display should now have a bold yellow line that is tracing out the off-on-off pattern of the p5 output.  The pale yellow represents the noise present in this measurement (the oscilloscope acquired many samples and the bold yellow represents an average).  We don't need to see the noise so we will turn it off.  Click on the gear icon in the channel 1 settings area. +
+image:waveforms-screen-scope-channel1-config.png[Channel 1 configuration,112,49]
+. Uncheck the Noise option.  This should remove the pale yellow region and just leave the bold yellow line.
+. To activate the Measurements tab, select menu:View[Measurements].
+. To display the average value of the "`on`" state, select menu:Add[Defined Measurement > Channel 1 > Vertical > High] and then click btn:[Add].  You are done (for now) configuring measurements, so click btn:[Close].
+. I will routinely refer to the mbed's output as being 3.3 V, but that is just an approximate value.  Use the oscilloscope to measure the actual output voltage of your mbed.  Record the total potential difference {Delta}V~total~ (between p5 and ground).  This is what has been measured by the *High* setting.
+. Measure the potential difference across the resistor by moving the *1-* flywire to the right side of the resistor (at the junction between the resistor and the LED).  The ground flywire should remain connected to the ground bus strip.  Record the potential difference {Delta}V~R~ across the resistor.
+. Measure the potential difference across the LED by moving the *1+* and *1-* flywires to be on either side of the LED.  Record the potential difference {Delta}V~LED~.
+. Kirchhoff's voltage law tells us that {Delta}V~total~ = {Delta}V~R~ + {Delta}V~LED~ (assuming there are insignificant voltage drops at the various junctions).  Do your measurements agree?
+. Calculate the current through the resistor using Ohm's law:  I = {Delta}V~R~ / R. This same current also flows through the LED because the resistor and LED are connected in series.
+. Repeat these steps for p6 and the green LED.
+====
+
+====
+[[exercise-oscilloscope-digitalout-timing]]
+.Exercise {lab}.{counter:exercise}
+In this exercise you will continue to explore the behavior of the mbed's `DigitalOut`, but the focus will be on its time response.
+
+. Connect the flywire labeled *1+* (top left, orange) to the same column as the junction between the wire from p5 and the resistor.  Connect the flywire labeled *1-* (bottom left, orange with white stripe) to the ground bus strip.  Connect the ground flywire to the ground bus strip.
+. In the Time settings (found in the right panel), change Base to 50 ns/div and Position to 100 ns.  In the Measurements panel, select menu:Add[Defined Measurement > Channel 1 > Horizontal > RiseTime] and click btn:[Add] and then btn:[Close].
+. Click the btn:[Single] acquisition button to capture a zoomed-in view of the transition of the p5 from off to on.
+. The crosses indicate when the particular values measured by the oscilloscope and these are then connected by straight lines.  As you can see, we are pushing the limits of this oscilloscope.  We can get a little more from it by using some of the advanced settings in the Time menu.  Click on the downward arrow to expand the Time settings.  Change Oversampling to 16. +
+image:waveforms-screen-scope-time-advanced.png[Oversampling in Time settings,109,115] +
+Oversampling acquires multiple captures, each with small shifts in the starting time.  For a repetitive event this allows us to effectively get data points closer together.
+. Measure the risetime, the time it takes to go from the low voltage state to the high voltage state.
+====
+
+IMPORTANT: Show your worksheet to the instructor when you have completed both exercises.
