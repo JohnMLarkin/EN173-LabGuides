@@ -90,11 +90,12 @@ Professionals would never draw a picture like <<img-circuit1-breadboardview>> to
 .Circuit diagram for the two LED circuit.
 image::two-led-circuit-diagram.png[Circuit diagram for circuit 1,282,263]
 
-After you have assembled this circuit on the breadboard, create a new application. Then enter <<program-red-green-LEDs>>.
+Assembly this circuit on the breadboard.
 
-. Assembly this circuit on the breadboard.
+=== Application code and hardware overlay 
+
 . Create a new application called `external-leds`.
-. Enter the following code into `main.c`.
+. Enter <<program-red-green-LEDs>> into `main.c`.
 +
 [source, c]
 [[program-red-green-LEDs]]
@@ -166,7 +167,7 @@ image::nrf-connect-generate-configuration.png[Generate configuration,526,207]
 <1> We are adding entries to the `leds` section of the devicetree for this board.
 <2> Our first new entry is a node identifier of `led_4` and a label of `red_led`.
 <3> The red LED will be connected to P0.29. P0 is short for GPIO port 0, which in this code is identified by `&gpio0`. This is pin 29 connected to that port. The LED will be lit when the output of this pin is the high voltage state (around 3 V).
-<4> Defining the alias that will used to access this using `DT_ALIAS` in `main.c`.
+<4> Defining the alias that will be used to access this using `DT_ALIAS` in `main.c`.
 +
 . You now want to perform a **pristine build** (a more complete build process that is required after altering the devicetree description of the hardware). The pristine build option can be found in the **Actions** section of the nRF Connect side panel. Hovering over **Build** will reveal the pristine build icon (a circular arrow) on the right. Click on this icon.
 +
@@ -175,3 +176,45 @@ image::nrf-connect-generate-configuration.png[Generate configuration,526,207]
 image::nrf-connect-pristine-build-icon.png[Pristine build icon,481,201]
 +
 . Use the **Flash** action to send the program to your board. If everything has been done correctly, you should see lit red and green LEDs alternating.
+
+=== Documenting the code
+
+Remember, documentation is an essential part of good coding. Create a `README.md` file and enter <<readme-red-green-LEDs>>. Notice that this has a section for external hardware that briefly describes how that is connected.
+
+[source, markdown]
+[[readme-red-green-LEDs]]
+.README file for the red-green alternating LED project.
+----
+# Program: Red-Green Alternating LEDs
+**Author:** John M. Larkin <jlarkin@whitworth.edu>  
+**Date:** December 31, 2024
+
+**Modified by:**  
+**Date:**
+
+**Purpose:** This program flashes two external LEDs.
+
+## Configuration
+Devicetree overlay sets:
+* P0.29 as GPIO in `leds` group with alias `redled`
+* P0.03 as GPIO in `leds` group with alias `greenled`
+
+Both are set active high.
+
+## Hardware
+### External
+* P0.29 --> red LED and 330 ohm resistor --> GND
+* P0.03 --> green LED and 330 ohm resistor --> GND
+
+## Flow
+```mermaid
+graph LR
+A("main()") --> B[Initial state of red LED is on and green LED is off]
+B--> C{Is it true?}
+C --> |yes| D[Toggle state of both LEDs]
+D --> E([Sleep 200 ms])
+E --> C
+```
+----
+
+IMPORTANT: Demonstrate that you have successfully assembled this circuit and downloaded this program.
