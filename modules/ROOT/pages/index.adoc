@@ -41,7 +41,6 @@ Additional hardware required:
 WARNING: **Your Turn** section is not complete
 ****
 ====
-====
 .xref::lab3.adoc[Lab 3 -- Going Deeper with Digital Input and Output]
 [%collapsible]
 ====
@@ -56,5 +55,4 @@ Additional hardware required:
 * oscilloscope (instructions describe usage of Digilent's _Analog Discovery 2_)
 
 ****
-====
 
