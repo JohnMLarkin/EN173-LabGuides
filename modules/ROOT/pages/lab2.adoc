@@ -147,9 +147,9 @@ image::nrf-connect-generate-configuration.png[Generate configuration,526,207]
 .The overlay file allows us to configure pins for use.
 ----
 /{
-  leds {
-    red_led: led_4 {
-      gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+  leds { // <1>
+    red_led: led_4 { // <2>
+      gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>; // <3>
       label = "External red LED";
     };
     green_led: led_5 {
@@ -158,11 +158,15 @@ image::nrf-connect-generate-configuration.png[Generate configuration,526,207]
     };
   };
   aliases {
-    redled = &red_led;
+    redled = &red_led; // <4>
     greenled = &green_led;
   };
 };
 ----
+<1> We are adding entries to the `leds` section of the devicetree for this board.
+<2> Our first new entry is a node identifier of `led_4` and a label of `red_led`.
+<3> The red LED will be connected to P0.29. P0 is short for GPIO port 0, which in this code is identified by `&gpio0`. This is pin 29 connected to that port. The LED will be lit when the output of this pin is the high voltage state (around 3 V).
+<4> Defining the alias that will used to access this using `DT_ALIAS` in `main.c`.
 +
 . You now want to perform a **pristine build** (a more complete build process that is required after altering the devicetree description of the hardware). The pristine build option can be found in the **Actions** section of the nRF Connect side panel. Hovering over **Build** will reveal the pristine build icon (a circular arrow) on the right. Click on this icon.
 +
