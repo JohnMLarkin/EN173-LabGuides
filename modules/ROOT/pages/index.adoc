@@ -39,6 +39,7 @@ Additional hardware required:
 * oscilloscope (instructions describe usage of Digilent's _Analog Discovery 2_)
 
 WARNING: **Your Turn** section is not complete
+
 ****
 ====
 .xref::lab3.adoc[Lab 3 -- Going Deeper with Digital Input and Output]
@@ -53,6 +54,5 @@ Additional hardware required:
 * two LEDs (described as red and green in instructions)
 * two 330 {Omega} resistors
 * oscilloscope (instructions describe usage of Digilent's _Analog Discovery 2_)
-
 ****
 
