@@ -100,7 +100,37 @@ After you have assembled this circuit on the breadboard, create a new applicatio
 [[program-red-green-LEDs]]
 .Flash red and green LED in an alternating pattern.
 ----
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/gpio.h>
 
+#define SLEEP_TIME_MS   200
+
+/* Get node identifiers for hardware */
+#define RED_NI DT_ALIAS(redled)
+#define GREEN_NI DT_ALIAS(greenled)
+
+/* Get gpio specs */
+const struct gpio_dt_spec redLED = GPIO_DT_SPEC_GET(RED_NI, gpios);
+const struct gpio_dt_spec greenLED = GPIO_DT_SPEC_GET(GREEN_NI, gpios);
+
+int main(void) {
+    if (gpio_is_ready_dt(&redLED)) {
+        gpio_pin_configure_dt(&redLED, GPIO_OUTPUT_ACTIVE);
+    } else {
+        return -1;
+    }
+    if (gpio_is_ready_dt(&greenLED)) {
+        gpio_pin_configure_dt(&greenLED, GPIO_OUTPUT_INACTIVE);
+    } else {
+        return -1;
+    }
+
+    while (true) {
+        gpio_pin_toggle_dt(&redLED);
+        gpio_pin_toggle_dt(&greenLED);
+        k_msleep(SLEEP_TIME_MS);
+    }
+}
 ----
 . Select btn:[Add build configuration panel] through the nRF Connect side bar and select our board as the target. In a change from past procedure, uncheck the **Build after generating configuration** box. This will change the final button to btn:[Generate Configuration]. Click on this button.
 +
