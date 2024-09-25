@@ -13,6 +13,78 @@
 :Delta: &#916;
 = Lab 3: Going Deeper with Digital Input and Output
 
+== Setting multiple pins on a GPIO port
+
+We can think of the four internal LEDs on the nRF52840 DK as representing a 4-bit number because each LED as only two states (on and off). The value represented by a particular LED when it is turned on is given in <<table-leds-as-bits>>. The advantage of this representation is that it becomes possible to set the state of all four LEDs with a single command rather than four commands that individually set each LED. All possible on-off combinations of the LEDs can be represented by an integer between 0 and 15.
+
+[[table-leds-as-bits]]
+.A series of LEDs can be represented as bits.
+[cols="1,1,1"]
+|===
+|LED |Value as Power of 2|Value
+
+|`led0`
+|stem:[2^0]
+|1
+
+|`led1`
+|stem:[2^1]
+|2
+
+|`led2`
+|stem:[2^2]
+|4
+
+|`led3`
+|stem:[2^3]
+|8
+|===
+
+This approach only works when the pins we wish to group are all connected to the same GPIO controller. There are two GPIO controller peripherals on the nRF52840 DK, labeled port 0 and port 1. This approach is also easier when the pins we wish to control have consecutive pin numbers. The four internal LEDs are connected to pins 13, 14, 15, and 16 of port 0 so we can use this method.
+
+We only want to impact those particular pins and not others so a _mask_ is used to specify that. There are 32 pins
+
+[source, c]
+[[program-leds-via-port]]
+.Set state of multiple LEDs with single command.
+----
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+
+#define SLEEP_TIME_MS   500
+
+/* Get node identifiers */
+#define PORT0_NI DT_NODELABEL(gpio0)
+
+/* Get device */
+const struct device *port = DEVICE_DT_GET(PORT0_NI);
+
+int main(void) {
+    int led_states;
+    int led_mask = BIT(13) | BIT(14) | BIT(15) | BIT(16);
+
+    if (device_is_ready(port)) {
+        for (int pin = 13; pin <= 16; pin++) {
+            gpio_pin_configure(port, pin, GPIO_OUTPUT_ACTIVE | GPIO_ACTIVE_LOW);
+        }
+    } else {
+        return -1;
+    }
+
+    while (true) {
+        led_states = 1;
+        while (led_states < 16) {
+            gpio_port_set_masked(port, led_mask, led_states << 13);
+            k_msleep(SLEEP_TIME_MS);
+            led_states = 2*led_states;
+        }
+    }
+}
+----
+
+
 == Physical switches and buttons
 
 === Selecting external LEDs with a slide switch
