@@ -42,7 +42,7 @@ We can think of the four internal LEDs on the nRF52840 DK as representing a 4-bi
 
 This approach only works when the pins we wish to group are all connected to the same GPIO controller. There are two GPIO controller peripherals on the nRF52840 DK, labeled port 0 and port 1. This approach is also easier when the pins we wish to control have consecutive pin numbers. The four internal LEDs are connected to pins 13, 14, 15, and 16 of port 0 so we can use this method.
 
-We only want to impact those particular pins and not others so a _mask_ is used to specify that. There are 32 pins
+We only want to impact those particular pins and not others so a _mask_ is used to specify that. There are 32 pins #NOT DONE#
 
 [source, c]
 [[program-leds-via-port]]
@@ -69,9 +69,7 @@ int main(void) {
         for (int pin = 13; pin <= 16; pin++) {
             gpio_pin_configure(port, pin, GPIO_OUTPUT_ACTIVE | GPIO_ACTIVE_LOW);
         }
-    } else {
-        return -1;
-    }
+    } else return -1;
 
     while (true) {
         led_states = 1;
@@ -84,6 +82,7 @@ int main(void) {
 }
 ----
 
+#NOT DONE#
 
 == Physical switches and buttons
 
@@ -101,34 +100,89 @@ image::external-leds-switch-breadboard.png[Breadboard view of circuit 1,379]
 .Circuit diagram for the two LED circuit with switch selection.
 image::external-leds-switch-diagram.png[Diagram of circuit 1,450]
 
-Next, create a new project and enter the code shown in <<program-led-selector>>.
-
-[source]
+. Create a new application and enter the code shown in <<program-led-selector>> into `main.c`.
++
+[source, c]
 [[program-led-selector]]
-.Flash red and green LED in an alternating pattern.
+.Flash red or green LED depending on switch position.
 ----
-#include <mbed.h>
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/device.h>
 
-#define SLEEP_TIME 200ms
+#define SLEEP_TIME 200
 
-DigitalOut redLED(p5);
-DigitalOut greenLED(p6);
-DigitalIn switchInput(p7);
+/* Get node identifiers using label */ // <1>
+#define RED_NI DT_NODELABEL(red_led)
+#define GREEN_NI DT_NODELABEL(green_led)
+#define SWITCH_NI DT_NODELABEL(slider)
+
+/* Get gpio specs */
+const struct gpio_dt_spec redLED = GPIO_DT_SPEC_GET(RED_NI, gpios);
+const struct gpio_dt_spec greenLED = GPIO_DT_SPEC_GET(GREEN_NI, gpios);
+const struct gpio_dt_spec slideSwitch = GPIO_DT_SPEC_GET(SWITCH_NI, gpios);
 
 int main() {
-  while (1) {
-    if (switchInput) {  // <1>
-      redLED = !redLED; // <2>
-      ThisThread::sleep_for(SLEEP_TIME);
-    } else {
-      greenLED = !greenLED;
-      ThisThread::sleep_for(SLEEP_TIME);
+    if (device_is_ready(redLED.port)) { // <2>
+        gpio_pin_configure_dt(&redLED, GPIO_OUTPUT_ACTIVE);
+        gpio_pin_configure_dt(&greenLED, GPIO_OUTPUT_ACTIVE);
+        gpio_pin_configure_dt(&slideSwitch, GPIO_INPUT);
+    } else return -1;
+
+    while (true) {
+        if (gpio_pin_get_dt(&slideSwitch)) {  // <3>
+            gpio_pin_toggle_dt(&redLED);
+            k_msleep(SLEEP_TIME);
+        } else { 
+            gpio_pin_toggle_dt(&greenLED);
+            k_msleep(SLEEP_TIME);
+        }
     }
-  }
 }
 ----
-<1> A `DigitalIn` has a value of either 1 (if the voltage is above the 2.3 V) or 0 (if the voltage is below 1.0 V).  Recall that 1 means true and 0 means false, so no additional logic testing is necessary.
+<1> #NOT DONE# A `DigitalIn` has a value of either 1 (if the voltage is above the 2.3 V) or 0 (if the voltage is below 1.0 V).  Recall that 1 means true and 0 means false, so no additional logic testing is necessary.
 <2> A more compact way to create blinking uses the logical NOT operator `!`. The NOT operator changes true values (or a 1) to false (or a 0) and a false value (or a 0) to true (or a 1). With this approach you can cut the code in half because you don't need separate off and on sections.
++
+. Select btn:[Add build configuration panel] through the nRF Connect side bar and select our board as the target. Uncheck the **Build after generating configuration** box so the final button becomes btn:[Generate Configuration]. Click on this button.
+. In the **Actions** section of the nRF Connect side panel, hover over the **Devicetree** entry to reveal the more options indicator (three dots) on the right. From that, select **Create overlay**.
+. Select btn:[Skip] as the next step from the **Overlay file created** dialog.
+. Add the following to the `nrf52840dk_nrf52840.overlay` file that was created.
++
+[source, dts]
+[[dtoverlay-led-selector]]
+.The overlay file allows us to configure both input and output pins.
+----
+/{
+  leds {
+    red_led: led_4 { // <1>
+      gpios = <&gpio0 28 GPIO_ACTIVE_HIGH>;
+      label = "External red LED";
+    };
+    green_led: led_5 {
+      gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+      label = "External green LED";
+    };
+  };
+  buttons { // <2>
+    slider: button_4 { // <3>
+      gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>; // <4>
+      label = "External SPDT slide switch";
+    }
+  }
+};
+----
+<1> Our first new node in the devicetree has a node identifier of `led_4` and a label of `red_led`. We are using the label rather than an alias to access this node in `main.c`.
+<2> A `button` section exists in the devicetree for GPIO inputs. We are adding an entry to this section.
+<3> Our external slide switch is given the label `slider` and has the node identifier `button_4` (`button_0` through `button_3` are the buttons on the development board).
+<4> This switch is connected to P0.03 and will have a `true` value when the voltage is high.
++
+. You now want to perform a **pristine build** because the devicetree has been altered. The pristine build option can be found in the **Actions** section of the nRF Connect side panel. Hovering over **Build** will reveal the pristine build icon. Click on the icon:arrow-rotate-right[].
++
+[#img-pristine-build]
+.The pristine build icon appears on the right hand side of the Build action upon hovering.
+image::nrf-connect-pristine-build-icon.png[Pristine build icon,481,201]
++
+. Use the **Flash** action to send the program to your board. If everything has been done correctly, you should see lit red and green LEDs alternating.
 
 IMPORTANT: Demonstrate that you have successfully assembled this circuit and downloaded this program.
 
