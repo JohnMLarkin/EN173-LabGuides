@@ -1,4 +1,5 @@
 :lab: 1
+:icons: font
 :imagesdir: ../images
 :sectnums:
 :source-language: c
