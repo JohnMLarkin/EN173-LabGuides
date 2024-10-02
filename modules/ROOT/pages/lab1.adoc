@@ -263,7 +263,7 @@ The next challenge is to modify the "`Hello, world`" program to produce a more c
 .Flow chart for the two alternating LEDs blink program.
 [mermaid,fetch-users]
 ....
-graph TB
+graph TD
   B("main()") --> C[Set i to 0]
   C --> D{Do it forever?}
   D -- Yes --> E{Is i < 10?}
