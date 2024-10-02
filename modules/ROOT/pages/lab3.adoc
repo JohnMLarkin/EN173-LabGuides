@@ -177,13 +177,8 @@ int main() {
 <3> Our external slide switch is given the label `slider` and has the node identifier `button_4` (`button_0` through `button_3` are the buttons on the development board).
 <4> This switch is connected to P0.03 and will have a `true` value when the voltage is high.
 +
-. You now want to perform a **pristine build** because the devicetree has been altered. The pristine build option can be found in the **Actions** section of the nRF Connect side panel. Hovering over **Build** will reveal the pristine build icon. Click on the icon:rotate-right[].
-+
-[#img-pristine-build]
-.The pristine build icon appears on the right hand side of the Build action upon hovering.
-image::nrf-connect-pristine-build-icon.png[Pristine build icon,481,201]
-+
-. Use the **Flash** action to send the program to your board. If everything has been done correctly, you should see lit red and green LEDs alternating.
+. You now want to perform a **pristine build** because the devicetree has been altered. The pristine build option can be found in the **Actions** section of the nRF Connect side panel. Hovering over **Build** will reveal the pristine build icon. Click on it.
+. Use the **Flash** action to send the program to your board. If everything has been done correctly, in one position of the switch the red LED will flash and if it is slid into the other position the green LED will flash.
 
 IMPORTANT: Demonstrate that you have successfully assembled this circuit and downloaded this program.
 
