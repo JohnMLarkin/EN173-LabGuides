@@ -21,6 +21,7 @@ In this set of activities you will:
 Additional hardware required: none
 ****
 ====
+
 .xref::lab2.adoc[Lab 2 -- Basic Digital Input and Output]
 [%collapsible]
 ====
@@ -42,6 +43,7 @@ WARNING: **Your Turn** section is not complete
 
 ****
 ====
+
 .xref::lab3.adoc[Lab 3 -- Going Deeper with Digital Input and Output]
 [%collapsible]
 ====
@@ -55,4 +57,4 @@ Additional hardware required:
 * two 330 {Omega} resistors
 * oscilloscope (instructions describe usage of Digilent's _Analog Discovery 2_)
 ****
-
+====
