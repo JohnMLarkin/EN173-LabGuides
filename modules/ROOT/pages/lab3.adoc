@@ -267,9 +267,9 @@ The next activity will only use an internal LED and an internal button. You can 
 ====
 [[assignment-rate-toggler]]
 .Assignment {lab}.{counter:assignment}
-We can also make the action of a complete button press (depressed followed by a release) rotate through three different blinking rates. This means that we need to keep track of additional information that reflects its history, not just the current status of the button. This information is called the *state* of the system. In this example there are two important state variables to store:
+We can also make the action of a complete button press (depressed followed by a release) rotate through different blinking rates. This means that we need to keep track of additional information that reflects its history, not just the current status of the button. This information is called the *state* of the system. In this example there are two important state variables to store:
 
-* the current flash rate (which has three options: slow, medium, and fast)
+* the current flash rate (which initially has two options: slow and fast)
 * the previous status of the button
 
 as well as the current status of the button. The flow diagram in <<img-blinkratetogglerflow>> gives an overview of the logic required to implement blink rate toggling with this state information.
@@ -278,13 +278,13 @@ as well as the current status of the button. The flow diagram in <<img-blinkrate
 .Diagram of the logic for the blink rate toggle program. This requires two stored state variables: one for the blink rate and one for the previous button status.
 image::lab3/heart_rate_toggler.png[Breadboard view of circuit 1,324]
 
-Because a GPIO input reports its status using an integer, it makes sense to store that status in an integer. The other state variable holds information about the flash rate mode. In the current program we have three possible options for that, but we could easily imagine that in the future we might want to add a fourth option. Because it is countable an obvious choice is once again an integer variable. We could use the standard `int` for this, but to make the code easier for humans to understand we will instead use a special integer version: `enum`.
+Because a GPIO input reports its status using an integer, it makes sense to store that status in an integer. The other state variable holds information about the flash rate mode. In the current program we have begin with two possible options for that, but you will soon extend that to a third option. Because it is countable an obvious choice is once again an integer variable. We could use the standard `int` for this, but to make the code easier for humans to understand we will instead use a special integer version: `enum`.
 
 The name `enum` is short for enumerated. This is a word that means something is associated with a number. In this case we are going to write our program using human-friendly names to refer to the different flashing rate modes, but behind the scenes these will be stored as integers. The first thing we do is to define that enumeration:
 ----
-  enum rateState_t {FastMode, MediumMode, SlowMode};
+  enum rateState_t {FastMode, SlowMode};
 ----
-Our custom variable type is given the name `rateState_t`. It has only three possible values: `FastMode`, `MediumMode` and `SlowMode`. The computer treats these as if they were the numbers 0 (for `FastMode`), 1 (for `MediumMode`), and 2 (for `SlowMode`).
+Our custom variable type is given the name `rateState_t`. It has only two possible values: `FastMode` and `SlowMode`. The computer treats these as if they were the numbers 0 (for `FastMode`) and 1 (for `SlowMode`).
 
 NOTE: A C convention is to end custom variable type names with `_t` and to write the possible value names of an `enum` in upper camel case. 
 
@@ -297,7 +297,7 @@ The meaning of this is less ambiguous to a human reader of the code than the alt
   int rateMode = 0;
 ----
 
-The previous program had an `if...else` statement with a simple condition. The state of the button was either 0 or 1. This time we will need to select among three (or possibly more) options based on the value of `rateMode`. We could use a series of `if` statements to direct the code, but a better solution in C is the `switch` structure.
+The previous program had an `if...else` statement with a simple condition. The state of the button was either 0 or 1. This time we will need to select among several options based on the value of `rateMode`. We could use a series of `if` statements to direct the code, but a better solution in C is the `switch` structure.
 
 A `switch` structure begins by specifying the variable that we will be testing. We then specify the possible options using the `case` keyword. The code to be run if that option is selected follows and `break;` indicates where it ends. In our case this becomes
 [source,c]
@@ -305,9 +305,6 @@ A `switch` structure begins by specifying the variable that we will be testing. 
 switch (rateMode) {
     case FastMode:
         k_msleep(FAST_SLEEP_TIME);
-        break;
-    case MediumMode:
-        k_msleep(MEDIUM_SLEEP_TIME);
         break;
     case SlowMode:
         k_msleep(SLOW_SLEEP_TIME);
@@ -340,7 +337,6 @@ Create a new program with the contents of <<program-blinktoggler>> and then uplo
 #include <zephyr/drivers/gpio.h>
 
 #define FAST_SLEEP_TIME   100
-#define MEDIUM_SLEEP_TIME 200
 #define SLOW_SLEEP_TIME   500
 
 /* Get node identifiers */
@@ -351,7 +347,7 @@ Create a new program with the contents of <<program-blinktoggler>> and then uplo
 const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NI, gpios);
 const struct gpio_dt_spec button = GPIO_DT_SPEC_GET(BTN0_NI, gpios);
 
-enum rateState_t {FastMode, MediumMode, SlowMode};
+enum rateState_t {FastMode, SlowMode};
 
 int main() {
     enum rateState_t rateMode = FastMode;
@@ -368,20 +364,18 @@ int main() {
         currBtn = gpio_pin_get_dt(&button);
         if ((currBtn != prevBtn) && (currBtn)) {
             switch (rateMode) {
-              case FastMode: rateMode = MediumMode; break;
-              case MediumMode: rateMode = SlowMode; break;
+              case FastMode: rateMode = SlowMode; break;
               case SlowMode: rateMode = FastMode; break;
             }
         }
         prevBtn = currBtn;
         switch (rateMode) {
             case FastMode: k_msleep(FAST_SLEEP_TIME); break;
-            case MediumMode: k_msleep(MEDIUM_SLEEP_TIME); break;
             case SlowMode: k_msleep(SLOW_SLEEP_TIME); break;
         }
     }
 }
 ----
 
-Your task in this assignment is to explain *why* the rate will sometimes fail to toggle if the press-and-release of the button happens too quickly. Does _too quickly_ always have the same meaning or does it depend on the current flashing rate?
+Your task in this assignment is to add a third mode (`MediumMode`) with a rate between slow and fast. Adapt the code so pressing the button rotates through all three modes (in the order fast, medium, and then slow, before starting over again at fast).
 ====
