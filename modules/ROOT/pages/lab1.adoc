@@ -35,7 +35,7 @@ You can install by following the links above or from within VS Code using the Ex
 
 [#img-vscode-activitybar-extensions]
 .Activity bar in Visual Studio Code with Extensions icon highlighted.
-image::vs-code-extension-panel-icon.png[Activity Bar, 47, 285]
+image::lab1/vs-code-extension-panel-icon.png[Activity Bar, 47, 285]
 
 From the Extensions side bar you can search for the extensions listed above and then install from their page within VS Code.
 
@@ -45,7 +45,7 @@ From the Extensions side bar you can search for the extensions listed above and 
 +
 [#img-manage-toolchain-sdk]
 .Manage the nRF Connect toolchain and SDK from the nRF Connect side bar.
-image::nrf-connect-manage-toolchain-sdk.png[Activity Bar, 284, 465]
+image::lab1/nrf-connect-manage-toolchain-sdk.png[Activity Bar, 284, 465]
 +
 . Click on btn:[Manage Toolchains] and then select the btn:[Install Toolchain] action.
 .. These guides were tested using {nrf-toolchain}. Avoid using a more recent major version (a different leading number) even if one is available but it should be safe to use a more recent minor version (a greater number after the first `.`) if you prefer.  
@@ -92,7 +92,7 @@ graph LR
 +
 [#img-create-new-application]
 .Create a new application from the nRF Connect side bar.
-image::nrf-connect-create-new-app.png[Create new application, 790, 371]
+image::lab1/nrf-connect-create-new-app.png[Create new application, 790, 371]
 +
 . Select **Create a new application** from the Welcome section.
 . Enter the name of the folder you have selected to store your programs and then the name of the folder for this particular activity (for example, `C:\embedlabs\lab1-prog1`).
@@ -143,19 +143,19 @@ This transforms it from relatively human-friendly C code into microcontroller-fr
 +
 [#img-add-build-config]
 .Add a build configuration from the nRF Connect side bar.
-image::nrf-connect-add-build-config.png[Add build configuration, 222, 154]
+image::lab1/nrf-connect-add-build-config.png[Add build configuration, 222, 154]
 +
 . Next, set the board target to match your microcontroller. If you are using the nRF52840 DK board you should select `nrf52840dk_nrf52840`.
 +
 [#img-set-board-target]
 .Add a build configuration from the nRF Connect side bar.
-image::nrf-connect-set-board-target.png[Set board target, 541, 198]
+image::lab1/nrf-connect-set-board-target.png[Set board target, 541, 198]
 +
 . Scroll to the bottom of this window and verify that the box before **Build after generating configuration** is checked.
 +
 [#img-set-build-configuration]
 .Set build after configuration option.
-image::nrf-connect-set-build-configuration.png[Set build configuration, 523, 204]
+image::lab1/nrf-connect-set-build-configuration.png[Set build configuration, 523, 204]
 +
 . Finish by clicking the btn:[Build Configuration] button. The initial generation of a configuration and building of an application may take several minutes.
 . After a build configuration has been generated you will have new entries in the nRF Connect side bar. These new sections are labeled **BUILD** and **ACTIONS**.
@@ -165,7 +165,7 @@ image::nrf-connect-set-build-configuration.png[Set build configuration, 523, 204
 +
 [#img-new-nrf-connect-sections]
 .New sections are available in nRF Connect after selecting a build configuration and attaching a microcontroller.
-image::nrf-connect-build-actions-connecteddevices.png[New sections in the nRF Connect side bar, 179, 390]
+image::lab1/nrf-connect-build-actions-connecteddevices.png[New sections in the nRF Connect side bar, 179, 390]
 +
 . With a connected and powered microcontroller, you are now ready to transfer the program to it. Click on the btn:[Flash] action.
 . If all goes well LED1 on your development board will begin to flash twice a second.
@@ -183,7 +183,7 @@ Create a new file called `README.md` in the top level folder (at the same level 
 
 [#img-create-new-file]
 .Create a new file from the Explorer side bar.
-image::vs-code-explorer-create-new-file.png[Create new file, 228, 250]
+image::lab1/vs-code-explorer-create-new-file.png[Create new file, 228, 250]
 
 This is where you will put some human-friendly documentation using a simple and widely used markup language called https://guides.github.com/features/mastering-markdown/[Markdown]. We will also supplement Markdown with  https://mermaid-js.github.io/[mermaid], a diagram-drawing language that will let us include graphics like flowcharts in our documentation.
 
@@ -191,7 +191,7 @@ Before you start adding contents to this file, turn on VS Code's Markdown previe
 
 [#img-vscode-markdown-preview]
 .VS Code button for Markdown preview.
-image::vs-code-markdown-preview.png[Button that opens a Markdown preview in side pane, 406, 45]
+image::lab1/vs-code-markdown-preview.png[Button that opens a Markdown preview in side pane, 406, 45]
 
 Entering the following code into the `README.md` file.
 [source,markdown]
@@ -345,7 +345,7 @@ The remaining activities today will be done as pair programming assignments (tha
 +
 [#img-vs-code-clone-repo]
 .Clone a repository from the Source Control side bar.
-image::vs-code-clone-repo.png[Clone a repository in the Source Control side bar, 283, 266]
+image::lab1/vs-code-clone-repo.png[Clone a repository in the Source Control side bar, 283, 266]
 +
 .. Click on btn:[Clone Repository].
 .. Paste the URL you copied into the box that opens up.
