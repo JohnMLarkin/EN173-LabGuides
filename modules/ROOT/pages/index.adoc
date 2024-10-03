@@ -30,7 +30,7 @@ In this set of activities you will:
 
 * use a button internal to the development board,
 * connect the development board to external circuit elements (LEDs and resistors),
-* modify the devicetree to enable GPIO use of additional pins, and
+* modify the devicetree to enable use of additional digital output pins, and
 * use an oscilloscope to observe the output of a GPIO pin.
 
 Additional hardware required:
@@ -50,11 +50,18 @@ WARNING: **Your Turn** section is not complete
 ****
 In this set of activities you will:
 
+* set the state of multiple output pins with a single command,
+* modify the devicetree to enable use of additional digital input pins, and
+* use an external slide switch and momentary push button.
 
 Additional hardware required:
 
 * two LEDs (described as red and green in instructions)
 * two 330 {Omega} resistors
-* oscilloscope (instructions describe usage of Digilent's _Analog Discovery 2_)
+* slide switch (SPDT)
+* momentary push button (SPST)
+
+WARNING: Multiple areas are not complete
+
 ****
 ====

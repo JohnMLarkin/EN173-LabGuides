@@ -1,7 +1,7 @@
 :lab: 3
 :icons: font
 :sectnums:
-:imagesdir: ../images
+:imagesdir: ../images/lab3
 :source-language: c
 :listing-caption: Program
 :example-caption: Exercise
@@ -141,8 +141,10 @@ int main() {
     }
 }
 ----
-<1> #NOT DONE# A `DigitalIn` has a value of either 1 (if the voltage is above the 2.3 V) or 0 (if the voltage is below 1.0 V).  Recall that 1 means true and 0 means false, so no additional logic testing is necessary.
-<2> A more compact way to create blinking uses the logical NOT operator `!`. The NOT operator changes true values (or a 1) to false (or a 0) and a false value (or a 0) to true (or a 1). With this approach you can cut the code in half because you don't need separate off and on sections.
+// Verified with SDK 2.6.1 and nRF52840 DK on 10/2/2024
+<1> It is possible to get node identifiers using node labels rather than using an alias. The alias approach is best when a program is meant to run on many different boards, each of which may have reasons for choosing other node labels for various components. However, if you are just developing for a single board then the node label approach avoids extra code in the overlay file.
+<2> All of the pins that were selected are on the same port. If the port controller is ready, it is ready for all of them. The `device_is_ready` method is a more general test of readiness that works with both GPIO controllers and much more.
+<3> Get the state of slide switch. A value of `true` (equivalent to 1) means the middle pin of the slide switch is connected to the high voltage. If that is the case, flash the red LED. Otherwise, flash the green LED.
 +
 . Select btn:[Add build configuration panel] through the nRF Connect side bar and select our board as the target. Uncheck the **Build after generating configuration** box so the final button becomes btn:[Generate Configuration]. Click on this button.
 . In the **Actions** section of the nRF Connect side panel, hover over the **Devicetree** entry to reveal the more options indicator (three dots) on the right. From that, select **Create overlay**.
@@ -168,8 +170,8 @@ int main() {
     slider: button_4 { // <3>
       gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>; // <4>
       label = "External SPDT slide switch";
-    }
-  }
+    };
+  };
 };
 ----
 <1> Our first new node in the devicetree has a node identifier of `led_4` and a label of `red_led`. We are using the label rather than an alias to access this node in `main.c`.
@@ -182,7 +184,7 @@ int main() {
 
 IMPORTANT: Demonstrate that you have successfully assembled this circuit and downloaded this program.
 
-NOTE: Leave the switch in place when you are done but remove the LEDs and resistors.
+NOTE: Leave the switch, the red LED, and the resistor connected to the red LED in place when you are done. You may remove the green LED and its resistor.
 
 === Heart rate selector
 
@@ -194,51 +196,57 @@ Rather than putting specific numbers into your code where they are actually used
 
 We can use a preprocessor directive to do this. As you may recall, the first step of the build process is to have the preprocessor manipulate your source code file before it is passed to the compiler. The `#define` directive is the particular method we will use for this task. It allows us to create find-and-replace rules. In the heart rate selector program we will have the following find-and-replace rules:
 ----
-  #define FAST_HEART_RATE 5
-  #define SLOW_HEART_RATE 1
-  #define ONE_SECOND 1000ms
+  #define FAST_HEART_SLEEP  100
+  #define SLOW_HEART_SLEEP  500
 ----
-After the `#define` directive we give a symbolic name (our convention will be to write this in all upper case with underscores between words, a formatting called *upper snake case*). This is followed by a space and then the text we want to have replace that symbolic name. Here I have defined the two rates as well as the chrono duration literal corresponding to 1 second (but expressed in milliseconds).
+After the `#define` directive we give a symbolic name (our convention will be to write this in all upper case with underscores between words, a formatting called *upper snake case*). This is followed by a space and then the text we want to have replace that symbolic name. Here I have defined the two sleep times.
 
-Later in the code the `sleep_for` command for fast flashing is written using the symbolic names:
+Later in the code the `k_msleep` command for fast flashing is written using the symbolic names:
 ----
-  ThisThread::sleep_for(ONE_SECOND / FAST_HEART_RATE / 2);
+  k_msleep(FAST_HEART_SLEEP);
 ----
-but this is not what the compiler will see. Instead the preprocessor will replace each symbolic name with its value so the compiler gets:
+but this is not what the compiler will see. Instead the preprocessor will replace the symbolic name with its value so the compiler gets:
 ----
-  ThisThread::sleep_for(1000ms / 5 / 2);
+  k_msleep(100);
 ----
-The `ONE_SECOND / FAST_HEART_RATE` calculates the total on-and-off time for one blink. Half of this should be for on and other half for off so that is why there is the additional `/ 2`.
 
 ==== The heart rate selector code
 
-Create a new program with the contents of <<program-blinkselector>> and then upload to the microcontroller. Verify that the flashing LED has two different rates: a faster one when the button is not pressed and a slower one when it is held down.
+Create a new program with the contents of <<program-blinkselector>>, create an appropriate devicetree overlay (for the red LED and the slide switch), build the code, and then flash it to the microcontroller. Verify that the flashing LED has two different rates: a faster one when the button is not pressed and a slower one when it is held down.
 
-[source]
+[source,c]
 [[program-blinkselector]]
 .Program to select the LED flashing rate using a switch
 ----
-#include "mbed.h"
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/device.h>
 
-// Flashing rates in blinks per second
-#define FAST_HEART_RATE 5
-#define SLOW_HEART_RATE 1
-#define ONE_SECOND 1000ms
+#define FAST_HEART_SLEEP  100
+#define SLOW_HEART_SLEEP  500
 
-DigitalOut switchIndicator(LED1);
-DigitalOut heart(LED4);
-DigitalIn switchInput(p7);
+/* Get node identifiers using label */
+#define RED_NI DT_NODELABEL(red_led)
+#define SWITCH_NI DT_NODELABEL(slider)
+
+/* Get gpio specs */
+const struct gpio_dt_spec redLED = GPIO_DT_SPEC_GET(RED_NI, gpios);
+const struct gpio_dt_spec slideSwitch = GPIO_DT_SPEC_GET(SWITCH_NI, gpios);
 
 int main() {
-  while (true) {
-    heart = !heart;
-    switchIndicator = switchInput;
-    if (switchInput) {
-      ThisThread::sleep_for(ONE_SECOND / FAST_HEART_RATE / 2);
-    } else {
-      ThisThread::sleep_for(ONE_SECOND / SLOW_HEART_RATE / 2);
+    if (device_is_ready(redLED.port)) { // <2>
+        gpio_pin_configure_dt(&redLED, GPIO_OUTPUT_ACTIVE);
+        gpio_pin_configure_dt(&slideSwitch, GPIO_INPUT);
+    } else return -1;
+
+    while (true) {
+        gpio_pin_toggle_dt(&redLED);
+        if (gpio_pin_get_dt(&slideSwitch)) {
+            k_msleep(FAST_HEART_SLEEP);
+        } else {
+            k_msleep(SLOW_HEART_SLEEP);
+        }
     }
-  }
 }
 ----
 
@@ -249,18 +257,20 @@ The remaining activities today will be done as pair programming assignments (tha
 ====
 [[assignment-momentary-button-selector]]
 .Assignment {lab}.{counter:assignment}
-Repeat <<program-led-selector>> (with the red and green LEDs) but replace the slide switch with a momentary push button.  This is a SPST (single pole, single throw) button despite having four terminals.  However, pairs of terminals are connected so there are really only two independent terminals.  When the button is pushed down, the terminals on opposite sides are connected.  Remember, the default configuration of a digital input is to use an internal pull-down resistor.
+#Repeat <<program-led-selector>> (with the red and green LEDs) but replace the slide switch with a momentary push button.  This is a SPST (single pole, single throw) button despite having four terminals.  However, pairs of terminals are connected so there are really only two independent terminals.  When the button is pushed down, the terminals on opposite sides are connected.  Remember, the default configuration of a digital input is to use an internal pull-down resistor.#
 
 IMPORTANT: Remember to document your hardware connections in `README.md`.
 ====
 
+The next activity will only use an internal LED and an internal button. You can disconnect the components from your development board and remove them from the breadboard.
+
 ====
 [[assignment-rate-toggler]]
 .Assignment {lab}.{counter:assignment}
-We can also make the action of a complete button press (depressed followed by a release) toggle between two different blinking rates. This means that we need to keep track of additional information that reflects its history, not just the current status of the button. This information is called the *state* of the system. In this example there are two important state variables to store:
+We can also make the action of a complete button press (depressed followed by a release) rotate through three different blinking rates. This means that we need to keep track of additional information that reflects its history, not just the current status of the button. This information is called the *state* of the system. In this example there are two important state variables to store:
 
-* item the current flash rate (which has two options, slow and fast)
-* item the previous status of the button
+* the current flash rate (which has three options: slow, medium, and fast)
+* the previous status of the button
 
 as well as the current status of the button. The flow diagram in <<img-blinkratetogglerflow>> gives an overview of the logic required to implement blink rate toggling with this state information.
 
@@ -268,15 +278,15 @@ as well as the current status of the button. The flow diagram in <<img-blinkrate
 .Diagram of the logic for the blink rate toggle program. This requires two stored state variables: one for the blink rate and one for the previous button status.
 image::heart_rate_toggler.png[Breadboard view of circuit 1,324]
 
-Because `DigitalIn` reports its status using an integer, it makes sense to store that status in an integer. The other state variable holds information about the flash rate mode. In the current program we only have two possible options for that, but we could easily imagine that in the future we might want to add a third or even a fourth option. Because it is countable an obvious choice is once again an integer variable. We could use the standard `int`` for this, but to make the code easier for humans to understand we will instead use a special integer version: `enum`.
+Because a GPIO input reports its status using an integer, it makes sense to store that status in an integer. The other state variable holds information about the flash rate mode. In the current program we have three possible options for that, but we could easily imagine that in the future we might want to add a fourth option. Because it is countable an obvious choice is once again an integer variable. We could use the standard `int` for this, but to make the code easier for humans to understand we will instead use a special integer version: `enum`.
 
 The name `enum` is short for enumerated. This is a word that means something is associated with a number. In this case we are going to write our program using human-friendly names to refer to the different flashing rate modes, but behind the scenes these will be stored as integers. The first thing we do is to define that enumeration:
 ----
-  enum rateState_t {FastMode, SlowMode};
+  enum rateState_t {FastMode, MediumMode, SlowMode};
 ----
-Our custom variable type is given the name `rateState_t`. It has only two possible values: `FastMode` and `SlowMode`. The computer treats these as if they were the numbers 0 (for `FastMode`) and 1 (for `SlowMode`).
+Our custom variable type is given the name `rateState_t`. It has only three possible values: `FastMode`, `MediumMode` and `SlowMode`. The computer treats these as if they were the numbers 0 (for `FastMode`), 1 (for `MediumMode`), and 2 (for `SlowMode`).
 
-NOTE: The Mbed OS convention is to end custom variable type names with `_t` and to write the possible value names of an `enum` in upper camel case. 
+NOTE: A C convention is to end custom variable type names with `_t` and to write the possible value names of an `enum` in upper camel case. 
 
 Inside of the `main` function we will then declare a variable `rateMode` that is of this type and is initially set to the fast mode.
 ----
@@ -287,23 +297,23 @@ The meaning of this is less ambiguous to a human reader of the code than the alt
   int rateMode = 0;
 ----
 
-We have previously toggled an integer using the NOT operator `!` so you might think we could write
-----
-  rateMode = !rateMode;
-----
-to switch from one rate mode to the other. However, there is a problem which is best illustrated with an example scenario. Suppose we start with `rateMode` equal to `FastMode`. We know that `FastMode` is represented by 0 and `!0` is 1. We might think that this would be no problem because `SlowMode` corresponds to 1. However, there is directionality to that correspondence. Names are automatically converted to their corresponding integers but integers are not automatically converted to the names. This results in an error because an `enum` variable wants only the defined names to be assigned to it and 1 is not one of those names. To get around this, we need to explicitly tell the compiler to convert integers to names. We do this by telling it the mapping to use in parentheses to the left of the operation that produces the integer. This means that correct way to produce toggling behavior is
-----
-  rateMode = (rateState_t)!rateMode;
-----
-This conversion from one variable type (`int`) to another (`rateState_t`) is called *type casting*.
+The previous program had an `if...else` statement with a simple condition. The state of the button was either 0 or 1. This time we will need to select among three (or possibly more) options based on the value of `rateMode`. We could use a series of `if` statements to direct the code, but a better solution in C is the `switch` structure.
 
-The previous program had an `if...else` statement with a simple condition. The state of the button was either 0 or 1. This time we will need to write more complicated conditions. We will consider the easier of those first: selecting the appropriate sleep time based on `rateMode`. In this case all we need to do is to check whether `rateMode` is equal to `FastMode`.
-
-As we have seen earlier, the `=` operator doesn't mean "`Is the thing on the left equal to the thing on the right?`" Instead, it means "`Assign the value of the thing on the right to the thing on the left.`'' In other words, it is a command, not a question. So how do we ask whether `rateMode` is equal to `FastMode`? The answer in C++ is the logical equal operator `==` (two consecutive equal sign characters). This means that we will write
+A `switch` structure begins by specifying the variable that we will be testing. We then specify the possible options using the `case` keyword. The code to be run if that option is selected follows and `break;` indicates where it ends. In our case this becomes
+[source,c]
 ----
-  if (rateMode == FastMode) {
+switch (rateMode) {
+    case FastMode:
+        k_msleep(FAST_SLEEP_TIME);
+        break;
+    case MediumMode:
+        k_msleep(MEDIUM_SLEEP_TIME);
+        break;
+    case SlowMode:
+        k_msleep(SLOW_SLEEP_TIME);
+        break;
+}
 ----
-to begin the `if...else` statement.
 
 Next we have the compound condition "`Is the current button state different than the previous button state AND is the button currently released?`" We can break this into three questions:
 
@@ -314,55 +324,64 @@ Next we have the compound condition "`Is the current button state different than
 We will now look at each these in turn, assuming the current state of the button is saved to `currBtn` and the previous state of the button to `prevBtn`.
 [horizontal,labelwidth=20]
 Question 1:: Remembering that the button reads high when it is released, the condition corresponding to the question "`Is the button currently released?`" is simply `currBtn`.
-Question 2:: The NOT EQUAL logic operator in C++ is `!=`. This means the condition "`Is the current button state NOT EQUAL to the previous button state?`" is `currBtn != prevBtn`.
-Question 3:: The question "`Are the answers to questions 1 and 2 both yes`" requires the AND logic operator. In C++ AND is written as `&&`. We need to enclose each of the condition statements inside of parentheses so the opening of this `if...else` structure is finally given as:
+Question 2:: The NOT EQUAL logic operator in C is `!=`. This means the condition "`Is the current button state NOT EQUAL to the previous button state?`" is `currBtn != prevBtn`.
+Question 3:: The question "`Are the answers to questions 1 and 2 both yes`" requires the AND logic operator. In C AND is written as `&&`. We need to enclose each of the condition statements inside of parentheses so the opening of this `if...else` structure is finally given as:
 ----
 if ((currBtn != prevBtn) && (currBtn)) {
 ----
 
-Create a new program with the contents of <<program-blinktoggler>> and then upload to the microcontroller. Verify that the rate of the flashing LED toggles between its two rates when you press-and-release the button. You should observe that sometimes the rate doesn't toggle correctly if the press-and-release happens too quickly. We will learn techniques later that avoid this problem.
+Create a new program with the contents of <<program-blinktoggler>> and then upload to the microcontroller. Verify that the rate of the flashing LED rotates through its three rates when you press-and-release the button.
 
-[source]
+[source,c]
 [[program-blinktoggler]]
 .Program to toggle the LED flashing rate using a button.
 ----
-#include "mbed.h"
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/gpio.h>
 
-DigitalOut btnIndicator(LED1);
-DigitalOut heart(LED4);
-DigitalIn pb(p7);
+#define FAST_SLEEP_TIME   100
+#define MEDIUM_SLEEP_TIME 200
+#define SLOW_SLEEP_TIME   500
 
-// Flashing rates in blinks per second
-#define FAST_HEART_RATE 5
-#define SLOW_HEART_RATE 1
-#define ONE_SECOND 1000ms
+/* Get node identifiers */
+#define LED0_NI DT_ALIAS(led0)
+#define BTN0_NI DT_ALIAS(sw0)
 
-enum rateState_t {FastMode, SlowMode};
+/* Get gpio specs */
+const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NI, gpios);
+const struct gpio_dt_spec button = GPIO_DT_SPEC_GET(BTN0_NI, gpios);
+
+enum rateState_t {FastMode, MediumMode, SlowMode};
 
 int main() {
-  rateState_t rateMode = FastMode;
-  int prevBtn = pb.read();
-  int currBtn;
-  
-  while (true) {
-    heart = !heart;
-    currBtn = pb.read(); // Read button once per loop
-    btnIndicator = currBtn;
-    if ((currBtn != prevBtn) && (currBtn)) {
-        rateMode = (rateState_t)!rateMode;
+    rateState_t rateMode = FastMode;
+    int prevBtn, currBtn;
+
+    if (gpio_is_ready_dt(&led) && gpio_is_ready_dt(&button)) {
+        gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);
+        gpio_pin_configure_dt(&button, GPIO_INPUT);
+    } else return -1;
+
+    prevBtn = gpio_pin_get_dt(&button);
+    while (true) {
+        gpio_pin_toggle_dt(&led);
+        currBtn = gpio_pin_get_dt(&button);
+        if ((currBtn != prevBtn) && (currBtn)) {
+            switch (rateMode) {
+              case FastMode: rateMode = MediumMode; break;
+              case MediumMode: rateMode = SlowMode; break;
+              case SlowMode: rateMode = FastMode; break;
+            }
+        }
+        prevBtn = currBtn;
+        switch (rateMode) {
+            case FastMode: k_msleep(FAST_SLEEP_TIME); break;
+            case MediumMode: k_msleep(MEDIUM_SLEEP_TIME); break;
+            case SlowMode: k_msleep(SLOW_SLEEP_TIME); break;
+        }
     }
-    prevBtn = currBtn;
-    if (rateMode == FastMode) {
-      ThisThread::sleep_for(ONE_SECOND / FAST_HEART_RATE / 2);
-    } else {
-      ThisThread::sleep_for(ONE_SECOND / SLOW_HEART_RATE / 2);
-    }
-  }
 }
 ----
 
-Your first task in this assignment is to explain *why* the rate will sometimes fail to toggle if the press-and-release of the button happens too quickly. Does _too quickly_ always have the same meaning or does it depend on the current flashing rate?
-
-Your second task is to intentionally make an error, changing the condition of the `if` to `rateMode = FastMode` (where the assignment operator is used instead of the logical equality operator). Build the project. Does the compiler give you any indication that something might be wrong?
-Next, upload the modified program to the microcontroller. Observe the new behavior and explain *why* it does what it does.
+Your task in this assignment is to explain *why* the rate will sometimes fail to toggle if the press-and-release of the button happens too quickly. Does _too quickly_ always have the same meaning or does it depend on the current flashing rate?
 ====
