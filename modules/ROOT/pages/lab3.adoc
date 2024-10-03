@@ -1,7 +1,7 @@
 :lab: 3
 :icons: font
 :sectnums:
-:imagesdir: ../images/lab3
+:imagesdir: ../images
 :source-language: c
 :listing-caption: Program
 :example-caption: Exercise
@@ -95,11 +95,11 @@ Construct the circuit shown in <<img-circuit2-breadboardview>> (breadboard view)
 
 [#img-circuit2-breadboardview]
 .View of the breadboard for the two LED circuit with switch selection.
-image::external-leds-switch-breadboard.png[Breadboard view of circuit 1,379]
+image::lab3/external-leds-switch-breadboard.png[Breadboard view of circuit 1,379]
 
 [#img-circuit2-diagram]
 .Circuit diagram for the two LED circuit with switch selection.
-image::external-leds-switch-diagram.png[Diagram of circuit 1,450]
+image::lab3/external-leds-switch-diagram.png[Diagram of circuit 1,450]
 
 . Create a new application and enter the code shown in <<program-led-selector>> into `main.c`.
 +
@@ -276,7 +276,7 @@ as well as the current status of the button. The flow diagram in <<img-blinkrate
 
 [#img-blinkratetogglerflow]
 .Diagram of the logic for the blink rate toggle program. This requires two stored state variables: one for the blink rate and one for the previous button status.
-image::heart_rate_toggler.png[Breadboard view of circuit 1,324]
+image::lab3/heart_rate_toggler.png[Breadboard view of circuit 1,324]
 
 Because a GPIO input reports its status using an integer, it makes sense to store that status in an integer. The other state variable holds information about the flash rate mode. In the current program we have three possible options for that, but we could easily imagine that in the future we might want to add a fourth option. Because it is countable an obvious choice is once again an integer variable. We could use the standard `int` for this, but to make the code easier for humans to understand we will instead use a special integer version: `enum`.
 
@@ -290,7 +290,7 @@ NOTE: A C convention is to end custom variable type names with `_t` and to write
 
 Inside of the `main` function we will then declare a variable `rateMode` that is of this type and is initially set to the fast mode.
 ----
-  rateState_t rateMode = FastMode;
+  enum rateState_t rateMode = FastMode;
 ----
 The meaning of this is less ambiguous to a human reader of the code than the alternative version using the standard `int`:
 ----
@@ -354,7 +354,7 @@ const struct gpio_dt_spec button = GPIO_DT_SPEC_GET(BTN0_NI, gpios);
 enum rateState_t {FastMode, MediumMode, SlowMode};
 
 int main() {
-    rateState_t rateMode = FastMode;
+    enum rateState_t rateMode = FastMode;
     int prevBtn, currBtn;
 
     if (gpio_is_ready_dt(&led) && gpio_is_ready_dt(&button)) {
