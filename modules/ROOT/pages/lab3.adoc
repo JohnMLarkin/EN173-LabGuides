@@ -234,7 +234,7 @@ const struct gpio_dt_spec redLED = GPIO_DT_SPEC_GET(RED_NI, gpios);
 const struct gpio_dt_spec slideSwitch = GPIO_DT_SPEC_GET(SWITCH_NI, gpios);
 
 int main() {
-    if (device_is_ready(redLED.port)) { // <2>
+    if (device_is_ready(redLED.port)) {
         gpio_pin_configure_dt(&redLED, GPIO_OUTPUT_ACTIVE);
         gpio_pin_configure_dt(&slideSwitch, GPIO_INPUT);
     } else return -1;
