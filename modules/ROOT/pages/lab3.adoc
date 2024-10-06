@@ -264,14 +264,6 @@ In this exercise you will use the oscilloscope to observe what happens when the 
 . In your Word document, write a brief description of the differences you observe in the two oscilloscope captures.
 ====
 
-====
-[[exercise-momentary-button-selector]]
-.Exercise {lab}.{counter:exercise}
-Replace the slide switch with a momentary pushbutton switch.  This is a SPST (single pole, single throw) switch despite having four terminals.  However, pairs of terminals are connected so there are really only two independent terminals.  When the button is pushed down, the terminals on opposite sides are connected.  Remember, the default configuration of a digital input is to use an internal pull-down resistor.
-
-IMPORTANT: Demonstrate that you have successfully modified the circuit to use a momentary pushbutton switch with <<program-led-selector>>.
-====
-
 == Photointerrupter
 
 You will assemble a circuit with a photointerrupter that will be used to signal the microcontroller to turn on one of the internal LEDs whenever the beam is interrupted.
