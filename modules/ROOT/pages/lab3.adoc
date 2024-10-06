@@ -12,80 +12,9 @@
 :nrf-sdk: 2.6.1
 :Omega: &#937;
 :Delta: &#916;
-= Lab 3: Going Deeper with Digital Input and Output
+= Lab 3: External digital inputs
 
-== Setting multiple pins on a GPIO port
-
-We can think of the four internal LEDs on the nRF52840 DK as representing a 4-bit number because each LED as only two states (on and off). The value represented by a particular LED when it is turned on is given in <<table-leds-as-bits>>. The advantage of this representation is that it becomes possible to set the state of all four LEDs with a single command rather than four commands that individually set each LED. All possible on-off combinations of the LEDs can be represented by an integer between 0 and 15.
-
-[[table-leds-as-bits]]
-.A series of LEDs can be represented as bits.
-[cols="1,1,1"]
-|===
-|LED |Value as Power of 2|Value
-
-|`led0`
-|stem:[2^0]
-|1
-
-|`led1`
-|stem:[2^1]
-|2
-
-|`led2`
-|stem:[2^2]
-|4
-
-|`led3`
-|stem:[2^3]
-|8
-|===
-
-This approach only works when the pins we wish to group are all connected to the same GPIO controller. There are two GPIO controller peripherals on the nRF52840 DK, labeled port 0 and port 1. This approach is also easier when the pins we wish to control have consecutive pin numbers. The four internal LEDs are connected to pins 13, 14, 15, and 16 of port 0 so we can use this method.
-
-We only want to impact those particular pins and not others so a _mask_ is used to specify that. There are 32 pins #NOT DONE#
-
-[source, c]
-[[program-leds-via-port]]
-.Set state of multiple LEDs with single command.
-----
-#include <zephyr/kernel.h>
-#include <zephyr/drivers/gpio.h>
-#include <zephyr/device.h>
-#include <zephyr/devicetree.h>
-
-#define SLEEP_TIME_MS   500
-
-/* Get node identifiers */
-#define PORT0_NI DT_NODELABEL(gpio0)
-
-/* Get device */
-const struct device *port = DEVICE_DT_GET(PORT0_NI);
-
-int main(void) {
-    int led_states;
-    int led_mask = BIT(13) | BIT(14) | BIT(15) | BIT(16);
-
-    if (device_is_ready(port)) {
-        for (int pin = 13; pin <= 16; pin++) {
-            gpio_pin_configure(port, pin, GPIO_OUTPUT_ACTIVE | GPIO_ACTIVE_LOW);
-        }
-    } else return -1;
-
-    while (true) {
-        led_states = 1;
-        while (led_states < 16) {
-            gpio_port_set_masked(port, led_mask, led_states << 13);
-            k_msleep(SLEEP_TIME_MS);
-            led_states = 2*led_states;
-        }
-    }
-}
-----
-
-#NOT DONE#
-
-== Physical switches and buttons
+== Slide switches and momentary push buttons
 
 === Selecting external LEDs with a slide switch
 
@@ -111,7 +40,7 @@ image::lab3/external-leds-switch-diagram.png[Diagram of circuit 1,450]
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/device.h>
 
-#define SLEEP_TIME 200
+#define SLEEP_TIME_MS 200
 
 /* Get node identifiers using label */ // <1>
 #define RED_NI DT_NODELABEL(red_led)
@@ -133,10 +62,10 @@ int main() {
     while (true) {
         if (gpio_pin_get_dt(&slideSwitch)) {  // <3>
             gpio_pin_toggle_dt(&redLED);
-            k_msleep(SLEEP_TIME);
+            k_msleep(SLEEP_TIME_MS);
         } else { 
             gpio_pin_toggle_dt(&greenLED);
-            k_msleep(SLEEP_TIME);
+            k_msleep(SLEEP_TIME_MS);
         }
     }
 }
@@ -184,198 +113,256 @@ int main() {
 
 IMPORTANT: Demonstrate that you have successfully assembled this circuit and downloaded this program.
 
-NOTE: Leave the switch, the red LED, and the resistor connected to the red LED in place when you are done. You may remove the green LED and its resistor.
+NOTE: Leave the circuit connected. You will use the same hardware setup in the next exercise.
 
-=== Heart rate selector
+=== Counting slide switch transitions
 
-Our goal in this section is to create a program that uses the switch to select the rate that an LED flashes. When the switch is in the OFF position it will flash at a fast rate (five times per second) and when it is in the ON position it will flash at a slower rate (one time per second). This means we need to switch between the two possible sleep times. As an additional goal we want to make it easy to find and change the two heart rate settings. We will need some new programming tools to pull this off.
+You will now count the number of times the switch has changed position. Zephyr's logger module will be used to display the result on a computer through a terminal connection.
 
-==== Preprocessor definitions make code easier to read
+====
+[[exercise-slide-switch-counter]]
+.Exercise {lab}.{counter:exercise}
 
-Rather than putting specific numbers into your code where they are actually used, a good design approach is to instead associate those numbers with symbolic names. Those symbolic definitions should be put in one place so they are easy to find. This may not seem that important with small programs, but as your programs grow in complexity it will be a helpful habit.
-
-We can use a preprocessor directive to do this. As you may recall, the first step of the build process is to have the preprocessor manipulate your source code file before it is passed to the compiler. The `#define` directive is the particular method we will use for this task. It allows us to create find-and-replace rules. In the heart rate selector program we will have the following find-and-replace rules:
+. Create a new application.
+. Zephyr's logger module is not enabled by default. We need to request that it be included in the application by editing the `prj.conf` file. Add the following line to this file:
++
+[source]
 ----
-  #define FAST_HEART_SLEEP  100
-  #define SLOW_HEART_SLEEP  500
+CONFIG_LOG=y
 ----
-After the `#define` directive we give a symbolic name (our convention will be to write this in all upper case with underscores between words, a formatting called *upper snake case*). This is followed by a space and then the text we want to have replace that symbolic name. Here I have defined the two sleep times.
-
-Later in the code the `k_msleep` command for fast flashing is written using the symbolic names:
-----
-  k_msleep(FAST_HEART_SLEEP);
-----
-but this is not what the compiler will see. Instead the preprocessor will replace the symbolic name with its value so the compiler gets:
-----
-  k_msleep(100);
-----
-
-==== The heart rate selector code
-
-Create a new program with the contents of <<program-blinkselector>>, create an appropriate devicetree overlay (for the red LED and the slide switch), build the code, and then flash it to the microcontroller. Verify that the flashing LED has two different rates: a faster one when the button is not pressed and a slower one when it is held down.
-
++
+. Add a build configuration and create a devicetree overlay. The contents should be the same as in the previous program (<<dtoverlay-led-selector>>).
+. Enter the contents of <<program-switch-counter>> into `main.c`.
++
 [source,c]
-[[program-blinkselector]]
-.Program to select the LED flashing rate using a switch
+[[program-switch-counter]]
+.Count switch transitions and display using logger.
 ----
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/device.h>
-
-#define FAST_HEART_SLEEP  100
-#define SLOW_HEART_SLEEP  500
+#include <zephyr/logging/log.h> // <1>
 
 /* Get node identifiers using label */
 #define RED_NI DT_NODELABEL(red_led)
+#define GREEN_NI DT_NODELABEL(green_led)
 #define SWITCH_NI DT_NODELABEL(slider)
 
 /* Get gpio specs */
 const struct gpio_dt_spec redLED = GPIO_DT_SPEC_GET(RED_NI, gpios);
+const struct gpio_dt_spec greenLED = GPIO_DT_SPEC_GET(GREEN_NI, gpios);
 const struct gpio_dt_spec slideSwitch = GPIO_DT_SPEC_GET(SWITCH_NI, gpios);
 
+/* Register with logger */
+LOG_MODULE_REGISTER(SlideCounter, LOG_LEVEL_DBG); // <2>
+
 int main() {
+    bool currentSwitchValue, previousSwitchValue; // <3>
+    int n = 0; // slide counts
+
+    LOG_INF("Slider counter program starting"); // <4>
+
     if (device_is_ready(redLED.port)) {
         gpio_pin_configure_dt(&redLED, GPIO_OUTPUT_ACTIVE);
+        gpio_pin_configure_dt(&greenLED, GPIO_OUTPUT_INACTIVE);
         gpio_pin_configure_dt(&slideSwitch, GPIO_INPUT);
-    } else return -1;
+    } else {
+        LOG_ERR("GPIO port is not ready"); // <5>
+        return -1;
+    }
+    k_msleep(100);
 
+    previousSwitchValue = gpio_pin_get_dt(&slideSwitch);
     while (true) {
-        gpio_pin_toggle_dt(&redLED);
-        if (gpio_pin_get_dt(&slideSwitch)) {
-            k_msleep(FAST_HEART_SLEEP);
-        } else {
-            k_msleep(SLOW_HEART_SLEEP);
+        currentSwitchValue = gpio_pin_get_dt(&slideSwitch); // <6>
+        if (currentSwitchValue != previousSwitchValue) { // <7>
+            n++; // <8>
+            previousSwitchValue = currentSwitchValue;
+            LOG_INF("Slide counts = %d", n); // <9>
+            gpio_pin_toggle_dt(&redLED);
+            gpio_pin_toggle_dt(&greenLED);
         }
     }
 }
 ----
-
-== Your Turn
-
-The remaining activities today will be done as pair programming assignments (that is, with a partner). Go to our Blackboard page and look up your partner assignment for today.
+<1> Using the logger module requires this header file.
+<2> We need to register our application with the logger module. The name given to our application in the logger is `SlideCounter` and all log levels (debug through error) will be displayed.
+<3> The states of the switch will be held in boolean (true/false) variables.
+<4> Send a welcome message to logger so we will know when the code restarts.
+<5> Display an error message that might help us if the GPIO controller was not ready for us to configure the pins.
+<6> Reading the value of the switch once per time through the loop prevents logic problems that could result if the switch moved midway through the loop.
+<7> The logic operator `!=` means "`not equal`" so this `if` statement will be triggered when the switch changes from on to off or from off to on.
+<8> This is shorthand for `n = n + 1`.
+<9> Submit a log message with the `%d` replaced by the value of `n`.
++
+. Build the application and flash it to your development board.
+. In the *nRF Connect* side panel:
+.. Open the *Connected Devices* section.
++
+[#img-open-terminal-connection]
+.Open a terminal connection to the microcontroller.
+image::lab3/nrf-connect-connected-devices-start-terminal.png[Open terminal,519,242]
++
+.. With only one microcontroller connected to the computer you should see only one entry. The number is the serial number of your particular development board. Expand this section.
+.. Hover over the first VCOM entry to reveal the port icon on the right side. Click on this.
+.. The default settings should be correct, so select the one option you are given.
++
+[#img-select-terminal-settings]
+.Select the default terminal settings (115200 baud).
+image::lab3/nrf-connect-terminal-settings.png[Generate configuration,621,130]
++
+. Press the reset button on your development board. It is the push button set off by itself. You should see something similar to the following in the terminal window in VS Code.
++
+[#img-slide-counter-startup-log]
+.Start up logs from the slide counter application.
+image::lab3/slide-counter-startup-log.png[Start up logs,536,123]
++
+. Now slide the switch to a new position. You might have expected a log message to appear, but it did not. This is because the logger is a low-priority task and only sends messages to the terminal when the main application lets it (for example, by sleeping);
+. Modify the code in `main.c`, adding `k_msleep(1);` as the first line inside the `while` loop.
+. Build the revised program and flash the board again.
+. Test the revised program, sliding the switch back and forth. Does it always behave as expected?
+====
 
 ====
-[[assignment-momentary-button-selector]]
-.Assignment {lab}.{counter:assignment}
-#Repeat <<program-led-selector>> (with the red and green LEDs) but replace the slide switch with a momentary push button.  This is a SPST (single pole, single throw) button despite having four terminals.  However, pairs of terminals are connected so there are really only two independent terminals.  When the button is pushed down, the terminals on opposite sides are connected.  Remember, the default configuration of a digital input is to use an internal pull-down resistor.#
+[[exercise-momentary-button-selector]]
+.Exercise {lab}.{counter:exercise}
+Repeat <<program-led-selector>> (with the red and green LEDs) but replace the slide switch with a momentary push button.  This is a SPST (single pole, single throw) button despite having four terminals.  However, pairs of terminals are connected so there are really only two independent terminals.  When the button is pushed down, the terminals on opposite sides are connected. You want one of these terminals connected to VDD (the positive power bus) and the other terminal connected to pin P0.03.
 
-IMPORTANT: Remember to document your hardware connections in `README.md`.
+With this configuration, the behavior when the button is released will be unpredictable. You need to modify the devicetree overlay to configure the input pin with an internal pull-down resistor (bringing the pin down to ground whenever the button is released).
+
+In the `buttons` section of the overlay, replace the slider switch configuration with the following:
+[source,dts]
+.Configuring the push-button input with a pull-down resistor
+----
+  buttons {
+    pb: button_4 { // <1>
+      gpios = <&gpio0 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>; // <2>
+      label = "External push button"; 
+    };
+  };
+----
+<1> The node label was been changed to `pb`, short for push button. You will need to change your code in `main.c` accordingly.
+<2> The additional pull-down configuration is added using C's bit-wise OR (`|`) to combine the two settings. We will learn about bit-wise logic later.
+
+You should observe that a single push of the button sometimes results in more than a change of 2 in the counts. This occurs because of something called button bounce.
 ====
 
-The next activity will only use an internal LED and an internal button. You can disconnect the components from your development board and remove them from the breadboard.
+====
+[[exercise-oscilloscope-button-bounce]]
+.Exercise {lab}.{counter:exercise}
+In this exercise you will use the oscilloscope to observe what happens when the button is pressed.
+
+. Connect the flywire labeled *1+* (top left, orange) to the same column as the output pin of the button (the one that is connected to P0.03).  Connect the flywire labeled *1-* (bottom left, orange with white stripe) to the ground bus strip.  Connect the ground (icon:arrow-down[]) flywire to the ground bus strip.
+. In the Time settings, change Position to 5 {micro}s and Base to 2 {micro}s/div.
+. In the Channel 1 settings, change Offset to -2 V and Range to 500 mV/div.
+. In the Trigger settings (above the graph), set Mode to Repeated and Normal and set Level to 2 V. 
+. Click the btn:[Run] acquisition button to repeatedly capture rising transitions without the need to restart.
+. Slide the switch left and right, paying attention to the count and the WaveForms display.  What do you observe?
+. Push and release the button until you observe the counter move forward to the expected count of 2.  You will now save the corresponding oscilloscope capture to a Word document.  Select menu:File[Export] and then select the *Image* tab.  Under Comments, type "`Button press, normal`".  Uncheck *Device*, *Serial Number*, and *Time*.  Then click on btn:[Copy to Clipboard].
+. Create a new Word document and paste your oscilloscope capture into it.
+. Now push and release the button until you observe the counter jumping forward by more than a count of 2.  Export this oscilloscope capture with the comment "`Button press, skip`" and add it to your Word document.
+. In your Word document, write a brief description of the differences you observe in the two oscilloscope captures.
+====
 
 ====
-[[assignment-rate-toggler]]
-.Assignment {lab}.{counter:assignment}
-We can also make the action of a complete button press (depressed followed by a release) rotate through different blinking rates. This means that we need to keep track of additional information that reflects its history, not just the current status of the button. This information is called the *state* of the system. In this example there are two important state variables to store:
+[[exercise-momentary-button-selector]]
+.Exercise {lab}.{counter:exercise}
+Replace the slide switch with a momentary pushbutton switch.  This is a SPST (single pole, single throw) switch despite having four terminals.  However, pairs of terminals are connected so there are really only two independent terminals.  When the button is pushed down, the terminals on opposite sides are connected.  Remember, the default configuration of a digital input is to use an internal pull-down resistor.
 
-* the current flash rate (which initially has two options: slow and fast)
-* the previous status of the button
+IMPORTANT: Demonstrate that you have successfully modified the circuit to use a momentary pushbutton switch with <<program-led-selector>>.
+====
 
-as well as the current status of the button. The flow diagram in <<img-blinkratetogglerflow>> gives an overview of the logic required to implement blink rate toggling with this state information.
+== Photointerrupter
 
-[#img-blinkratetogglerflow]
-.Diagram of the logic for the blink rate toggle program. This requires two stored state variables: one for the blink rate and one for the previous button status.
-image::lab3/heart_rate_toggler.png[Breadboard view of circuit 1,324]
+You will assemble a circuit with a photointerrupter that will be used to signal the microcontroller to turn on one of the internal LEDs whenever the beam is interrupted.
 
-Because a GPIO input reports its status using an integer, it makes sense to store that status in an integer. The other state variable holds information about the flash rate mode. In the current program we have begin with two possible options for that, but you will soon extend that to a third option. Because it is countable an obvious choice is once again an integer variable. We could use the standard `int` for this, but to make the code easier for humans to understand we will instead use a special integer version: `enum`.
-
-The name `enum` is short for enumerated. This is a word that means something is associated with a number. In this case we are going to write our program using human-friendly names to refer to the different flashing rate modes, but behind the scenes these will be stored as integers. The first thing we do is to define that enumeration:
+. Build the circuit according to the diagram in <<img-photointerrupter-circuit-diagram>> and with the help of the pinout in <<img-photointerrupter-pinout>>.
++
+[#img-photointerrupter-circuit-diagram]
+.Diagram for the photointerrupter circuit.
+image::lab3/photointerrupter_schem.png[Photointerrupter schematic,829,500]
++
+[#img-photointerrupter-pinout]
+.Pinout diagram for the photointerrupter.
+image::lab3/H21A1-Pinout.png[Photointerrupter pinout,400]
++
+. After you have assembled the circuit, create a new application.
+. Generate a build configuration and then create an overlay.
+. The overlay only needs to contain information about the photointerrupter. We are treating it as type of button.
++
+[source, dts]
+[[dtoverlay-photointerrupter]]
 ----
-  enum rateState_t {FastMode, SlowMode};
+/{
+  buttons {
+    photointerrupter: button_4 {
+      gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+      label = "Photointerrupter";
+    };
+  };
+};
 ----
-Our custom variable type is given the name `rateState_t`. It has only two possible values: `FastMode` and `SlowMode`. The computer treats these as if they were the numbers 0 (for `FastMode`) and 1 (for `SlowMode`).
-
-NOTE: A C convention is to end custom variable type names with `_t` and to write the possible value names of an `enum` in upper camel case. 
-
-Inside of the `main` function we will then declare a variable `rateMode` that is of this type and is initially set to the fast mode.
-----
-  enum rateState_t rateMode = FastMode;
-----
-The meaning of this is less ambiguous to a human reader of the code than the alternative version using the standard `int`:
-----
-  int rateMode = 0;
-----
-
-The previous program had an `if...else` statement with a simple condition. The state of the button was either 0 or 1. This time we will need to select among several options based on the value of `rateMode`. We could use a series of `if` statements to direct the code, but a better solution in C is the `switch` structure.
-
-A `switch` structure begins by specifying the variable that we will be testing. We then specify the possible options using the `case` keyword. The code to be run if that option is selected follows and `break;` indicates where it ends. In our case this becomes
++
+. Enter <<program-photointerrupter>> into `main.c`, build it, and then flash to your microcontroller.
++
 [source,c]
-----
-switch (rateMode) {
-    case FastMode:
-        k_msleep(FAST_SLEEP_TIME);
-        break;
-    case SlowMode:
-        k_msleep(SLOW_SLEEP_TIME);
-        break;
-}
-----
-
-Next we have the compound condition "`Is the current button state different than the previous button state AND is the button currently released?`" We can break this into three questions:
-
-* Is the button currently released?
-* Is the current button state not equal to the previous button state?
-* Are the answers to questions 1 and 2 both yes?
-
-We will now look at each these in turn, assuming the current state of the button is saved to `currBtn` and the previous state of the button to `prevBtn`.
-[horizontal,labelwidth=20]
-Question 1:: Remembering that the button reads high when it is released, the condition corresponding to the question "`Is the button currently released?`" is simply `currBtn`.
-Question 2:: The NOT EQUAL logic operator in C is `!=`. This means the condition "`Is the current button state NOT EQUAL to the previous button state?`" is `currBtn != prevBtn`.
-Question 3:: The question "`Are the answers to questions 1 and 2 both yes`" requires the AND logic operator. In C AND is written as `&&`. We need to enclose each of the condition statements inside of parentheses so the opening of this `if...else` structure is finally given as:
-----
-if ((currBtn != prevBtn) && (currBtn)) {
-----
-
-Create a new program with the contents of <<program-blinktoggler>> and then upload to the microcontroller. Verify that the rate of the flashing LED rotates through its three rates when you press-and-release the button.
-
-[source,c]
-[[program-blinktoggler]]
-.Program to toggle the LED flashing rate using a button.
+[[program-photointerrupter]]
+.LED indicates when photointerrupter is blocked.
 ----
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
 
-#define FAST_SLEEP_TIME   100
-#define SLOW_SLEEP_TIME   500
+#define LED_NI DT_ALIAS(led0)
+#define PHOTO_NI DT_NODELABEL(photointerrupter)
 
-/* Get node identifiers */
-#define LED0_NI DT_ALIAS(led0)
-#define BTN0_NI DT_ALIAS(sw0)
-
-/* Get gpio specs */
-const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NI, gpios);
-const struct gpio_dt_spec button = GPIO_DT_SPEC_GET(BTN0_NI, gpios);
-
-enum rateState_t {FastMode, SlowMode};
+const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED_NI, gpios);
+const struct gpio_dt_spec photo = GPIO_DT_SPEC_GET(PHOTO_NI, gpios);
 
 int main() {
-    enum rateState_t rateMode = FastMode;
-    int prevBtn, currBtn;
-
-    if (gpio_is_ready_dt(&led) && gpio_is_ready_dt(&button)) {
+    if (gpio_is_ready_dt(&led) && gpio_is_ready_dt(&photo)) {
         gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);
-        gpio_pin_configure_dt(&button, GPIO_INPUT);
+        gpio_pin_configure_dt(&photo, GPIO_INPUT);
     } else return -1;
-
-    prevBtn = gpio_pin_get_dt(&button);
+  
     while (true) {
-        gpio_pin_toggle_dt(&led);
-        currBtn = gpio_pin_get_dt(&button);
-        if ((currBtn != prevBtn) && (currBtn)) {
-            switch (rateMode) {
-              case FastMode: rateMode = SlowMode; break;
-              case SlowMode: rateMode = FastMode; break;
-            }
-        }
-        prevBtn = currBtn;
-        switch (rateMode) {
-            case FastMode: k_msleep(FAST_SLEEP_TIME); break;
-            case SlowMode: k_msleep(SLOW_SLEEP_TIME); break;
+        if (gpio_pin_get_dt(&photo)) {
+            gpio_pin_set_dt(&led, 1);
+        } else {
+            gpio_pin_set_dt(&led, 0);
         }
     }
 }
 ----
 
-Your task in this assignment is to add a third mode (`MediumMode`) with a rate between slow and fast. Adapt the code so pressing the button rotates through all three modes (in the order fast, medium, and then slow, before starting over again at fast).
+IMPORTANT: Demonstrate your operating circuit.
+
+== Your Turn
+
+[IMPORTANT]
 ====
+The directions that follow are intended for students in my _Introduction to Embedded Systems_ course at https://www.whitworth.edu[Whitworth University]. However, an alternative link to a template is provided for non-Whitworth students.
+====
+
+====
+[[assignment-letter-counter]]
+.Assignment {lab}.{counter:assignment}
+
+Your task is to create a system that counts "`letters`" using a photointerrupter, displaying the count on an attached computer using the logger module. An internal button is used to reset the count to zero.
+
+. If your last name comes last alphabetically on your team, you are the team lead for this assignment. It is your job to access the GitHub Classroom template for this assignment on Blackboard first and create the team name. If you are the second person on the team wait for the team lead to tell you the team name. Once that appears, follow the link to the template on GitHub Classroom and join that team.
++
+NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a starting template at https://github.com/EmbedUni/lab03s-yt1. You will want to click on the btn:[Use this template] button.
++
+. The following steps must be followed by the team lead.
+.. A code repository for your team was created when you accessed the assignment. Copy the URL for the repository.
+.. Open the Source Control side bar in VS Code and clone the repository.
+. Generate a build configuration and devicetree overlay. In the overlay file, add the code needed to configure the photointerrupter.
+. Enable the logger module in `prj.conf`.
+. Assemble the photointerrupter circuit on a breadboard.
+. Modify `main.cpp` so it accomplishes the task described above.
+. Test your program.
+. Update the `README.md`.
+
+IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation and upload this to Blackboard.
+
+

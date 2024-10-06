@@ -277,4 +277,145 @@ IMPORTANT: Show your worksheet to the instructor when you have completed both ex
 
 == Your Turn
 
-WARNING: #This part is not complete#
+[IMPORTANT]
+====
+In the _Introduction to Embedded Systems_ course that I teach at https://www.whitworth.edu[Whitworth University], students complete **Your Turn** assignments with a partner (pair programming). Repositories are generated from a template using a GitHub Classroom assignment link on Blackboard (our CMS). The directions that follow are intended for those students. However, an alternative link to a template is provided for non-Whitworth students.
+====
+
+====
+[[assignment-rate-toggler]]
+.Assignment {lab}.{counter:assignment}
+We can also make the action of a complete button press (depressed followed by a release) rotate through different blinking rates. This means that we need to keep track of additional information that reflects its history, not just the current status of the button. This information is called the *state* of the system. In this example there are two important state variables to store:
+
+* the current flash rate (which initially has two options: slow and fast)
+* the previous status of the button
+
+as well as the current status of the button. The flow diagram in <<img-blinkratetogglerflow>> gives an overview of the logic required to implement blink rate toggling with this state information.
+
+[#img-blinkratetogglerflow]
+.Diagram of the logic for the blink rate toggle program. This requires two stored state variables: one for the blink rate and one for the previous button status.
+image::lab3/heart_rate_toggler.png[Breadboard view of circuit 1,324]
+
+The status of a GPIO can be represented as either true or false, so we will store that state in a boolean variable (specified with the keyword `bool`). The other state variable holds information about the flash rate mode. In the current program we have begin with two possible options for that, but you will soon extend that to a third option. Because it is countable an obvious choice is once again an integer variable. We could use the standard `int` for this, but to make the code easier for humans to understand we will instead use a special integer version: `enum`.
+
+The name `enum` is short for enumerated. This is a word that means something is associated with a number. In this case we are going to write our program using human-friendly names to refer to the different flashing rate modes, but behind the scenes these will be stored as integers. The first thing we do is to define that enumeration:
+----
+  enum rateState_t {FastMode, SlowMode};
+----
+Our custom variable type is given the name `rateState_t`. It has only two possible values: `FastMode` and `SlowMode`. The computer treats these as if they were the numbers 0 (for `FastMode`) and 1 (for `SlowMode`).
+
+NOTE: A C convention is to end custom variable type names with `_t` and to write the possible value names of an `enum` in upper camel case. 
+
+Inside of the `main` function we will then declare a variable `rateMode` that is of this type and is initially set to the fast mode.
+----
+  enum rateState_t rateMode = FastMode;
+----
+The meaning of this is less ambiguous to a human reader of the code than the alternative version using the standard `int`:
+----
+  int rateMode = 0;
+----
+
+The previous program had an `if...else` statement with a simple condition. The state of the button was either 0 or 1. This time we will need to select among several options based on the value of `rateMode`. We could use a series of `if` statements to direct the code, but a better solution in C is the `switch` structure.
+
+A `switch` structure begins by specifying the variable that we will be testing. We then specify the possible options using the `case` keyword. The code to be run if that option is selected follows and `break;` indicates where it ends. In our case this becomes
+[source,c]
+----
+switch (rateMode) {
+    case FastMode: k_msleep(FAST_SLEEP_TIME); break;
+    case SlowMode: k_msleep(SLOW_SLEEP_TIME); break;
+}
+----
+
+This code has been made compact so it displays better on the printed page or small screens. However, it is not necessary
+to have the case statements written all on one line. The key thing is that the statements that are part of
+a particular case begin after the colon (`:`) and end with `break;`. For example, one could write these over
+multiple lines and use indentation to indicate the block.
+[source,c]
+----
+switch (rateMode) {
+    case FastMode:
+        k_msleep(FAST_SLEEP_TIME);
+        break;
+    case SlowMode:
+        k_msleep(SLOW_SLEEP_TIME);
+        break;
+}
+----
+This style is useful if there is more complex logic for each case. We will encounter situations like that
+latter in the course.
+
+Next we have the compound condition "`Is the current button state different than the previous button state AND is the button currently released?`" We can break this into three questions:
+
+* Is the button currently released?
+* Is the current button state not equal to the previous button state?
+* Are the answers to questions 1 and 2 both yes?
+
+We will now look at each these in turn, assuming the current state of the button is saved to `currBtn` and the previous state of the button to `prevBtn`.
+[horizontal,labelwidth=20]
+Question 1:: Remembering that the button reads `false` when it is released, the condition corresponding to the question "`Is the button currently released?`" is `!currBtn` where `!` is how C represents the logical NOT operation.
+Question 2:: The NOT EQUAL logic operator in C is `!=`. This means the condition "`Is the current button state NOT EQUAL to the previous button state?`" is `currBtn != prevBtn`.
+Question 3:: The question "`Are the answers to questions 1 and 2 both yes`" requires the AND logic operator. In C AND is written as `&&`. We need to enclose each of the condition statements inside of parentheses so the opening of this `if...else` structure is finally given as:
+----
+if ((currBtn != prevBtn) && (!currBtn)) {
+----
+
+. If your first name comes first alphabetically on your team, you are the team lead for this assignment. It is your job to access the GitHub Classroom assignment link first and create the team name (as found on Blackboard).
++
+NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a starting template at https://github.com/EmbedUni/lab02-yt1. You will want to click on the btn:[Use this template] button.
++
+. Open the Source Control side bar in VS Code and clone the repository.
+. This repository already contains a `main.c` with the contents of <<program-blinktoggler>>.
+. Add a build configuration and then build the application.
+. Flash it to your development board and verify that pushing BUTTON1 rotates between two different flashing rates.
+. Your task in this assignment is to add a third mode (`MediumMode`) with a rate between slow and fast. Adapt the code so pressing the button rotates through all three modes (in the order fast, medium, and then slow, before starting over again at fast).
+
+[source,c]
+[[program-blinktoggler]]
+.Program to toggle the LED flashing rate using a button.
+----
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/gpio.h>
+
+#define FAST_SLEEP_TIME   100
+#define SLOW_SLEEP_TIME   500
+
+/* Get node identifiers */
+#define LED0_NI DT_ALIAS(led0)
+#define BTN0_NI DT_ALIAS(sw0)
+
+/* Get gpio specs */
+const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NI, gpios);
+const struct gpio_dt_spec button = GPIO_DT_SPEC_GET(BTN0_NI, gpios);
+
+enum rateState_t {FastMode, SlowMode};
+
+int main() {
+    enum rateState_t rateMode = FastMode;
+    bool prevBtn, currBtn;
+
+    if (gpio_is_ready_dt(&led) && gpio_is_ready_dt(&button)) {
+        gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);
+        gpio_pin_configure_dt(&button, GPIO_INPUT);
+    } else return -1;
+
+    prevBtn = gpio_pin_get_dt(&button);
+    while (true) {
+        gpio_pin_toggle_dt(&led);
+        currBtn = gpio_pin_get_dt(&button);
+        if ((currBtn != prevBtn) && (!currBtn)) {
+            switch (rateMode) {
+              case FastMode: rateMode = SlowMode; break;
+              case SlowMode: rateMode = FastMode; break;
+            }
+        }
+        prevBtn = currBtn;
+        switch (rateMode) {
+            case FastMode: k_msleep(FAST_SLEEP_TIME); break;
+            case SlowMode: k_msleep(SLOW_SLEEP_TIME); break;
+        }
+    }
+}
+----
+
+Remember to update the `README.md` as well as `main.c` files. Push commits to the remote repository. The final commit should be the message "`Done`".
+====
