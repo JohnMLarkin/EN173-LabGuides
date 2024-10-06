@@ -330,7 +330,7 @@ int main(void) {
 <8> The `while` loop for flashing the right LED ends here.  If `i` is greater than 0, jump up to the top of this loop.
 <9> The never-ending outer `while` loop repeats when it reaches this point.
 
-==== Preprocessor definitions make code easier to read
+=== Preprocessor definitions make code easier to read
 
 Rather than putting specific numbers into your code where they are actually used, a good design approach is to instead associate those numbers with symbolic names. Those symbolic definitions should be put in one place so they are easy to find. This may not seem that important with small programs, but as your programs grow in complexity it will be a helpful habit.
 

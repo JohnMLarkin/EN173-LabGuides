@@ -92,7 +92,7 @@ We can read the state of all of the pins in a GPIO port, with each pin represent
 #NOT DONE#
 
 [source, c]
-[[program-leds-via-port]]
+[[program-buttons-via-port]]
 .Get state of multiple buttons with single command.
 ----
 #include <zephyr/kernel.h>

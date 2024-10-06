@@ -12,6 +12,7 @@
 :nrf-sdk: 2.6.1
 :Omega: &#937;
 :Delta: &#916;
+:micro: &#181;
 = Lab 3: External digital inputs
 
 == Slide switches and momentary push buttons
@@ -356,5 +357,5 @@ NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a st
 . Update the `README.md`.
 
 IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation and upload this to Blackboard.
-
+====
 
