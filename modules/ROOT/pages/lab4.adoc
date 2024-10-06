@@ -1,0 +1,202 @@
+:lab: 4
+:icons: font
+:sectnums:
+:imagesdir: ../images
+:source-language: c
+:listing-caption: Program
+:example-caption: Exercise
+:xrefstyle: short
+:experimental:
+:stem: latexmath
+:nrf-toolchain: v2.6.1
+:nrf-sdk: 2.6.1
+:Omega: &#937;
+:Delta: &#916;
+= Lab 4: Going Deeper with Digital Input and Output
+
+== Setting multiple pins on a GPIO port
+
+We can think of the four internal LEDs on the nRF52840 DK as representing a 4-bit number because each LED as only two states (on and off). The value represented by a particular LED when it is turned on is given in <<table-leds-as-bits>>. The advantage of this representation is that it becomes possible to set the state of all four LEDs with a single command rather than four commands that individually set each LED. All possible on-off combinations of the LEDs can be represented by an integer between 0 and 15.
+
+[[table-leds-as-bits]]
+.A series of LEDs can be represented as bits.
+[cols="1,1,1"]
+|===
+|LED |Value as Power of 2|Value
+
+|`led0`
+|stem:[2^0]
+|1
+
+|`led1`
+|stem:[2^1]
+|2
+
+|`led2`
+|stem:[2^2]
+|4
+
+|`led3`
+|stem:[2^3]
+|8
+|===
+
+This approach only works when the pins we wish to group are all connected to the same GPIO controller. There are two GPIO controller peripherals on the nRF52840 DK, labeled port 0 and port 1. This approach is also easier when the pins we wish to control have consecutive pin numbers. The four internal LEDs are connected to pins 13, 14, 15, and 16 of port 0 so we can use this method.
+
+We only want to impact those particular pins and not others so a _mask_ is used to specify that. There are 32 pins #NOT DONE#
+
+[source, c]
+[[program-leds-via-port]]
+.Set state of multiple LEDs with single command.
+----
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+
+#define SLEEP_TIME_MS   500
+
+/* Get node identifiers */
+#define PORT0_NI DT_NODELABEL(gpio0)
+
+/* Get device */
+const struct device *port = DEVICE_DT_GET(PORT0_NI);
+
+int main(void) {
+    int led_states;
+    int led_mask = BIT(13) | BIT(14) | BIT(15) | BIT(16);
+
+    if (device_is_ready(port)) {
+        for (int pin = 13; pin <= 16; pin++) {
+            gpio_pin_configure(port, pin, GPIO_OUTPUT_ACTIVE | GPIO_ACTIVE_LOW);
+        }
+    } else return -1;
+
+    while (true) {
+        led_states = 1;
+        while (led_states < 16) {
+            gpio_port_set_masked(port, led_mask, led_states << 13);
+            k_msleep(SLEEP_TIME_MS);
+            led_states = 2*led_states;
+        }
+    }
+}
+----
+
+#NOT DONE#
+
+== Seven-segment display
+
+A seven-segment display is a collection of LEDs that is designed to display a decimal digit when the appropriate segments are activated.  We are using a LIGITEK LSD3211 that has the pin configuration shown in <<img-seven-seg-pinout>>.
+
+[#img-seven-seg-pinout]
+.Connection diagram for the LIGITEK LSD3211 seven-segment display.
+image::Seven-Segment-Pinout.png[Seven-segment display pinout,334,291]
+
+. Place the seven-segment display in a breadboard, being sure that it straddles the trench (so pins on the left side are not connected to pins on the right side).
+. Next, connect the microcontroller ground (one of the pins labelled GND) to the ground bus strip.
+. Connect _both_ of the pins labeled *gnd* on the seven-segment display to the ground bus strip.
+. Next, connect the nRF52840 DK pins P1.01 through P1.08 to the seven-segment display pins, starting with *a* and going through *g*, and then ending with *dp*.
+
+#END OF CONVERSION#
+
+After you have assembled this circuit on the breadboard, create a new project in PlatformIO and add the bare-metal `mbed_app.json` file to the project.
+Enter <<program-display-0-to-3>> into `main.cpp`.
+
+[source, c++]
+[[program-display-0-to-3]]
+.Show digits 0 to 3 on seven-segment display.
+----
+#include <mbed.h>
+
+#define SLEEP_TIME 500ms
+
+BusOut display(p5,p6,p7,p8,p9,p10,p11,p12);
+
+int main() {
+  while (1) {
+    for (int i = 0; i<4; i++) {
+      switch (i) {
+        case 0: display = 0x3F; break;
+        case 1: display = 0x06; break;
+        case 2: display = 0x5B; break;
+        case 3: display = 0x4F; break;
+      }
+      ThisThread::sleep_for(SLEEP_TIME);
+    }
+  }
+}
+----
+
+Compile the code and upload it to the mbed.  If everything has been done correctly, you should see the digits 0 through 3 displayed one at a time.
+
+This code has been made compact so it displays better on the printed page.  However, it is not necessary to have the `case` statements written all on one line.  The key thing is that the statements that are part of a particular case begin after the colon (:) and end with `break;`. For example, one could write these over multiple lines and use indentation to indicate the block.
+[source]
+----
+case 0:
+  display = 0x3F;
+  break;
+case 1:
+  display = 0x06;
+  break;
+----
+This style is useful if there is more complex logic for each case.  We will encounter situations like that latter in the course.
+
+====
+[[exercise-seven-segment-extended]]
+.Exercise {lab}.{counter:exercise}
+Modify <<program-display-0-to-3>> so that it counts from 0 up to 9. The control values are something you should have calculated already. If not, now is the time to do that.
+
+IMPORTANT: When your program and circuit are working successfully, demonstrate this to the instructor.
+====
+
+== Your Turn
+
+The remaining activities today will be done as pair programming assignments (that is, with a partner). Go to our Blackboard page and look up your partner assignment for today.
+
+=== Introduction to functions
+
+The basic format of a program to control a seven-segment display with a function to convert digits to hex codes is shown in <<program-function-example-shell>>.
+
+[source]
+[[program-function-example-shell]]
+.Shell of a program with function
+----
+#include <mbed.h>
+
+#define SLEEP_TIME 1s
+
+int sevenSegConvert(int n);
+
+BusOut display(p5,p6,p7,p8,p9,p10,p11);
+
+int main() {
+  // main code
+}
+
+int sevenSegConvert(int n) {
+  // function code
+}
+----
+
+====
+[[assignment-function-intro]]
+.Assignment {lab}.{counter:assignment}
+
+. If your last name comes last alphabetically on your team, you are the team lead for this assignment. It is your job to access the https://classroom.github.com/a/EqFkp4uc[template] for this assignment on Github Classroom first and create the team name (today the naming scheme is a fruit or vegetable starting with the letter of your group, as found on Blackboard).
+. The following steps must be followed by the team lead.
+.. A code repository for your team was created when you accessed the assignment. Copy the URL for the repository.
+.. Open the PlatformIO command palette and select **Clone Git Project** from under miscellaneous.
+.. If your partner is able to be physically present in class today then you are all set and you can get to work together. However, if one or both of you are forced to be remote then you will rely on the Live Share tool that is part of VS Code. Here is what you need to do if Live Share is required:
+... If you are the second person on the team, wait for the team lead to finish creating the team name. Once that is done, follow the link to the template on GitHub Classroom and join that team.
+... Click on the Live Share icon in the left side bar. Click on the **Share** button. Click on **Share Now** and then authorize using your Whitworth username (which is also a Microsoft credential) or your GitHub account.
+... Copy the invite link and send it to your partner (and to me if both of you are remote).
+... The other member of the pair should download the code to your own computer and associate it with PlatformIO (as described above for the lead).
+... After the lead sends the other member of the pair the Live Share link, they should click on it to join them.
+... After the Live Share session has been started and both members of the team are there, you are ready to start an audio call (from the Live Share menu) so you can talk while you work together while separated.
+. Fill in the body of the `main` and `sevenSegConvert` functions in <<program-function-example-shell>> so it accomplishes the task described in `README.md`.
+. Test your program.
+. Update the `README.md`.
+
+IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation and upload this to Blackboard.
+====

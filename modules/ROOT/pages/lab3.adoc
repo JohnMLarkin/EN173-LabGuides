@@ -338,7 +338,7 @@ IMPORTANT: Demonstrate your operating circuit.
 
 == Your Turn
 
-[IMPORTANT]
+[NOTE]
 ====
 The directions that follow are intended for students in my _Introduction to Embedded Systems_ course at https://www.whitworth.edu[Whitworth University]. However, an alternative link to a template is provided for non-Whitworth students.
 ====
