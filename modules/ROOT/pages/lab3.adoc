@@ -255,7 +255,7 @@ You should observe that a single push of the button sometimes results in more th
 .Exercise {lab}.{counter:exercise}
 In this exercise you will use the oscilloscope to observe what happens when the button is pressed.
 
-. Connect the flywire labeled *1+* (top left, orange) to the same column as the output pin of the button (the one that is connected to P0.03).  Connect the flywire labeled *1-* (bottom left, orange with white stripe) to the ground bus strip.  Connect the ground (icon:arrow-down[]) flywire to the ground bus strip.
+. Connect the flywire labeled *1+* (top left, orange) to the same column as the output pin of the button (the one that is connected to P0.03).  Connect the flywire labeled *1-* (bottom left, orange with white stripe) to the ground bus strip.  Connect the ground (pass:[<i class="fa-solid fa-arrow-down"></i>]) flywire to the ground bus strip.
 . In the Time settings, change Position to 5 {micro}s and Base to 2 {micro}s/div.
 . In the Channel 1 settings, change Offset to -2 V and Range to 500 mV/div.
 . In the Trigger settings (above the graph), set Mode to Repeated and Normal and set Level to 2 V. 
