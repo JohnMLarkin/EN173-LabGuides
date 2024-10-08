@@ -73,7 +73,7 @@ git config --global user.email "email@youremail.com" <2>
 
 On a general purpose computer the stereotypical first program in a language displays `Hello, world!` on the screen. In the world of microcontrollers the equivalent is to flash an LED. This is also called a heartbeat program. It is a simple way to indicate that your microcontroller is alive and you are able to transfer a simple program to it. Most development boards will have one or more integrated LEDs, so no external connections are necessary. The https://www.nordicsemi.com/Products/Development-hardware/nRF52840-DK[Nordic Semiconductor nRF52840 DK] that will be our example development board has four integrated LEDs. The first program will flash one of these, labeled LED1, off and on forever (or as long as the microcontroller is powered). Flow charts are a useful tool for planning and documenting code, so before we jump into the code itself we start with a flow chart for this first program.
 
-[mermaid,fetch-users]
+[mermaid]
 ....
 graph LR
   A("main()") --> B[Initialize LED1]
