@@ -43,9 +43,7 @@ Additional hardware required:
 
 * two LEDs (described as red and green in instructions)
 * two 330 {Omega} resistors
-* oscilloscope (instructions describe usage of Digilent's _Analog Discovery 2_)
-
-WARNING: **Your Turn** section is not complete
+* oscilloscope (instructions describe usage of https://digilent.com/shop/analog-discovery-2-100ms-s-usb-oscilloscope-logic-analyzer-and-variable-power-supply[Digilent's _Analog Discovery 2_])
 
 ****
 ====
@@ -66,8 +64,8 @@ Additional hardware required:
 * two 330 {Omega} resistors
 * slide switch (SPDT)
 * momentary push button (SPST)
-
-WARNING: Multiple areas are not complete
+* photointerrupter (https://www.digikey.com/en/products/detail/isocom-components-2004-ltd/H21A1/126287[Isocom H21A1])
+* 10 k{Omega} resistor
 
 ****
 ====

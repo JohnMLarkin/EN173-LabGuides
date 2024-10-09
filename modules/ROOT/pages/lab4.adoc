@@ -25,19 +25,19 @@ We can think of the four internal LEDs on the nRF52840 DK as representing a 4-bi
 |LED |Value as Power of 2|Value
 
 |`led0`
-|stem:[2^0]
+|2^0^
 |1
 
 |`led1`
-|stem:[2^1]
+|2^1^
 |2
 
 |`led2`
-|stem:[2^2]
+|2^2^
 |4
 
 |`led3`
-|stem:[2^3]
+|2^3^
 |8
 |===
 
