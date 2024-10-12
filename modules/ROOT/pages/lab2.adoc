@@ -70,7 +70,7 @@ int main(void) {
 <8> The state of the button is read and its value (0 for released and 1 for pressed) is saved in the variable `btn_pressed`.
 <9> The LED is set to have the same value as the button (on if pressed, off if released).
 +
-. Add the build configuration through the nRF Connect side bar and build the application.
+ Add the build configuration through the nRF Connect side bar and build the application.
 . Connect the development board to the computer and then use the btn:[Flash] action to send the program to it.
 . Verify that LED1 is only lit while BUTTON1 is held down.
 
@@ -277,9 +277,9 @@ IMPORTANT: Show your worksheet to the instructor when you have completed both ex
 
 == Your Turn
 
-[IMPORTANT]
+[NOTE]
 ====
-In the _Introduction to Embedded Systems_ course that I teach at https://www.whitworth.edu[Whitworth University], students complete **Your Turn** assignments with a partner (pair programming). Repositories are generated from a template using a GitHub Classroom assignment link on Blackboard (our CMS). The directions that follow are intended for those students. However, an alternative link to a template is provided for non-Whitworth students.
+In the _Introduction to Embedded Systems_ course that I teach at https://www.whitworth.edu[Whitworth University], students complete **Your Turn** assignments using repository template created through a GitHub Classroom assignment link on Blackboard (our CMS). The directions that follow are intended for those students. However, an alternative link to a template is provided for non-Whitworth students.
 ====
 
 ====
@@ -359,7 +359,7 @@ Question 3:: The question "`Are the answers to questions 1 and 2 both yes`" requ
 if ((currBtn != prevBtn) && (!currBtn)) {
 ----
 
-. If your first name comes first alphabetically on your team, you are the team lead for this assignment. It is your job to access the GitHub Classroom assignment link first and create the team name (as found on Blackboard).
+. Access the GitHub Classroom assignment link (found on Blackboard) and create the repository for this assignment.
 +
 NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a starting template at https://github.com/EmbedUni/lab02-yt1. You will want to click on the btn:[Use this template] button.
 +

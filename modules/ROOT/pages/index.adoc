@@ -21,8 +21,9 @@ This is a collection of lab guides for the course _EN 173: Introduction to Embed
 In this set of activities you will:
 
 * install the development environment,
-* create a simple program to flash an LED on the development board, and
-* transfer that program to the development board.
+* create a simple program to flash an LED on the development board,
+* transfer that program to the development board, and
+* learn how to document the program using Markdown.
 
 Additional hardware required: none
 ****
@@ -54,9 +55,9 @@ Additional hardware required:
 ****
 In this set of activities you will:
 
-* set the state of multiple output pins with a single command,
-* modify the devicetree to enable use of additional digital input pins, and
-* use an external slide switch and momentary push button.
+* modify the devicetree to enable use of additional digital input pins,
+* use an external slide switch and momentary push button,
+* and use a photointerrupter to detect light-blocking events.
 
 Additional hardware required:
 
@@ -66,6 +67,27 @@ Additional hardware required:
 * momentary push button (SPST)
 * photointerrupter (https://www.digikey.com/en/products/detail/isocom-components-2004-ltd/H21A1/126287[Isocom H21A1])
 * 10 k{Omega} resistor
+
+****
+====
+
+.xref::lab4.adoc[Lab 4 -- Direct GPIO port writing and reading]
+[%collapsible]
+====
+****
+In this set of activities you will:
+
+* set the state of multiple pins on the same GPIO port with a single command,
+* get the state of all of the pins on a GPIO port with a single command,
+* use multi-pin writes to control a seven-segment display, and
+* begin to use functions to make your code more modular.
+
+Additional hardware required:
+
+* seven-segment display (https://www.jameco.com/z/LSD3211-11-Ligitek-LED-Display-7-Segment-Red-0-30-Inch-Common-Cathode-LHDP-RHDP-2-5mcd_24782.html[Ligitek LSD3211-11])
+* photointerrupter (https://www.digikey.com/en/products/detail/isocom-components-2004-ltd/H21A1/126287[Isocom H21A1])
+* 10 k{Omega} resistor
+* 330 {Omega} resistor
 
 ****
 ====

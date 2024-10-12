@@ -342,13 +342,12 @@ The directions that follow are intended for students in my _Introduction to Embe
 
 Your task is to create a system that counts "`letters`" using a photointerrupter, displaying the count on an attached computer using the logger module. An internal button is used to reset the count to zero.
 
-. If your last name comes last alphabetically on your team, you are the team lead for this assignment. It is your job to access the GitHub Classroom template for this assignment on Blackboard first and create the team name. If you are the second person on the team wait for the team lead to tell you the team name. Once that appears, follow the link to the template on GitHub Classroom and join that team.
+. Access the GitHub Classroom link for this assignment on Blackboard and create a repository for your work.
 +
-NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a starting template at https://github.com/EmbedUni/lab03s-yt1. You will want to click on the btn:[Use this template] button.
+NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a starting template at https://github.com/EmbedUni/lab03-yt1. You will want to click on the btn:[Use this template] button.
 +
-. The following steps must be followed by the team lead.
-.. A code repository for your team was created when you accessed the assignment. Copy the URL for the repository.
-.. Open the Source Control side bar in VS Code and clone the repository.
+. A code repository was created when you accessed the assignment. Copy the URL for the repository.
+. Open the Source Control side bar in VS Code and clone the repository.
 . Generate a build configuration and devicetree overlay. In the overlay file, add the code needed to configure the photointerrupter.
 . Enable the logger module in `prj.conf`.
 . Assemble the photointerrupter circuit on a breadboard.

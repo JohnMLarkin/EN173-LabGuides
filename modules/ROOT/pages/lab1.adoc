@@ -353,36 +353,25 @@ but this is not what the compiler will see. Instead the preprocessor will replac
 
 [IMPORTANT]
 ====
-In the _Introduction to Embedded Systems_ course that I teach at https://www.whitworth.edu[Whitworth University], students complete **Your Turn** assignments with a partner (pair programming). Repositories are generated from a template using a GitHub Classroom assignment link on Blackboard (our CMS). The directions that follow are intended for those students. However, an alternative link to a template is provided for non-Whitworth students.
+In the _Introduction to Embedded Systems_ course that I teach at https://www.whitworth.edu[Whitworth University], students complete **Your Turn** assignments using repository template created through a GitHub Classroom assignment link on Blackboard (our CMS). The directions that follow are intended for those students. However, an alternative link to a template is provided for non-Whitworth students.
 ====
 
 ====
 [[assignment-internal-led-while-loops]]
 .Assignment {lab}.{counter:assignment}
 
-. If your last name comes first alphabetically on your team, you are the team lead for this assignment. It is your job to access the GitHub Classroom assignment link first and create the team name (as found on Blackboard).
+. You need to begin by accessing the GitHub Classroom assignment link f(as found on Blackboard).
 +
 NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a starting template at https://github.com/EmbedUni/lab01-yt1. You will want to click on the btn:[Use this template] button.
-. The following steps must be followed by the team lead.
-.. A code repository for your team was created when you accessed the assignment. Copy the URL for the repository.
-.. Open the Source Control side bar in VS Code.
+. A code repository was created for you when you accessed the assignment. Copy the URL for the repository.
+. Open the Source Control side bar in VS Code.
 +
 [#img-vs-code-clone-repo]
 .Clone a repository from the Source Control side bar.
 image::lab1/vs-code-clone-repo.png[Clone a repository in the Source Control side bar, 283, 266]
 +
-.. Click on btn:[Clone Repository].
-.. Paste the URL you copied into the box that opens up.
-. After the team lead has completed this, the other members of the team need to follow the link to the GitHub Classroom assignment and join the team.
-. Here are some tips for making your pair programming collaboration be more effective:
-.. It often works best if one person is the "`driver`" (doing the typing, setting the focus, etc.) and the other person is the "`navigator`" (keeping an eye on how this all contributes to the overall task, looking for possible errors, and asking questions). The "`driver`" is also encouraged to ask questions (e.g., does the navigator see another way to accomplish something). The roles should be periodically swapped (at least once every 25 minutes).
-.. Ask questions about why the other person did something when you don't understand or think is wrong. A question is a better start than "`That's wrong.`"
-.. When you do spot an error, wait until the person typing has finished the current line before drawing attention to it. They might spot their own mistake along the way and fix it without you calling it out.
-.. If you are the more experienced coder, take some responsibility for helping your partner learn the material. If they aren't asking questions while you are the "`driver`", periodically stop and make sure they are following what you are doing. When you are the "`navigator`" encourage them to try something and _then_ give feedback afterward. Remember, the goal of the activity is learning for both of you (not speedy accumulation of points). 
-.. If you are the less experienced coder and have the "`driver`" role, it is important that you suggest something, even though it may not be perfect, rather than simply dictating what they say. When you are the "`navigator`", don't be passive. Ask questions and be willing to suggest things. You might not know how to implement it in code, but your strategy for solving a problem might actually be better.
-.. Work on coding tasks with someone else in this format can be intense work. Break it up into 25 minute sessions with five minute breaks (walk around, check your text messages or social media, etc.). You will remain more productive for longer with this pattern.
-.. Avoid solo work. If it is time for a break, you should both stop working on the code. It is important for you to both be engaged in this work together and it is more difficult for someone to catch up and feel fully part of the work if you have been doing things while they were gone.
-.. Avoid solo work. At this point in the class, you should both be looking at and thinking about the same thing. Don't split up tasks and go your separate ways. We will do that later on when it is appropriate, but that is not the case this week.
+. Click on btn:[Clone Repository].
+. Paste the URL you copied into the box that opens up.
 . Start with the `README.md` file. Your first task is to update the flow chart so it describes the logic needed to do the following:
 .. Flash the left LED 10 times with on/off times of 0.5 s.
 .. Then flash the right LED 5 times with on/off times of 0.25 s.
@@ -397,9 +386,6 @@ image::lab1/vs-code-clone-repo.png[Clone a repository in the Source Control side
 . Flash the code to the microcontroller for testing. Does it do what it is supposed to do?
 . If there are problems, fix those. Once everything works properly, edit the `README.md` file and add a `**Completed:** ` line with the current date and time.
 . Stage all changes and commit with the message "`Done`".
-. If you were not the lead on this project:
-.. Open the Source Control panel in VS Code. Synchronize your copy of the project with the remote repository by clicking on the sync symbol (circle made of two arrows). This should perform a "`pull`" (moving material from the remote repository to your local copy).
-.. Compile the code and upload it to your microcontroller. It should work properly.
 ====
 
 ====

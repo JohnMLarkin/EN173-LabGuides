@@ -16,7 +16,7 @@
 
 == Setting multiple pins on a GPIO port
 
-We can think of the four internal LEDs on the nRF52840 DK as representing a 4-bit number because each LED as only two states (on and off). The value represented by a particular LED when it is turned on is given in <<table-leds-as-bits>>. The advantage of this representation is that it becomes possible to set the state of all four LEDs with a single command rather than four commands that individually set each LED. All possible on-off combinations of the LEDs can be represented by an integer between 0 and 15.
+We can think of the four internal LEDs on the nRF52840 DK as representing a 4-bit number because each LED as only two states (on and off). The value represented by a particular LED when it is turned on is given in <<table-leds-as-bits>>. The advantage of this representation is that it becomes possible to set the state of all four LEDs with a single command rather than four commands that individually set each LED. All possible on-off combinations of the LEDs can be represented by an integer between 0 and 15. For example, the value of 10 (which can be expressed as 8+2) represents `led3` and `led1` turned on and the other two LEDs turned off.
 
 [[table-leds-as-bits]]
 .A series of LEDs can be represented as bits.
@@ -43,8 +43,17 @@ We can think of the four internal LEDs on the nRF52840 DK as representing a 4-bi
 
 This approach only works when the pins we wish to group are all connected to the same GPIO controller. There are two GPIO controller peripherals on the nRF52840 DK, labeled port 0 and port 1. This approach is also easier when the pins we wish to control have consecutive pin numbers. The four internal LEDs are connected to pins 13, 14, 15, and 16 of port 0 so we can use this method.
 
-We only want to impact those particular pins and not others so a _mask_ is used to specify that. There are 32 pins so a 32-bit integer would be sufficient. However, Zephyr has a variable type `gpio_port_value_t` that more clearly tells the reader of the code that this particular integer is being used to store pin-by-pin values. #NOT DONE#
+We only want to impact those particular pins and not others so a _mask_ is used to specify that. There are 32 pins so a 32-bit integer is sufficient. The pins we wish to control are set to 1 in the mask and those to be left alone have a mask value of 0. Zephyr has a variable type `gpio_port_value_t` that more clearly tells the reader of the code that this particular integer is being used to store pin-by-pin values.
 
+[#img-port-mask-diagram]
+.The internal LEDs are connected to pins 13-16 so those bits are set to 1 in the the port mask so they can be controlled without impacting other pins on the port.
+image::lab4/port-mask.png[Port mask,289,144]
+
+Zephyr also provides a macro called `BIT` that make setting these bits easier. The macro `BIT(13)` creates an integer in which bit 13 is set to 1 and the others are 0. We then combine those integers using C's bit-wise OR operator, `|`. In a bit-wise operation the corresponding bits of the two numbers are compared. With bit-wise OR, a bit is 1 in the resulting integer if either of the two inputs had that bit set to 1.
+
+. Create a new application called `led-rotator`.
+. Enter the following code into `main.c`.
++
 [source, c]
 [[program-leds-via-port]]
 .Set state of multiple LEDs with single command.
@@ -56,41 +65,49 @@ We only want to impact those particular pins and not others so a _mask_ is used 
 
 #define SLEEP_TIME_MS   500
 
-/* Get node identifiers */
+/* Get node identifier for the port rather than a particular pin */
 #define PORT0_NI DT_NODELABEL(gpio0)
 
-/* Get device */
+/* Get device (more general than get a GPIO) */
 const struct device *port = DEVICE_DT_GET(PORT0_NI);
 
 int main(void) {
     int led_states;
-    gpio_port_value_t led_mask = BIT(13) | BIT(14) | BIT(15) | BIT(16);
+    gpio_port_value_t led_mask = BIT(13) | BIT(14) | BIT(15) | BIT(16); // <1>
 
     if (device_is_ready(port)) {
         for (int pin = 13; pin <= 16; pin++) {
-            gpio_pin_configure(port, pin, GPIO_OUTPUT_ACTIVE | GPIO_ACTIVE_LOW);
+            gpio_pin_configure(port, pin, GPIO_OUTPUT_ACTIVE | GPIO_ACTIVE_LOW); // <2>
         }
     } else return -1;
 
     while (true) {
         led_states = 1;
         while (led_states < 16) {
-            gpio_port_set_masked(port, led_mask, led_states << 13);
+            gpio_port_set_masked(port, led_mask, led_states << 13); // <3>
             k_msleep(SLEEP_TIME_MS);
             led_states = 2*led_states;
         }
     }
 }
 ----
-
-#NOT DONE#
+<1> This operation results in an integer with bits 13-16 set to 1 and all other bits set to zero.
+<2> We are directly accessing the pin rather than using its devicetree configuration. This means we need to explicitly specify information that was previously done for us through that configuration. In this case, the LEDs on the development board are connected so that they are active (on) when the voltage is low.
+<3> The left-bit-shift operator, `<<`, is used to move our four-bit led value to the left by 13 bits so it is now at bits 13-16 (the location of the pins on the port).
++
+ Add the build configuration through the nRF Connect side bar and build the application.
+. Connect the development board to the computer and then use the btn:[Flash] action to send the program to it.
+. You should observe that LEDs 1 through 4 are lit one at a time and the program continuously rotates through these.
 
 == Reading multiple pins on a GPIO port
 
-We can read the state of all of the pins in a GPIO port, with each pin represented as one bit of a multibit value. To determine whether a particular pin is in the active state we use bit-wise AND (&) to test whether a particular bit is set.
+We can read the state of all of the pins in a GPIO port, with each pin represented as one bit of a 32-bit integer. The four buttons are not contiguous (they are at pins 11, 12, 24, and 25) so to determine whether a particular button is pressed we use bit-wise AND (`&`) to test whether the corresponding bit is set. In a bit-wise AND, the resulting integer has the corresponding bit equal to 1 only if both of the inputs had that bit set to 1.
 
-#NOT DONE#
+We are not relying on devicetree configuration of the buttons here so we need to do more than say that they are inputs. We also need to specify the details of their hardware connection (low voltage when pressed, with an internal pull-up resistor required to create the proper logic).
 
+. Create a new application called `read-all-buttons`.
+. Enter the following code into `main.c`.
++
 [source, c]
 [[program-buttons-via-port]]
 .Get state of multiple buttons with single command.
@@ -120,18 +137,22 @@ int main(void) {
 
     while (true) {
         gpio_port_get(port, &pin_values);
-        leds = 0;
+        leds = 0; // <1>
         // Zero through four buttons might be pushed so check for each
-        if (pin_values & BIT(11)) leds = leds + BIT(0);
-        if (pin_values & BIT(12)) leds = leds + BIT(1);
-        if (pin_values & BIT(24)) leds = leds + BIT(2);
-        if (pin_values & BIT(25)) leds = leds + BIT(3);
+        if (pin_values & BIT(11)) leds = leds | BIT(0); // <2>
+        if (pin_values & BIT(12)) leds = leds | BIT(1);
+        if (pin_values & BIT(24)) leds = leds | BIT(2);
+        if (pin_values & BIT(25)) leds = leds | BIT(3);
         gpio_port_set_masked(port, led_mask, leds << 13);
     }
 }
 ----
-
-#NOT DONE#
+<1> Each time through the loop, set the led value variable back to zero.
+<2> If the button corresponding to a particular LED is pushed, set the bit for that LED to 1.
++
+. Add the build configuration through the nRF Connect side bar and build the application.
+. Connect the development board to the computer and then flash the program to it.
+. You should observe that LEDs 1 through 4 are lit when the corresponding button is pushed. It is possible to have multiple LEDs lit at the same time if multiple buttons are simultaneously pushed down.
 
 == Seven-segment display
 
@@ -245,4 +266,28 @@ IMPORTANT: When your program and circuit are working successfully, demonstrate t
 
 == Your Turn
 
-#NOT DONE#
+[NOTE]
+====
+The directions that follow are intended for students in my _Introduction to Embedded Systems_ course at https://www.whitworth.edu[Whitworth University]. However, an alternative link to a template is provided for non-Whitworth students.
+====
+
+====
+[[assignment-letter-counter-seven-seg]]
+.Assignment {lab}.{counter:assignment}
+
+Your task is to create a system that counts "`letters`" using a photointerrupter, displaying the count on a seven-segment display. An internal button is used to reset the count to zero. If a count greater than 9 occurs, turn on an internal LED to indicate that the true count is 10 plus whatever is displayed on the seven-segment displayed. This allows your application to indicate counts up to 19.
+
+. Access the GitHub Classroom link for this assignment on Blackboard and create a repository for your work.
++
+NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a starting template at https://github.com/EmbedUni/lab04-yt1. You will want to click on the btn:[Use this template] button.
++
+. A code repository was created when you accessed the assignment. Copy the URL for the repository.
+. Open the Source Control side bar in VS Code and clone the repository.
+. Generate a build configuration and devicetree overlay. In the overlay file, add the code needed to configure the photointerrupter.
+. Assemble the photointerrupter circuit on a breadboard.
+. Modify `main.cpp` so it accomplishes the task described above.
+. Test your program.
+. Update the `README.md`.
+
+IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation and upload this to Blackboard.
+====
