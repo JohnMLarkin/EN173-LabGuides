@@ -16,12 +16,6 @@
 
 == A new way to blink an LED
 
-
-
-== Observing PWM
-
-=== Adjusting the brightness of an LED
-
 A pulse-width modulated signal is one way to make an LED blink. The 
 
 . Create a new application.
@@ -112,9 +106,23 @@ int main(void) {
 <2> PWM also has its own ready-reporting function.
 <3> The period and the pulse width are set. The convenience macro `PWM_MSEC` converts a time in milliseconds to one in nanoseconds (the unit of time that PWM functions use).
 
+#NEEDS WORK#
 
+=== Observing PWM
+====
+[[exercise-basic-pwm]]
+.Exercise {lab}.{counter:exercise}
+Your goal is to observe the output of your pulse-width-modulated output on the oscilloscope and compare to what is expected from the code.
 
+. Begin by connecting *1+* to #p21#, *1-* to ground, and image::arrow-down.svg[] to ground.
+. Set the Time base to 10 ms/div and the Trigger level to 2 V.  Choose appropriate Channel 1 settings so the PWM trace fills most of the display.
+. Open the Measurements tab and add the horizontal measurements *Period*, *PosDuty*, and *PosWidth*.
+. Acquire a single acquisition and compare the measured period and duty cycle to that expected from the code.
+. Change the code to produce a #duty cycle of 10%# and verify with the oscilloscope.
+. Change the code to produce a #duty cycle of 90%# and verify with the oscilloscope.
+====
 
+== Adjusting the brightness of an LED
 
 
 [source]
@@ -130,18 +138,7 @@ int main() {
 }
 ----
 
-====
-[[exercise-basic-pwm]]
-.Exercise {lab}.{counter:exercise}
-Your goal is to observe the output of your pulse-width-modulated output on the oscilloscope and compare to what is expected from the code.
 
-. Begin by connecting *1+* to #p21#, *1-* to ground, and image::arrow-down.svg[] to ground.
-. Set the Time base to 10 ms/div and the Trigger level to 2 V.  Choose appropriate Channel 1 settings so the PWM trace fills most of the display.
-. Open the Measurements tab and add the horizontal measurements *Period*, *PosDuty*, and *PosWidth*.
-. Acquire a single acquisition and compare the measured period and duty cycle to that expected from the code.
-. Change the code to produce a #duty cycle of 10%# and verify with the oscilloscope.
-. Change the code to produce a #duty cycle of 90%# and verify with the oscilloscope.
-====
 
 === Creating variable outputs with a PWM
 
