@@ -1,0 +1,160 @@
+:lab: 5
+:icons: font
+:sectnums:
+:imagesdir: ../images
+:source-language: c
+:listing-caption: Program
+:example-caption: Exercise
+:xrefstyle: short
+:experimental:
+:stem: latexmath
+:nrf-toolchain: v2.6.1
+:nrf-sdk: 2.6.1
+:Omega: &#937;
+:Delta: &#916;
+= Lab 5: Pulse-width modulation
+
+== A new way to blink an LED
+
+
+
+== Observing PWM
+
+=== Adjusting the brightness of an LED
+
+A pulse-width modulated signal is one way to make an LED blink. The 
+
+. Create a new application.
+. Edit `prj.conf` to enable both logging and pulse-width modulation:
++
+[source]
+----
+CONFIG_LOG=y
+CONFIG_PWM=y
+----
++
+. Generate a build configuration and create an overlay.
+. Edit the overlay file. This requires more work than we have seen previously in the overlay so the additions you need to make will be described in several steps. The first step is to create the node identifier related to the external LED.
++
+[source,dts]
+----
+/{
+  pwmleds { // <1>
+    compatible = "pwm-leds"; // <2>
+    pwm_ext_led: pwm_ext_led { // <3>
+      pwms = <&pwm0 0 PWM_MSEC(1) PWM_POLARITY_NORMAL>; // <4>
+    };
+  };
+};
+----
+<1> First, we create an new entry in a section that already exists called pwmleds.
+<2> A hardware category known as `pwm-leds` already exists so we can use that.
+<3> The PWM-controlled LED is given the node identifier (and node label) `pwm_ext_led`.
+<4> There are four separate PWM controllers on the nRF52840 and each controller supports up to four channels. This will LED is connected to the first PWM controller (`pwm0` and is its channel 0). A default period of 1 ms is set and the channel has normal polarity (the pulse width specifies the time at a high voltage).
++
+. Continuing to edit the overlay, create custom settings for the PWM controller so it knows what to do during normal power mode and during power-saving sleep mode.
++
+[source,dts]
+----
+&pwm0 {
+  status = "okay"; // <1>
+  pinctrl-0 = <&pwm0_my_default>;
+  pinctrl-1 = <&pwm0_my_sleep>;
+  pinctrl-names = "default", "sleep"; // <2>
+};
+
+&pinctrl {
+  pwm0_my_default: pwm0_my_default { // <3>
+    group1 {
+      psels = <NRF_PSEL(PWM_OUT0, 0, 3)>; // <4>
+    };
+  };
+
+  pwm0_my_sleep: pwm0_my_sleep {
+    group1 {
+      psels = <NRF_PSEL(PWM_OUT0, 0, 3)>;
+      low-power-enable; // <5>
+    };
+  };
+};
+----
+<1> A status of `okay` turns on a peripheral. The off status is called `disabled`.
+<2> The standard names for the two operational modes are `default` and `sleep`. We stick with those for compatibility with other systems.
+<3> The name of our custom default setting is `pwm0_my_default`.
+<4> A link is made between channel 0 (specified by `PWM_OUT0`) and P0.03. If you wanted to define additional channels (up to four are allowed per PWM controller), they would follow this.
+<5> Modifies the behavior for low power mode.
++
+. Enter <<program-pwm-blink>> into `main.c`.
++
+[source,c]
+.Blink an external LED using pulse-width modulation.
+----
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/drivers/pwm.h>
+
+LOG_MODULE_REGISTER(Lab05_Exercise1, LOG_LEVEL_INF);
+
+#define PWM_LED_NI DT_NODELABEL(pwm_ext_led)
+const struct pwm_dt_spec pwm_led = PWM_DT_SPEC_GET(PWM_LED_NI); // <1>
+
+int main(void) {
+    int err;
+
+    if (!pwm_is_ready_dt(&pwm_led)) { // <2>
+        LOG_ERR("Error: PWM device is not ready");
+        return -1;
+    }
+    pwm_set_dt(&pwm_led, PWM_MSEC(250), PWM_MSEC(50)); // <3>
+}
+----
+<1> The process of getting the information for a PWM output is similar to that for a GPIO.
+<2> PWM also has its own ready-reporting function.
+<3> The period and the pulse width are set. The convenience macro `PWM_MSEC` converts a time in milliseconds to one in nanoseconds (the unit of time that PWM functions use).
+
+
+
+
+
+
+[source]
+[[program-basic-pwm]]
+.A basic pulse width modulation example.
+----
+#include <mbed.h>
+
+int main() {
+  PwmOut PWM(p21);
+  PWM.period(0.010);  // 10 ms period
+  PWM = 0.5;          // 50% duty cycle
+}
+----
+
+====
+[[exercise-basic-pwm]]
+.Exercise {lab}.{counter:exercise}
+Your goal is to observe the output of your pulse-width-modulated output on the oscilloscope and compare to what is expected from the code.
+
+. Begin by connecting *1+* to #p21#, *1-* to ground, and image::arrow-down.svg[] to ground.
+. Set the Time base to 10 ms/div and the Trigger level to 2 V.  Choose appropriate Channel 1 settings so the PWM trace fills most of the display.
+. Open the Measurements tab and add the horizontal measurements *Period*, *PosDuty*, and *PosWidth*.
+. Acquire a single acquisition and compare the measured period and duty cycle to that expected from the code.
+. Change the code to produce a #duty cycle of 10%# and verify with the oscilloscope.
+. Change the code to produce a #duty cycle of 90%# and verify with the oscilloscope.
+====
+
+=== Creating variable outputs with a PWM
+
+====
+[[exercise-led-brightness-control]]
+.Exercise {lab}.{counter:exercise}
+You will use the same program to vary the brightness of an external LED. In this case your eye is doing the averaging. 
+
+. Remove the motor, transistor, and diode.  Instead connect the red LED and a 330 {Omega} resistor in series between p21 and ground.
+. Modify <<program-motor-speed-control>> to have `n` equal to 10.
+. Change `ThisThread::sleep_for(30000ms/n)` to `ThisThread::sleep_for(15000ms/n)`.
+. Run your program.  If you are a normal human being you should not be able to detect that the LED is actually turning off and on very rapidly.  Are there any of you with superhuman senses?
+. Repeat with periods of 0.01 s, 0.02 s, 0.05 s, 0.10 s, 0.20 s, and 0.50 s.  When do you first notice the flicker?
+
+IMPORTANT: When you have finished your observations, discuss the results with the instructor.
+====

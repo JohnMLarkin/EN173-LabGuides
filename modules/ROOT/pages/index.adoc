@@ -71,7 +71,7 @@ Additional hardware required:
 ****
 ====
 
-.xref::lab4.adoc[Lab 4 -- Direct GPIO port writing and reading]
+.xref::lab4.adoc[Lab 4 -- Direct GPIO Port Writing and Reading]
 [%collapsible]
 ====
 ****
@@ -88,6 +88,21 @@ Additional hardware required:
 * photointerrupter (https://www.digikey.com/en/products/detail/isocom-components-2004-ltd/H21A1/126287[Isocom H21A1])
 * 10 k{Omega} resistor
 * 330 {Omega} resistor
+
+****
+====
+
+.xref::lab5.adoc[Lab 5 -- Pulse-Width Modulation]
+[%collapsible]
+====
+****
+In this set of activities you will:
+
+* learn stuff
+
+Additional hardware required:
+
+* stuff
 
 ****
 ====

@@ -275,7 +275,7 @@ The directions that follow are intended for students in my _Introduction to Embe
 [[assignment-letter-counter-seven-seg]]
 .Assignment {lab}.{counter:assignment}
 
-Your task is to create a system that counts "`letters`" using a photointerrupter, displaying the count on a seven-segment display. An internal button is used to reset the count to zero. If a count greater than 9 occurs, turn on an internal LED to indicate that the true count is 10 plus whatever is displayed on the seven-segment displayed. This allows your application to indicate counts up to 19.
+Your task is to create a system that counts "`letters`" using a photointerrupter, displaying the count on a seven-segment display. If a count greater than 9 occurs, turn on an internal LED to indicate that the true count is 10 plus whatever is displayed on the seven-segment displayed. This allows your application to indicate counts up to 19. An internal button is used to send a log message with the total count and then reset the count to zero.
 
 . Access the GitHub Classroom link for this assignment on Blackboard and create a repository for your work.
 +
