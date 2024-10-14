@@ -3,3 +3,4 @@
 * xref:lab2.adoc[Lab 2]
 * xref:lab3.adoc[Lab 3]
 * xref:lab4.adoc[Lab 4]
+* xref:lab5.adoc[Lab 5]
