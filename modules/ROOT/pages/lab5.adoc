@@ -16,7 +16,7 @@
 
 == A new way to blink an LED
 
-A pulse-width modulated signal is one way to make an LED blink. The 
+A pulse-width modulated signal is one way to make an LED blink. The dedicated pulse-width hardware will take over the task, letting the microcontroller do other things once the initial configuration is done.
 
 . Create a new application.
 . Edit `prj.conf` to enable both logging and pulse-width modulation:
