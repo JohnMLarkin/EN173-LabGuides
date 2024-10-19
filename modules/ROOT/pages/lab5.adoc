@@ -12,6 +12,8 @@
 :nrf-sdk: 2.6.1
 :Omega: &#937;
 :Delta: &#916;
+:micro: &#181;
+:deg: &#176;
 = Lab 5: Pulse-width modulation
 
 == A new way to blink an LED
@@ -81,6 +83,7 @@ CONFIG_PWM=y
 . Enter <<program-pwm-blink>> into `main.c`.
 +
 [source,c]
+[[program-pwm-blink]]
 .Blink an external LED using pulse-width modulation.
 ----
 #include <zephyr/kernel.h>
@@ -99,59 +102,247 @@ int main(void) {
         LOG_ERR("Error: PWM device is not ready");
         return -1;
     }
-    pwm_set_dt(&pwm_led, PWM_MSEC(250), PWM_MSEC(50)); // <3>
+    pwm_set_dt(&pwm_led, PWM_MSEC(250), PWM_MSEC(125)); // <3>
 }
 ----
 <1> The process of getting the information for a PWM output is similar to that for a GPIO.
 <2> PWM also has its own ready-reporting function.
 <3> The period and the pulse width are set. The convenience macro `PWM_MSEC` converts a time in milliseconds to one in nanoseconds (the unit of time that PWM functions use).
++
+. Connect GND on the development board to the ground bus on a breadboard. Connect the short leg of a red LED to the ground bus and the long leg to a socket in a terminal strip (the main section of the breadboard). Connect a 330 {Omega} resistor in series with the LED. The other end of the resistor should be connected to P0.03 on the development board.
+. Build your application and flash it to the development board.
+. You should observe a rapidly flashing LED. Unfortunately, the PWM controllers on the nRF52840 have a maximum period of about 260 ms so this method cannot be used to create an LED that has a slower blink rate.
 
-#NEEDS WORK#
-
-=== Observing PWM
+== Observing PWM on the oscilloscope
 ====
 [[exercise-basic-pwm]]
 .Exercise {lab}.{counter:exercise}
 Your goal is to observe the output of your pulse-width-modulated output on the oscilloscope and compare to what is expected from the code.
 
-. Begin by connecting *1+* to #p21#, *1-* to ground, and image::arrow-down.svg[] to ground.
+. Begin by connecting *1+* to junction between P0.03 and the resistor on the breadboard, *1-* to ground, and image:arrow-down.svg[] also to ground.
 . Set the Time base to 10 ms/div and the Trigger level to 2 V.  Choose appropriate Channel 1 settings so the PWM trace fills most of the display.
 . Open the Measurements tab and add the horizontal measurements *Period*, *PosDuty*, and *PosWidth*.
-. Acquire a single acquisition and compare the measured period and duty cycle to that expected from the code.
-. Change the code to produce a #duty cycle of 10%# and verify with the oscilloscope.
-. Change the code to produce a #duty cycle of 90%# and verify with the oscilloscope.
+. Acquire a single acquisition and compare the measured period, positive pulse width, and duty cycle to that expected from the code.
+. Change the code to produce a positive pulse width of 25 ms (a duty cycle of 10% when the period is 250 ms) and verify with the oscilloscope.
+. Change the code to produce a positive pulse width of 225 ms (a duty cycle of 90% when the period is 250 ms) and verify with the oscilloscope.
 ====
 
-== Adjusting the brightness of an LED
+== Averaging produces output with more than two states
+====
+[[exercise-led-brightness-control]]
+.Exercise {lab}.{counter:exercise}
+If the period is decreased below the ability of your eye to see individual flashes you instead perceive the *average* brightness. In other words, a low duty cycle will look dim and a high duty cycle will look bright. You will use the same program to vary the brightness of an external LED. In this case your eye is doing the averaging. 
 
-
-[source]
-[[program-basic-pwm]]
-.A basic pulse width modulation example.
+. Modify <<program-pwm-blink>> by:
+.. adding the following `define` statements before the `main` function:
++
+[source,c]
 ----
-#include <mbed.h>
+#define PWM_PERIOD_MS   1
+#define PWM_PERIOD_NS   PWM_PERIOD_MS*1000000
+----
++
+.. replace the code after the `if` statement checking that the PWM controller is ready with the following:
++
+[source,c]
+----
+    err = pwm_set_dt(&pwm_led, PWM_PERIOD_NS, PWM_PERIOD_NS);
+    if (err) {
+        LOG_ERR("Error %d in pwm_set_dt()", err);
+        return -1;
+    }
+    LOG_INF("PWM period is %d ms",PWM_PERIOD_MS);
+    k_msleep(1000);
 
-int main() {
-  PwmOut PWM(p21);
-  PWM.period(0.010);  // 10 ms period
-  PWM = 0.5;          // 50% duty cycle
+    while (true) {
+        for (int i = 0; i <= 10; ++i) {
+            err = pwm_set_pulse_dt(&pwm_led, i*PWM_PERIOD_NS/10); // <1>
+            if (err) {
+                LOG_ERR("Error %d in pwm_set_pulse_dt()", err);
+                return -1;
+            } else {
+                LOG_INF("Duty cycle = %d%%",i*10);
+            }
+            k_msleep(2000);
+        }
+    }
+}
+----
+<1> This function only changes the pulse width of the PWM. The period is unchanged.
++
+. Build and flash the application. If you are a typical human being you should not be able to detect that the LED is actually turning off and on very rapidly.
+. Open a terminal connection (from Connected Devices) and observe the logger output.
+. Repeat with periods of 10 ms, 20 ms, 50 ms, 100 ms, and 200 ms.  When do you first notice the flicker?
+
+IMPORTANT: When you have finished your observations, discuss the results with the instructor.
+====
+
+====
+[[exercise-RC-average]]
+.Exercise {lab}.{counter:exercise}
+You will use the same program to produce a voltage between 0 and and about 3 V using a resistor and a capacitor.  The results will be observed with the oscilloscope.
+
+. Remove the LED and 330 {Omega} resistor from the breadboard.
+. Form an _RC_ low-pass filter by connecting the short leg of a 10 {micro}F capacitor to the ground bus. This is a polarized capacitor and will be damaged if you use it backwards. Connect the long leg of the capacitor to a socket in a terminals strip.
+. Connect a 10 k{Omega} resistor (brown-black-orange) to the same terminal strip as the capacitor. The other leg of the resistor should be connected to P0.03 (via a jumper wire).
+a 10 k{Omega} resistor (brown-black-orange) between p21 and a spot in the breadboard. From here connect a 10 {micro}F capacitor between the resistor and ground with its long leg at the resistor junction and the short leg at ground.  This is a polarized capacitor and it will be damaged if you use it backwards.
+. Set the period in the program to 10 ms.
+. Use the oscilloscope to observe the output of the low-pass filter (*1+* to the junction between the resistor and capacitor, *1-* to ground, and image:arrow-down.svg[] to ground). Use a time base of 2 s/div, a time position of 10 s, a channel 1 offset of -2 V, and a range of 500 mV/div.
+. Now observe what happens when you change the resistance.  Replace the 10 k{Omega} resistor with a 1 k{Omega} resistor (brown-black-red). What differences do you observe on the oscilloscope?
+. Replace the resistor with a 330 {Omega} one.  What differences do you observe on the oscilloscope?
+
+IMPORTANT: When you have finished your observations, discuss the results with the instructor.
+====
+
+== Controlling a servo
+
+The position of a servo is controlled using pulse-width modulation. It expects a period of 20 ms and then the positive pulse width determines the position. For the Hitec HS-422 servo a pulse width of 1500 {micro}s sends it 0{deg}. Changing that pulse width by 10 {micro}s changes the angle by 1{deg}. This means -90{deg} is produced with a pulse width of 600 {micro}s and +90{deg} with 2400 {micro}s. This servo should not be driven outside of those ranges.
+
+. Create a new application.
+. Create a new folder named `dts` at the top-level of your application (not inside any folder other than the one holding application itself). Inside of the `dts` folder create another folder `bindings`. A _binding_ is the name used in Zephyr for a file that provides a high-level description of a type of hardware. Zephyr looks for these in this particular folder.
+. Create a file named `pwm-servo.yaml` inside of the `bindings` folder. Add the following to that file:
++
+[source,yaml]
+----
+description: PWM-driven servo
+compatible: "pwm-servo" # <1>
+include: base.yaml # <2>
+properties:
+  pwms: # <3>
+    required: true
+    type: phandle-array
+    description: PWM specifier driving the servo
+  min-pulse: # <4>
+    required: true
+    type: int
+    description: Minimum pulse width (nanoseconds)
+  max-pulse: # <5>
+    required: true
+    type: int
+    description: Maximum pulse width (nanoseconds)
+----
+<1> This is the name we will use in the devicetree overlay to indicate that this binding should be used.
+<2> Bindings can be layered on top of others. In this case this one is built on the `base` binding which provides properties expected for all bindings.
+<3> The servo requires a PWM specifier, the same as the `pwm-leds` used earlier.
+<4> A new property to hold the minimum pulse width is added. Because servos may be damaged if driven outside of their operating range it is a required property.
+<5> The maximum pulse width is also required.
++
+. Edit `prj.conf` to enable both pulse-width modulation and logging. We will also set the logging level for the PWM module so that only errors will be displayed.
++
+[source]
+----
+CONFIG_PWM=y
+CONFIG_PWM_LOG_LEVEL_ERR=y
+CONFIG_LOG=y
+----
++
+. Generate a build configuration and create an overlay.
+. Edit the overlay file. We are going to add the servo using the binding just created.
++
+[source,dts]
+----
+/{
+  servo: servo {
+    compatible = "pwm-servo"; // <1>
+    pwms = <&pwm0 0 PWM_MSEC(20) PWM_POLARITY_NORMAL>; // <2>
+    min-pulse = <PWM_USEC(600)>; // <3>
+    max-pulse = <PWM_USEC(2400)>; // <4>
+  };
+};
+----
+<1> The `compatible` property indicates the binding that should be used.
+<2> The default period for a servo is set.
+<3> A property holding the minimum allowed pulse width is created and set to 600 {micro}s using one of the convenience macros (which actually converts this to a value in nanoseconds).
+<4> The maximum pulse width is also defined.
++
+. Continuing to edit the overlay, create custom settings for the PWM controller so it knows what to do during normal power mode and during power-saving sleep mode. These also define which pin is controlled by the PWM controller.
++
+[source,dts]
+----
+&pwm0 {
+  status = "okay"; // <1>
+  pinctrl-0 = <&pwm0_my_default>;
+  pinctrl-1 = <&pwm0_my_sleep>;
+  pinctrl-names = "default", "sleep";
+};
+
+&pinctrl {
+  pwm0_my_default: pwm0_my_default {
+    group1 {
+      psels = <NRF_PSEL(PWM_OUT0, 0, 3)>;
+    };
+  };
+
+  pwm0_my_sleep: pwm0_my_sleep {
+    group1 {
+      psels = <NRF_PSEL(PWM_OUT0, 0, 3)>;
+      low-power-enable; // <5>
+    };
+  };
+};
+----
++
+. You are now ready for the actual application code in `main.c`.
++
+[source,c]
+[[program-servo-twister]]
+.Send a servo to a series of pre-defined angles.
+----
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/drivers/pwm.h>
+
+LOG_MODULE_REGISTER(Lab05_Servo, LOG_LEVEL_INF);
+
+#define SERVO DT_NODELABEL(servo)
+const struct pwm_dt_spec servo = PWM_DT_SPEC_GET(SERVO);
+#define PWM_PERIOD PWM_MSEC(20)
+
+/* Use DT_PROP() to get max and min pulse widths from overlay */
+#define SERVO_MIN_PULSE_WIDTH DT_PROP(SERVO, min_pulse) // <1>
+#define SERVO_MAX_PULSE_WIDTH DT_PROP(SERVO, max_pulse)
+
+/** <2>
+ * @brief Convert angle to PWM pulse width
+ * 
+ * @param angle Servo angle (integer degrees)
+ * @return int Pulse width (in nanoseconds)
+ */
+int angle_to_pulsewidth(int angle) { // <3>
+    int pw0 = PWM_USEC(1500); // pulse width for 0 deg
+    int deg_to_pw = PWM_USEC(10); // 1 deg = 10 us
+    int pw = pw0 + angle*deg_to_pw;
+    if (pw < SERVO_MIN_PULSE_WIDTH) { // <4>
+        pw = SERVO_MIN_PULSE_WIDTH;
+        LOG_ERR("Min servo angle is -90 deg. Attempted to set to %d", angle);
+    }
+    if (pw > SERVO_MAX_PULSE_WIDTH) {
+        pw = SERVO_MAX_PULSE_WIDTH;
+        LOG_ERR("Max servo angle is +90 deg. Attempted to set to %d", angle);
+    }
+    return pw;
+}
+
+int main(void) {
+    int angles[] = {0, +30, -30, +60, -60, +90, -90}; // <5>
+    int num_angles = 7;
+
+    if (!pwm_is_ready_dt(&servo)) {
+        LOG_ERR("PWM controller is not ready");
+        return -1;
+    }
+
+    while (true) {
+        for (int i = 0; i < num_angles; i++) {
+            LOG_INF("Angle set to %d deg", angles[i]); // <6>
+            pwm_set_pulse_dt(&servo, angle_to_pulsewidth(angles[i]));
+            k_msleep(2000);
+        }
+    }
 }
 ----
 
 
 
-=== Creating variable outputs with a PWM
 
-====
-[[exercise-led-brightness-control]]
-.Exercise {lab}.{counter:exercise}
-You will use the same program to vary the brightness of an external LED. In this case your eye is doing the averaging. 
 
-. Remove the motor, transistor, and diode.  Instead connect the red LED and a 330 {Omega} resistor in series between p21 and ground.
-. Modify <<program-motor-speed-control>> to have `n` equal to 10.
-. Change `ThisThread::sleep_for(30000ms/n)` to `ThisThread::sleep_for(15000ms/n)`.
-. Run your program.  If you are a normal human being you should not be able to detect that the LED is actually turning off and on very rapidly.  Are there any of you with superhuman senses?
-. Repeat with periods of 0.01 s, 0.02 s, 0.05 s, 0.10 s, 0.20 s, and 0.50 s.  When do you first notice the flicker?
-
-IMPORTANT: When you have finished your observations, discuss the results with the instructor.
-====
