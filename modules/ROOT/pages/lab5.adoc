@@ -306,7 +306,7 @@ const struct pwm_dt_spec servo = PWM_DT_SPEC_GET(SERVO);
  * @brief Convert angle to PWM pulse width
  * 
  * @param angle Servo angle (integer degrees)
- * @return int Pulse width (in nanoseconds)
+ * @return int representing the pulse width (in nanoseconds)
  */
 int angle_to_pulsewidth(int angle) { // <3>
     int pw0 = PWM_USEC(1500); // pulse width for 0 deg
@@ -341,7 +341,74 @@ int main(void) {
     }
 }
 ----
+<1> Access the `min-pulse` and `max-pulse` properties from the hardware overlay. Notice that the `-` found in the devicetree property name becomes `_` when referring to devicetree property names in the C code.
+<2> It is good practice to provide a comment block describing the inputs and output of a function as well as what it does. This one is formatted in the Doxygen style.
+<3> A function is defined that takes one input argument (an integer representing an angle in degrees) and the output is also an integer (the number of nanoseconds the pulse width should be for the servo to go to that angle).
+<4> The minimum and maximum pulse widths are not automatically enforced. The code you write needs to do that. In this case, if the pulse width is too small, the value is set to the minimum and an error message is sent to the logger module.
+<5> Seven angles are stored in an array of integers.
+<6> The angles stored in the array are accessed by their index. C starts counting from 0 so the first angle is accessed through `angles[0]` and the seventh angle through `angles[6]`.
++
+. The Hitec HS-422 servo requires more power than can supplied directly by the nRF52840 DK development board. An external battery pack is required, but it must be used carefully to avoid damaging your development board.
++
+NOTE: An alternative approach is to use a micro servo such as the TowerPro SG92R. This less powerful servo can be driven directly from voltages supplied by the development board.
++
+.. Connect the ground bus of a breadboard to a GND socket on the development board.
+.. Connect the black lead from a 6 V battery pack to the same ground bus. 
+.. Connect the black lead of the servo to the ground bus. It is important that all parts of the system agree on the ground voltage.
++
+CAUTION: The power bus on the breadboard should have no connections other than those to be described. Connecting the 6 V of the battery pack (directly or indirectly) to the development board will damage it.
++
+.. Connect the red lead of the battery pack to the power bus.
+.. Connect the red lead of the servo to the power bus.
+.. Connect the yellow lead of the servo to P0.03.
+. Build your application and flash it to the development board.
+. Start a terminal connection so you can observe logging messages.
+. You should observe the servo rotating through a sequence of angles.
 
+== Your Turn
+
+=== Servo controller
+
+====
+[[assignment-servo-control]]
+.Assignment {lab}.{counter:assignment}
+In this exercise you will move the servo to a location selected button presses.
+
+* BUTTON 1: decreases the current angle by 10{deg}
+* BUTTON 2: increases the current angle by 10{deg}
+* BUTTON 3: sets the angle to 0{deg}
+* BUTTON 4: sets the angle to 90{deg} if the current angle is positive or -90{deg} if the current angle is negative
+
+
+. Access the GitHub Classroom link for this assignment on Blackboard.
+. Follow the usual steps for getting started with a repository from GitHub Classroom.
+. Write your code to control the servo. A button should only perform the specified behavior when it has been pressed and then released.
+. Test your program.
+. Update the `README.md`.
+
+IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation (along with your reflection) and upload this to Blackboard.
+====
+
+=== Dimmer control
+
+====
+[[assignment-dimmer-control]]
+.Assignment {lab}.{counter:assignment}
+
+In this assignment you will use three buttons to control the brightness of an external LED. The LED should have brightness levels ranging from 0% (off) to 100% (maximum brightness), adjustable in increments of 10%.
+
+* BUTTON 1 increases the brightness (duty cycle) by 10%.
+* BUTTON 2 decreases the brightness (duty cycle) by 10%.
+* BUTTON 3 toggles the light off or on. The brightness setting should be remembered when it is toggled off so that when toggled on again the previous brightness setting is restored.
+
+Each button press and release should trigger the corresponding action just once. 
+
+. Create the repository using the GitHub Classroom link on Blackboard.
+. Update `main.c` and `README.md`.
+. Test your program.
+
+IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation (along with your reflection) and upload this to Blackboard.
+====
 
 
 
