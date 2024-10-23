@@ -260,7 +260,7 @@ CONFIG_LOG=y
 [source,dts]
 ----
 &pwm0 {
-  status = "okay"; // <1>
+  status = "okay";
   pinctrl-0 = <&pwm0_my_default>;
   pinctrl-1 = <&pwm0_my_sleep>;
   pinctrl-names = "default", "sleep";
