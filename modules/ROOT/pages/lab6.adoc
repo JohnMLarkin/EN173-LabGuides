@@ -1,0 +1,81 @@
+:lab: 6
+:icons: font
+:sectnums:
+:imagesdir: ../images
+:source-language: c
+:listing-caption: Program
+:example-caption: Exercise
+:xrefstyle: short
+:experimental:
+:stem: latexmath
+:nrf-toolchain: v2.6.1
+:nrf-sdk: 2.6.1
+:Omega: &#937;
+:Delta: &#916;
+:micro: &#181;
+:deg: &#176;
+= Lab 6: Analog input
+
+== Getting started with analog input
+
+In this exercise you will read an analog input (created with a potentiometer). The value received by the microcontroller will be sent using the logger to the host computer via USB and viewed using a terminal program.
+
+The analog-to-digital converter (ADC) on the nRF52840 has a maximum resolution (in normal operating mode) of 12 bits, with 14 bits possible through oversampling.
+
+Only certain pins can be mapped to the ADC on the nRF52840, but which pins are mapped to particular channels is determined by the user.
+
+.Analog input pin names on the nRF52840.
+[[table-adc-pin-names]]
+[cols="1,1,1"]
+|===
+|GPIO |Analog input name |Arduino label
+
+|P0.02 |AIN0 |
+|P0.03 |AIN1 |A0
+|P0.04 |AIN2 |A1
+|P0.05 |AIN3 |
+|P0.28 |AIN4 |A2
+|P0.29 |AIN5 |A3
+|P0.30 |AIN6 |A4
+|P0.31 |AIN7 |A5
+|VDD |VDD |
+|===
+
+
+
+[source]
+.The ADC and logging modules must be enabled in `prj.conf`.
+----
+CONFIG_LOG=y
+CONFIG_ADC=y
+----
+
+[source,dts]
+.An ADC channel is specified and made available in the overlay.
+----
+/{
+  zephyr,user { // <1>
+    io-channels = <&adc 0>; // <2>
+  };
+};
+
+&adc {
+  #address-cells = <1>;
+  #size-cells = <0>;
+  status = "okay";
+  channel@0 {
+    reg = <0>;
+    zephyr,reference = "ADC_REF_INTERNAL"; // <3>
+    zephyr,gain = "ADC_GAIN_1_6"; // <4>
+    zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+    zephyr,input-positive = <NRF_SAADC_AIN0>; // <5>
+    zephyr,resolution = <12>; // <6>
+  };
+};
+----
+<1> The `zephyr,user` node of the devicetree is a special node that does not require a corresponding binding file.
+<2> Channel 0 of the ADC is connected to the `io-channels` property.
+<3> Uses a 0.6 V reference that is internal to the ADC.
+<4> Sets the gain to 1/6 so the voltage on the input pin is scaled to not exceed the reference voltage. There are additional limits on an input pin:  its voltage should never fall below ground or exceed the board's VDD (nominally 3.3 V).
+<5> If using the nRF52840, this connects P0.02 to this channel of the ADC. See <<table-adc-pin-names>>.
+<6> Use the full 12-bit resolution of the ADC.

@@ -106,3 +106,18 @@ Additional hardware required:
 
 ****
 ====
+
+.xref::lab6.adoc[Lab 6 -- Analog Input]
+[%collapsible]
+====
+****
+In this set of activities you will:
+
+* learn stuff
+
+Additional hardware required:
+
+* stuff
+
+****
+====
