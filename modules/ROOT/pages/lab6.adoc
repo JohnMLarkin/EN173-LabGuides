@@ -20,7 +20,7 @@
 
 In this exercise you will read an analog input (created with a potentiometer). The value received by the microcontroller will be sent using the logger to the host computer via USB and viewed using a terminal program.
 
- Unlike general digital input and output, only certain pins can be mapped to the ADC on the nRF52840, but which pins are mapped to particular channels is determined by the user. The available analog pins are given symbolic names, specified in <<table-adc-pin-names>>.
+Unlike general digital input and output, only certain pins can be mapped to the ADC on the nRF52840, but which pins are mapped to particular channels is determined by the user. The available analog pins are given symbolic names, specified in <<table-adc-pin-names>>.
 
 .Analog input pin names on the nRF52840.
 [[table-adc-pin-names]]
@@ -192,7 +192,7 @@ The TMP36 is an analog temperature sensor working over the range -40{deg}C to +1
 
 [#img-tmp36-pinout]
 .Pinout diagram for the TMP36 temperature sensor.
-image::tmp36-pinout.jpg[TMP36 pinout,500,pdfwidth=100%]
+image::lab6/tmp36-pinout.jpg[TMP36 pinout,500,pdfwidth=100%]
 
 Previous examples have used a gain setting of 1/6, permitting input voltages up to 3.0 V (VDD). If we are using this to measure room air temperatures we might never expect a temperature above 40{deg}C. This means the highest voltage that should be produced by the TMP36 is 900 mV. The goal is to select a gain setting that brings 900 mV to under 600 mV (the internal voltage reference of the ADC), but as close to it as possible. Given the possible options, a gain of 1/2 is the best fit to our criteria.
 
