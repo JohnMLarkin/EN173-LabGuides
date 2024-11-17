@@ -20,9 +20,7 @@
 
 In this exercise you will read an analog input (created with a potentiometer). The value received by the microcontroller will be sent using the logger to the host computer via USB and viewed using a terminal program.
 
-The analog-to-digital converter (ADC) on the nRF52840 has a maximum resolution (in normal operating mode) of 12 bits, with 14 bits possible through oversampling.
-
-Only certain pins can be mapped to the ADC on the nRF52840, but which pins are mapped to particular channels is determined by the user.
+ Unlike general digital input and output, only certain pins can be mapped to the ADC on the nRF52840, but which pins are mapped to particular channels is determined by the user. The available analog pins are given symbolic names, specified in <<table-adc-pin-names>>.
 
 .Analog input pin names on the nRF52840.
 [[table-adc-pin-names]]
@@ -42,14 +40,19 @@ Only certain pins can be mapped to the ADC on the nRF52840, but which pins are m
 |===
 
 
-
+. Create a new application.
+. Edit `prj.conf` to enable both logging and analog-to-digital conversion.
++
 [source]
 .The ADC and logging modules must be enabled in `prj.conf`.
 ----
 CONFIG_LOG=y
 CONFIG_ADC=y
 ----
-
++
+. Generate a build configuration and create an overlay.
+. Edit the overlay file.
++
 [source,dts]
 .An ADC channel is specified and made available in the overlay.
 ----
@@ -78,4 +81,307 @@ CONFIG_ADC=y
 <3> Uses a 0.6 V reference that is internal to the ADC.
 <4> Sets the gain to 1/6 so the voltage on the input pin is scaled to not exceed the reference voltage. There are additional limits on an input pin:  its voltage should never fall below ground or exceed the board's VDD (nominally 3.3 V).
 <5> If using the nRF52840, this connects P0.02 to this channel of the ADC. See <<table-adc-pin-names>>.
-<6> Use the full 12-bit resolution of the ADC.
+<6> Use the full 12-bit resolution of the ADC. The analog-to-digital converter (ADC) on the nRF52840 has a maximum resolution (in normal operating mode) of 12 bits.
++
+. Enter <<program-basic-adc>> into `main.c`.
++
+[source,c]
+[[program-basic-adc]]
+.Read an analog input and print its value in both raw and millivolt format.
+----
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/adc.h>
+#include <zephyr/logging/log.h>
+
+LOG_MODULE_REGISTER(Lab6_Program1, LOG_LEVEL_DBG);
+
+const struct adc_dt_spec adc_channel = ADC_DT_SPEC_GET(DT_PATH(zephyr_user)); // <1>
+
+int main(void) {
+    int err;
+    uint16_t buf; // <2>
+    int val_mV; // <3>
+    struct adc_sequence pot_reading = { // <4>
+        .buffer = &buf, // <5>
+        .buffer_size = sizeof(buf) // <6>
+    };
+
+    if (!adc_is_ready_dt(&adc_channel)) {
+        LOG_ERR("ADC controller device is not ready");
+        return -1;
+    }
+    err = adc_channel_setup_dt(&adc_channel); // <7>
+    if (err < 0) {
+        LOG_ERR("Could not setup channel.");
+        return -1;
+    }
+    err = adc_sequence_init_dt(&adc_channel, &pot_reading); // <8>
+    if (err < 0) {
+        LOG_ERR("Could not initialize ADC sequence.");
+        return -1;
+    }
+
+    while (true) {
+        
+
+        err = adc_read_dt(&adc_channel, &pot_reading); // <9>
+        if (err < 0) {
+            LOG_ERR("Could not read");
+            continue;
+        }
+        val_mV = (int)buf; // <10>
+        err = adc_raw_to_millivolts_dt(&adc_channel, &val_mV); // <11>
+        if (err < 0) {
+            LOG_INF("ADC reading: raw = %d", buf);
+        } else {
+            LOG_INF("ADC reading: raw = %d, volts = %d mV", buf, val_mV);
+        }
+        k_msleep(2000);
+    }
+}
+----
+<1> The `zephyr,user` node did not have a label or an alias. To refer to it, we needed to use its _path_. Devicetree names can include commas and dashes, put those must be changed to underscores when referring to them in C code. Thus the `zephyr,user` node is referenced with the name `zephyr_user`.
+<2> Declare an unsigned (non-negative) 16-bit integer variable to hold the raw reading from the ADC.
+<3> An `int` in Zephyr is a signed 32-bit integer.
+<4> The ADC requires an `adc_sequence` structure. This one is named `pot_reading` (pot is common shorthand for potentiometer). There are additional elements of this structure that could be specified, but in this program only the essentials will be set: `buffer` and `buffer_size`.
+<5> When an `&` is placed before a variable name in C, it indicates that the memory address itself of this variable is retrieved, rather than the value stored at that location. By telling the ADC this memory address, it will be able to put values there (which we will access using the usual name, via the name `buf`).
+<6> It is possible for an ADC to read multiple values. When it does that, it starts writing the first value at the address specified by `buffer` and subsequent values are placed in the following memory addresses. The ADC needs to be told how many memory addresses have been set aside for this so it doesn't write to a memory address that is being used for something else. The `sizeof` returns the number of bytes associated with a particular variable. For a 16-bit unsigned integer, that is 2 bytes.
+<7> Preparing the ADC for use is a two-step process. First, the ADC channel is configured.
+<8> The second step is to link an `adc_sequence` structure to the ADC channel.
+<9> Calling `adc_read_dt` triggers the actual analog-to-digital conversion. That value is stored in `buf` (emember that `pot_reading` contained its memory address).
+<10> This is an example of _type casting_. It takes a 16-bit unsigned integer and reformats it as a 32-bit signed integer. At this point `val_mV` holds the same value as `buf`, but in a different sized container.
+<11> The memory location of `val_mV` is given to `adc_raw_to_millivolts_dt`. It uses this to read the raw value stored there. It then uses its knowledge of the ADC settings to convert that raw value to one in millivolts. The memory location is then used to update `val_mV` so it instead has the value in millivolts.
++
+. Make a connection between GND on the development board and the ground bus on a breadboard.
+. Make connection between VDD on the development board and a power bus on the breadboard. It will be more convenient if it is the power bus adjacent to the ground bus that you connected in the previous step.
+. Connect the black wire of the potentiometer to the ground bus and the red wire to the power bus.
+. Connect the green wire of the potentiometer to a terminal strip on the breadboard. Also make a connection from that terminal strip to P0.02.
+. Build your application and flash it to the development board.
+. Observing the log messages printed to the terminal, turn the potentiometer knob. The low end of the range should be close to 0 V and the high end of the range should be 3.0 V if you are powering your development board via USB.
+
+====
+[[exercise-analog-vs-dmm]]
+.Exercise {lab}.{counter:exercise}
+
+. Connect the *1+* flywire of the Analog Discovery to the same terminal strip as the green wire of the potentiometer.
+. Connect both the *1-* and image:arrow-down.svg[] flywires to ground.
+. Start _Waveforms_ and open the Voltmeter application. Click btn:[Run] to continuously update the readings.
+. Using the voltmeter as a guide, adjust the potentiometer knob until you produce a DC voltage of 1.5 V (as close as possible).  Record the two analog input values reported by the microcontroller (the raw value and the millivolt value).
+. Repeat these measurements for potentiometer settings producing voltmeter readings of 0.1 V and 2.9 V.
+====
+
+=== Measuring light with a light-dependent-resistor
+
+You will be using a light-dependent resistor (photocell).  Your goal is to determine the best resistor to use in the voltage divider so you get maximum sensitivity under the conditions you might encounter indoors.
+
+====
+[[exercise-LDR]]
+.Exercise {lab}.{counter:exercise}
+
+. Construct a voltage divider consisting of a 10 k{Omega} resistor and the LDR, with the resistor connected to the power bus and the LDR connected to the ground bus.  Connect a wire to the junction between the resistor and the LDR. The other end of the wire should go to P0.02.
+. Using <<program-basic-adc>>, record the millivolt reading for the following conditions:
+.. the LDR is covered
+.. the LDR is exposed to bright light (such as the "`flashlight`" of a smartphone)
+. Repeat the light and dark measurements for two other resistors: 4.7 k{Omega} and 47 k{Omega}.
+. For the particular LDR that you have, which resistor should you choose to get the greatest difference between the light and dark readings?
+====
+
+=== Measuring temperature with an analog sensor
+
+The TMP36 is an analog temperature sensor working over the range -40{deg}C to +125{deg}C. The TMP36 produces a voltage of 750 mV when it is at a temperature of 25{deg}C.  Each 1{deg}C temperature increase causes the voltage to increase by 10 mV. It comes in a standard package called TO-92-3, as shown in <<img-tmp36-pinout>>.  Many other things come in the same package so carefully look for the TMP36 label in tiny print on its face.
+
+[#img-tmp36-pinout]
+.Pinout diagram for the TMP36 temperature sensor.
+image::tmp36-pinout.jpg[TMP36 pinout,500,pdfwidth=100%]
+
+Previous examples have used a gain setting of 1/6, permitting input voltages up to 3.0 V (VDD). If we are using this to measure room air temperatures we might never expect a temperature above 40{deg}C. This means the highest voltage that should be produced by the TMP36 is 900 mV. The goal is to select a gain setting that brings 900 mV to under 600 mV (the internal voltage reference of the ADC), but as close to it as possible. Given the possible options, a gain of 1/2 is the best fit to our criteria.
+
+The long jumper wires commonly used while prototyping can pick up electromagnetic noise on this scale, so we will reduce that noise through averaging. The ADC can be configured to make multiple measurements as part of a single read command. We can also improve performance clustering the wires going to the ADC, GND, and VDD. To do this, we will switch the analog input to AIN1 (P0.03).
+
+The `zephyr,user` node is not the only place we can use an ADC. In this exercise you will begin the work that would be needed to create a device driver for the Analog Device's TMP36. That requires creation of the appropriate binding file, similar to what was done previously with the servo.
+
+. Connect pin 1 of the TMP36 (the left leg when looking at its flat front) to the power bus strip. The power bus strip should be connected to the development board VDD.
+. Connect pin 2 of the TMP36 (the middle leg) to P0.03
+. Connect pin 3 of the TMP36 (the right leg) to the ground bus.  As usual, the ground bus should also be connected to the development board GND.
+. Create a new application.
+. Create a new folder named `dts` at the top-level of your application (not inside any folder other than the one holding application itself). Inside of the `dts` folder create another folder `bindings`.
+. Create a file named `adi,tmp36.yaml` inside of the `bindings` folder. It is standard practice to name a binding file as follows:
+    . Begin with an abbreviated form of the manufacturer's name. In this case the customary abbreviation for Analog Devices is `adi` (the same as its stock ticker).
+    . This is followed by a comma and then the model of the device.
+    . All of this is done using lowercase.
+. Add the following to that binding file:
++
+[source,yaml]
+----
+description: Analog Devices analog temperature sensor TMP36
+compatible: "adi,tmp36"
+include: sensor-device.yaml
+properties:
+  io-channels:
+    required: true
+    description: ADC channel for temperature sensor
+  vtemp25:
+    type: int
+    default: 750
+    description: |
+      Temperature sensor voltage at 25 degrees Celsius
+      in millivolts
+  sensor-slope:
+    type: int
+    default: 10
+    description: |
+      Temperature sensor slope in millivolts per degree Celsius
+----
++
+. Generate a build configuration and create an overlay.
+. Edit the overlay file. We are going to add the TMP36 using the binding just created.
++
+[source,dts]
+----
+&adc {
+  #address-cells = <1>;
+  #size-cells = <0>;
+  status = "okay";
+  channel@0 {
+    reg = <0>;
+    zephyr,gain = "ADC_GAIN_1_2";
+    zephyr,reference = "ADC_REF_INTERNAL";
+    zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+    zephyr,input-positive = <NRF_SAADC_AIN1>;
+    zephyr,resolution = <12>;
+  };
+};
+
+/{
+  temp0: temp0 {
+    compatible = "adi,tmp36";
+    io-channels = <&adc 0>;
+  };
+};
+----
++
+. Edit `prj.conf` to enable analog-to-digital conversion, logging, and output of floating point numbers.
++
+[source]
+----
+CONFIG_ADC=y
+CONFIG_LOG=y
+CONFIG_CBPRINTF_FP_SUPPORT=y
+----
++
+. You are now ready for the actual application code in `main.c`.
++
+[source,c]
+[[program-analog-temperature]]
+.Measure temperature using a TMP36 analog sensor.
+----
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/adc.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/devicetree.h>
+
+LOG_MODULE_REGISTER(AnalogTemp, LOG_LEVEL_DBG);
+
+#define NUM_ADC_READINGS    10
+
+#define TMP36 DT_NODELABEL(temp0)
+const struct adc_dt_spec tmp36 = ADC_DT_SPEC_GET(TMP36);
+
+/* Use DT_PROP() to get volt-to-temp parameters */
+#define MV_AT_25C DT_PROP(TMP36, vtemp25)
+#define MV_PER_DEG_C DT_PROP(TMP36, sensor_slope)
+
+int main(void) {
+    int err;
+    uint16_t buf[NUM_ADC_READINGS]; // <1>
+    int val_mV;
+    float avg_mV; // <2>
+    float T_in_C;
+    struct adc_sequence_options options = { // <3>
+        .extra_samplings = NUM_ADC_READINGS-1, // <4>
+        .interval_us = 100 // <5>
+    };
+    struct adc_sequence tmp_reading = {
+        .options = &options, // <6>
+        .buffer = buf,
+        .buffer_size = sizeof(buf) // <7>
+    };
+
+    if (!adc_is_ready_dt(&tmp36)) {
+        LOG_ERR("ADC controller device is not ready");
+        return -1;
+    }
+    err = adc_channel_setup_dt(&tmp36);
+    if (err < 0) {
+        LOG_ERR("Could not setup channel.");
+        return -1;
+    }
+    err = adc_sequence_init_dt(&tmp36, &tmp_reading);
+    if (err < 0) {
+        LOG_ERR("Could not initialize ADC sequence.");
+        return -1;
+    }
+
+    while (true) {
+        err = adc_read_dt(&tmp36, &tmp_reading);
+        if (err < 0) {
+            LOG_ERR("Could not read. Error code %d", err);
+            k_msleep(2000);
+            continue;
+        }
+        avg_mV = 0.0; // <8>
+        for (int i = 0; i < NUM_ADC_READINGS; i++) { // <9>
+            val_mV = (int)buf[i];
+            adc_raw_to_millivolts_dt(&tmp36, &val_mV);
+            avg_mV = avg_mV + (float)val_mV; // <10>
+        }
+        avg_mV = avg_mV/NUM_ADC_READINGS; // <11>
+        T_in_C = 25.0 + (avg_mV - (float)MV_AT_25C)/(float)MV_PER_DEG_C; // <12>
+        LOG_INF("T = %.1f deg C", T_in_C); // <13>
+        k_msleep(5000);
+    }
+}
+----
+<1> The buffer for ADC values must now be an array because multiple values will be read.
+<2> A `float` is required to store the average of multiple measurements because it will result in a non-integer value.
+<3> A structure to hold optional values that can be used when configuring an `adc_sequence`.
+<4> One measurement always take place in an ADC reading. This is the number of _additional_ readings so it is one less than the total number of readings.
+<5> The time between the start of sequential ADC conversions, in microseconds. Note that it is _not_ the time between the completion of one conversion and the beginning of the next. This means that if it is set to less than the time required for a single conversion to complete, an error will be generated. 
+<6> The options previously stored are now added to the `adc_sequence` structure.
+<7> This is the size of the buffer (in bytes).
+<8> This variable will first be used to accumulate the sum of the measurement values. It must be set to 0 before those values are added to it.
+<9> A loop over all of the measurements.
+<10> Cast each measured millivolt value from an integer to a float before adding it to the accumulating sum.
+<11> The average is calculated by dividing the sum by the number of measurements.
+<12> Convert the average millivolt reading to a temperature using the sensor parameters.
+<13> The temperature is a floating point number so it must be displayed using the `%f` specifier. The `.1` between the `%` and the `f` indicates that it should be displayed to the tenths place.
+
+== Revisiting digital input
+
+In this exercise you will revisit digital input, using the potentiometer to create a variable voltage but with the input now configured as digital, rather than analog. You will observe the digital logic levels.
+
+#NEEDS WORK#
+
+====
+[[exercise-digital-logic-levels]]
+.Exercise {lab}.{counter:exercise}
+
+. Move the green lead of the potentiometer to row 30 of the breadboard.  Connect a lead from row 30 to mbed p20. Also connect the *1+* flywire of the _Analog Discovery 2_ to row 30.
+. Connect *1-* and icon:arrow-down[] to the ground bus.
+. Create a new project containing <<program-logic-levels>> and upload it to the mbed.
+. Start _Waveforms_ and open the Voltmeter application. Click btn:[Run] to continuously update the readings.
+. Turn the potentiometer knob until the DC voltage reads 0.
+. Slowly turn the potentiometer knob until the LED turns on.  Record the voltage.
+. Continue turning the potentiometer to produce an increasing voltage until the DC voltage reads 3.3 V.
+. Slowly turn the potentiometer knob the other way until the LED turns off. Record this voltage.
+. Starting from here, increase the voltage again until the LED turns on. Do you get the same voltage as you did the first time?
+. Decrease the voltage until the LED turns off. Is the voltage consistent with what you found earlier?
+====
+
+== Your Turn
+
+[NOTE]
+====
+The directions that follow are intended for students in my _Introduction to Embedded Systems_ course at https://www.whitworth.edu[Whitworth University]. However, an alternative link to a template is provided for non-Whitworth students.
+====
+

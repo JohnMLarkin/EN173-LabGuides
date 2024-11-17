@@ -98,11 +98,11 @@ Additional hardware required:
 ****
 In this set of activities you will:
 
-* learn stuff
+* #learn stuff#
 
 Additional hardware required:
 
-* stuff
+* #stuff#
 
 ****
 ====
@@ -113,11 +113,11 @@ Additional hardware required:
 ****
 In this set of activities you will:
 
-* learn stuff
+* #learn stuff#
 
 Additional hardware required:
 
-* stuff
+* #stuff#
 
 ****
 ====
