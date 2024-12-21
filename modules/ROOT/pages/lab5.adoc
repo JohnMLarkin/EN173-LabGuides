@@ -1,4 +1,5 @@
 :lab: 5
+:page-downloadlink: lab-5.pdf
 :icons: font
 :sectnums:
 :imagesdir: ../images
