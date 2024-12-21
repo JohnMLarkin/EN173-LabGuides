@@ -1,4 +1,5 @@
 :lab: 1
+:page-downloadlink: lab-1.pdf
 :icons: font
 :imagesdir: ../images
 :sectnums:
@@ -360,7 +361,7 @@ In the _Introduction to Embedded Systems_ course that I teach at https://www.whi
 [[assignment-internal-led-while-loops]]
 .Assignment {lab}.{counter:assignment}
 
-. You need to begin by accessing the GitHub Classroom assignment link f(as found on Blackboard).
+. You need to begin by accessing the GitHub Classroom assignment link (as found on Blackboard).
 +
 NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a starting template at https://github.com/EmbedUni/lab01-yt1. You will want to click on the btn:[Use this template] button.
 . A code repository was created for you when you accessed the assignment. Copy the URL for the repository.
