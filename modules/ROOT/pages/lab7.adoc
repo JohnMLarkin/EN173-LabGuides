@@ -104,7 +104,7 @@ int main(void) {
 
     if (!spi_is_ready_dt(&spispec)) {
         LOG_ERR("Error: SPI device is not ready.");
-        return 0;
+        return -1;
     }
 
     uint8_t tx_buffer[] = {0xA1};
@@ -287,7 +287,7 @@ int main(void) {
 
     if (!spi_is_ready_dt(&acc)) {
         LOG_ERR("Error: SPI device is not ready.");
-        return 0;
+        return -1;
     }
 
     // Configure data format
@@ -296,7 +296,6 @@ int main(void) {
     err = spi_write_dt(&acc, &config_spi_buf_set);
     if (err < 0) {
         LOG_ERR("spi_write_dt failed. Error = %d", err);
-        return err;
     }
     k_msleep(CHILL_TIME); // <5>
 
@@ -306,7 +305,6 @@ int main(void) {
     err = spi_write_dt(&acc, &config_spi_buf_set);
     if (err < 0) {
         LOG_ERR("spi_write_dt failed. Error = %d", err);
-        return err;
     }
     k_msleep(CHILL_TIME);
 
@@ -319,7 +317,6 @@ int main(void) {
         spi_release_dt(&acc); // <7>
         if (err < 0) {
             LOG_ERR("spi_transceive_dt failed. Error = %d", err);
-            return err;
         }
         // Combine two bytes to get 16-bit raw acceleration values
         data[0] = (rx_buffer[1] << 8) | rx_buffer[0]; // <8>
