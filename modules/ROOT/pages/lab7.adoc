@@ -139,10 +139,10 @@ int main(void) {
 . There is no need to connect anything to p0.31. This is the MISO (master in/slave out) pin and there is no slave to listen to (yet).
 . Start _Waveforms_ and launch the *Logic* app.
 . Click on the green plus sign to add a logic channel to be monitored. +
-image:Add-Logic-Channel.png[]
+image:lab7/Add-Logic-Channel.png[]
 . Select SPI for the logic protocol and then change *Format* to Hexadecimal.  If you followed the directions above, then Select (slave select), Clock, and Data (MOSI) should be fine with their defaults.
 . Next, change the Trigger type from *Simple* to *Protocol*. +
-image:Trigger-type-protocol.png[]
+image:lab7/Trigger-type-protocol.png[]
 . Select SPI as the protocol type and then Start as the condition to trigger on.
 . In the Time settings, set Position to 50 us and Base to 20 us/div.
 . Click btn:[Single] acquisition.
@@ -162,7 +162,7 @@ image:Trigger-type-protocol.png[]
 . Modify <<program-simple-spi-master>> so that SPI is configured for Mode 1 operation. Do this by appending `| SPI_MODE_CPHA` to the `SPIOP` definition.
 . Run this program and acquire the transmission in the *Logic* app.
 . You should notice that *Logic* has not decoded this properly.  To fix this, click on the *Edit* button +
-image:Edit-logic-configuration.png[] +
+image:lab7/Edit-logic-configuration.png[] +
 and then change *Sample* to Falling.
 . Sketch the three signals on the worksheet.  This time put arrows pointing from Clock to Data at each of the *falling* clock transmissions (as expected for mode 1).  Verify the bits of the transmission.
 . Modify <<program-simple-spi-master>> so that SPI is configured for Mode 3 operation by appending `| SPI_MODE_CPOL` to the `SPIOP` definition.
