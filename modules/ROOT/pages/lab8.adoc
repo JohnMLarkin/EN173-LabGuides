@@ -15,7 +15,7 @@
 :Delta: &#916;
 :micro: &#181;
 :deg: &#176;
-:pm: &plusmn;
+:pm: &#177;
 
 = Lab 8: Introduction to I^2^C Communication
 
