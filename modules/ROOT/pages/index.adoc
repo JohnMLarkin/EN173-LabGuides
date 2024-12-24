@@ -121,3 +121,33 @@ Additional hardware required:
 
 ****
 ====
+
+.xref::lab7.adoc[Lab 7 -- SPI Communication]
+[%collapsible]
+====
+****
+In this set of activities you will:
+
+* #learn stuff#
+
+Additional hardware required:
+
+* #stuff#
+
+****
+====
+
+.xref::lab8.adoc[Lab 8 -- I^2^C Communication]
+[%collapsible]
+====
+****
+In this set of activities you will:
+
+* #learn stuff#
+
+Additional hardware required:
+
+* #stuff#
+
+****
+====

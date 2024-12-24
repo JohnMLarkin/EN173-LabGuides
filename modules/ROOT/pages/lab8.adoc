@@ -1,0 +1,252 @@
+:lab: 8
+:page-downloadlink: lab-8.pdf
+:icons: font
+:sectnums:
+:imagesdir: ../images
+:source-language: c
+:listing-caption: Program
+:example-caption: Exercise
+:xrefstyle: short
+:experimental:
+:stem: latexmath
+:nrf-toolchain: v2.6.2
+:nrf-sdk: 2.6.2
+:Omega: &#937;
+:Delta: &#916;
+:micro: &#181;
+:deg: &#176;
+
+= Lab 8: Introduction to I^2^C Communication
+
+== Communicating with a digital temperature sensor
+
+The TMP102 is a *digital* temperature sensor that communicates using the I^2^C protocol.  It has an accuracy of 0.5{deg}C and a resolution of 0.0625{deg}C.  Its operating temperature range is -40{deg}C to +125{deg}C.
+
+The Sparkfun breakout board for the TMP102 that you will be using has integrated pull-up resistors so you will not need to include those externally. The connections between the TMP102 and the nRF52840 are given in <<table-TMP102>>.
+
+.TMP102 to nRF52840 DK connections
+[[table-TMP102]]
+|===
+| Signal | nRF52840 pin
+
+| VCC | VDD (via power bus)
+| GND | GND (via ground bus)
+| SDA | p0.26
+| SCL | p0.27
+| ALT (alert) | no connection
+| ADD0 (address) | GND (via ground bus)
+|===
+
+NOTE: On some versions of the Sparkfun breakout board for the TMP102 the ADD0 pin is internally connected to the ground bus.  If that is the case, you will not need to make the external connection. You can check this by looking for a set of pads on the board labeled ADD0. If there is a solder bridge between two pads, then the connection is made. Do not attempt to connect the ADD0 pin if it is already connected internally (and definitely do not connect it to the power bus).
+
+The TMP102 has four possible I^2^C addresses that are selected by how ADD0 is connected.  If it is connected to the ground bus, then the 7-bit address is 0x48.  If it is connected to the power bus, then the address is 0x49.  If it is connected to SDA, then the address is 0x4A.  If it is connected to SCL, then the address is 0x4B.  In your circuit it is connected to ground so the 7-bit I^2^C address you will use is 0x48. 
+
+<<program-tmp102>> reads temperatures from the TMP102 and then outputs them to the computer via USB. The TMP102 has four possible registers: one for configuration, one for reading the temperature, one for configuring a low temperature alert, and one for configuring a high temperature alert.  You will only use the first two of those registers today.
+
+. Create a new application.
+. Edit `prj.conf` to include the following:
++
+[source]
+.The I^2^C and logging modules (including float support) must be enabled.
+----
+CONFIG_I2C=y
+CONFIG_LOG=y
+CONFIG_CBPRINTF_FP_SUPPORT=y
+----
++
+. Generate a build configuration and create an overlay.
+. Edit the overlay file.
++
+[source, dts]
+.The TMP102 is configured as an I^2C device with an address of 0x48.
+----
+&i2c0 {
+  tempsensor: tmp102@48 { // <1>
+    compatible = "i2c-device";
+    reg = <0x48>; // <2>
+    status = "okay";
+  };
+};
+----
+<1> The device name is `tmp102` and the address is 0x48.
+<2> The address is 0x48.
++
+. Enter <<program-tmp102>> into your `main.c` file.
++
+[source,c]
+[[program-tmp102]]
+.Read temperature from TMP102 and send to computer
+----
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/i2c.h>
+#include <zephyr/logging/log.h>
+
+#define SLEEP_TIME_MS 1000
+#define TMP_NODE DT_NODELABEL(tempsensor)
+
+LOG_MODULE_REGISTER(Lab8A, LOG_LEVEL_INF);
+
+const struct i2c_dt_spec tempSensor = I2C_DT_SPEC_GET(TMP_NODE);
+
+int main(void) {
+    int err;
+    uint8_t buffer[3];
+    int16_t rawTemp;
+    float tempC;
+
+    if (!i2c_is_ready_dt(&tempSensor)) {
+        LOG_ERR("I2C bus not ready");
+        return -1;
+    }
+
+    buffer[0] = 0x01; // Configuration register
+    buffer[1] = 0x60; // <1>
+    buffer[2] = 0xA0; // <2>
+    err = i2c_write_dt(&tempSensor, buffer, 3);
+    if (err) {
+        LOG_ERR("I2C write failed");
+        return -1;
+    }
+    k_msleep(SLEEP_TIME_MS);
+
+    while (true) {
+        buffer[0] = 0x00; // Temperature register
+        err = i2c_write_read_dt(&tempSensor, buffer, 1, buffer, 2);
+        if (err) {
+            LOG_ERR("I2C write-read failed");
+            return -1;
+        }
+
+        rawTemp = (buffer[0] << 4) | (buffer[1] >> 4); // <3>
+        tempC = rawTemp * 0.0625; // <4>
+        LOG_INF("Temperature: %.1f C", tempC);
+
+        k_msleep(SLEEP_TIME_MS);
+    }
+}
+----
+<1> Bits 0-4 of the first configuration byte configure the alert feature (which is not used in this program). Bits 5 and 6 are fixed at 1.  Bit 7 is used to configure a power-saving one-shot conversion mode.
+<2> Bits 0-3 are not used.  Bit 4 enables 13-bit resolution rather than default 12 bit resolution.  Bit 5 is set at 1 for writes.  Bits 6 and 7 set the conversion rate (we are using the 4 Hz setting).
+<3> The temperature is a 12-bit value with the MSB in the first byte and the lower 4 bits in the second byte. To assemble the 12-bit value, the MSB is shifted left 4 bits and then the lower 4 bits are ORed in after the LSB is shifted right 4 bits.
+<4> The temperature is a 12-bit value with a resolution of 0.0625{deg}C per bit.
+
+====
+[[exercise-tmp102-i2c]]
+.Exercise {lab}.{counter:exercise}
+
+Connect the TMP102 temperature sensor as described and upload <<program-tmp102>>.  Verify that everything is working properly.
+
+IMPORTANT: Demonstrate that you have successfully constructed and coded an I^2^C interface to the TMP102.
+====
+
+====
+[[exercise-tmp102-i2c-logic]]
+.Exercise {lab}.{counter:exercise}
+
+You will use the _Analog Discovery_'s logic analyzer to observe the I^2^C between the nRF52840 and the TMP102.
+
+. Connect a ground flywire (on the _AD_) to the ground bus strip on the breadboard.
+. Connect flywire *0* (pink) to the same row as the SCL connection on the breaboard.
+. Connect flywire *1* (green) to the same row as the SDA connection on the breadboard.
+. . Start _Waveforms_ and launch the *Logic* app.
+. Click on the green plus sign to add a logic channel to be monitored.
+. Select I2C for the logic protocol. The default settings are fine.
+. Next, change the Trigger type from *Simple* to *Protocol*. Select I2C.
+. Set Base to 100 us/div and then enter 400 us as the Position.
+. Click btn:[Run] to begin repeated acquisitions.
+. You should observe the I^2^C communication between the nRF52840 and the TMP102.  The SCL line should be a square wave with a frequency of 100 kHz.  The SDA line should be a square wave with a frequency of 100 kHz and should change when the SCL line is low.  The data should be sent in 8-bit bytes with the MSB first.  The first byte is the address of the TMP102 (0x48) followed by a write bit (0) and then the first register address for the temperature values (0x00).  After a brief pause, the nRF52840 will send a repeated start condition followed by the address of the TMP102 with a read bit (1).  The TMP102 will then send the two bytes of temperature data.  The nRF52840 will then send a stop condition.
+. Heat the TMP102 with your finger and observe the temperature values change.
+. Now change the address of the TMP102 in the overlay file to 0x49.  Rebuild and upload the program.  Observe the I^2^C communication again.  The address should now be 0x49. However, that is not the actual address of the TMP102 so it does not send an acknowledgement bit. This failure to acknowledge is known as a NACK (not acknowledge) and is a common source of I^2^C communication errors. The `i2c_write_dt` command will return an error if it does not receive an acknowledge bit and the program ends.
+====
+
+== Your Turn
+
+=== Digital compass (HMC5883 version)
+
+In this assignment you will communicate with a digital compass using I^2^C.  The digital compass (HMC5883) has a 7-bit address of 0x1E.  You will read the three magnetic field components from the compass.
+
+Don't forget the pull-up resistors.  A 2.2 k{Omega} is required connecting SDA to the power bus.  The same is true of SCL.
+
+==== Configuration registers (not needed for this program)
+There are two configuration registers with addresses of 0x00 and 0x01.  You can use those to select the number of samples averaged per measurement output, the data output rate, the sensor gain, and some other less important things.  The defaults (1 sample per output, 15 Hz data rate, and 0.092 {micro}T multiplier) are fine for this program so no need to write anything!
+
+==== Mode register
+
+The address of the mode register is 0x02.  Sending it a data byte of 0x01 will place it into single measurement mode (which will then require the mode to be reset before each new measurement).  In this program you want continuous measurement mode, so send it a data byte of 0x00.
+
+==== Data output registers
+
+The data output register addresses begin at 0x03.  Read 6 bytes from this to get the three magnetic field components (two bytes per component).
+
+====
+[[assignment-magSensor-i2c]]
+.Assignment {lab}.{counter:assignment}
+
+Following the directions outlined below, create a digital compass.
+
+. Access the assignment link on Blackboard.
+.	Declare the following in your main function:
+..	`uint8_t buffer[6]`
+..	`int16_t magComponents[3]`
+..	`float magMicroT[3]`
+. Configure the sensor as described above.
+. The I^2^C interface must read in data from the sensor as data type `uint8_t`.  That is why you needed `buffer`.
+. The raw magnetic components are stored as `int16_t`.  The data type `int16_t` encodes integers using 16 bits and includes both positive and negative numbers (along with other particular details about how it is encoded).
+. Next, combine pairs of data words to get the x, y, and z components using our bitshift and OR method.  Assign these to `magComponents`.  There are two very important things to note:
+..	The MSB comes first in each pair, the opposite of the accelerometer!  Therefore, +
+`magComponent[0] = buffer[0]<<8 | buffer[1];` +
+(element 0 and 1 are flipped compared to the accelerometer).
+.. You also need to know that Honeywell (the manufacturer of the HMC5883L) is sadistic and ordered them x, *z*, and then y.  You don't want to know how long it took me to figure that out! You want your `magComponents`` to have the traditional ordering (x, y, z).
+. You can now calculate the actual magnetic field (in {micro}T) by multiplying the raw data by 0.092.  This is the default multiplier for the HMC5883L.
+. Print these three components to the computer.
+. Test your digital compass.  Are the components plausible?
+
+IMPORTANT: Take a video demonstrating successful completion of this project and upload that to Blackboard. Also, don't forget to push your final code to the remote repository.
+
+NOTE: To get truly accurate results you would also need to apply a temperature-dependent calibration factor and trigger a calibration (see the product data sheet if you are truly curious but the uncompensated results are good enough for this class).
+====
+
+=== Digital compass (LIS3MDL version)
+
+In this assignment you will communicate with a digital compass using I^2^C.  The digital compass (LIS3MDL) has a 7-bit address of 0x1C (or 0x1E if the solder jumper AD1 on the back of the board is connected). You will read the three magnetic field components from the compass and then print those.
+
+There are weak (10 k{Omega}) pull-up resistors integrated into Adafruit's breakout board for the LIS3ML so you might not need any external. If you do run into problems with communication you might find external 4.7 k{Omega} resistors for SDA and SCL do the trick.
+
+==== Control registers
+There are five control registers on the LIS3MDL that configure its features.
+
+The default settings of control register 1 (with an address of 0x20) are okay and include operating the x and y axes in low-power mode and having an output data rate of 10 Hz.
+
+The default settings of control register 2 (with an address of 0x21) are also okay. The most important is the full-scale selection of {pm}4 gauss, where 1 gauss = 0.0001 tesla. The Earth's magnetic field falls in the range of 0.25 to 0.65 gauss. If you were using this magnetometer to measure fields generated by other sources, there are also settings of 8, 12, and 16 gauss.
+
+You need to change the settings of control register 3 (with an address of 0x22) to enable continuous conversion mode. The default is single conversion mode. You can do this by writing 0x00 to this register.
+
+==== Data output registers
+
+The data output register addresses begin at 0x28.  Read 6 bytes from this to get the three magnetic field components (two bytes per component).
+
+====
+[[assignment-magSensor-i2c-lis3mdl]]
+.Assignment {lab}.{counter:assignment}
+
+Following the directions outlined below, create a digital compass.
+
+. Access the assignment on Blackboard.
+.	Declare the following in your main function:
+..	`uint8_t buffer[6]`
+..	`int16_t magComponents[3]`
+..	`float magMicroT[3]`
+. Configure the sensor as described above.
+. The I^2^C interface must read in data from the sensor as data type `uint8_t`.  That is why you needed `buffer`.
+. The raw magnetic components are stored as `int16_t`.  The data type `int16_t` encodes integers using 16 bits and includes both positive and negative numbers (along with other particular details about how it is encoded).
+. Next, combine pairs of data words to get the x, y, and z components using our bitshift and OR method.  Assign these to `magComponents`. The LIS3MDL uses little endian format so the first byte is the LSB and the second byte is the MSB. +
+`magComponent[0] = data[1]<<8 | data[0];`
+. You can now calculate the actual magnetic field (in {micro}T) by dividing the raw data by 6.842.  This is the default multiplier for the LIS3MDL.
+. Print these three components to the computer.
+. Test your digital compass.  Are the components plausible?
+
+IMPORTANT: Take a video demonstrating successful completion of this project and upload that to Blackboard. Also, don't forget to push your final code to the remote repository.
+
+NOTE: To get truly accurate results you would also need to apply a temperature-dependent calibration factor and trigger a calibration (see the product data sheet if you are truly curious but the uncompensated results are good enough for this class).
+====
