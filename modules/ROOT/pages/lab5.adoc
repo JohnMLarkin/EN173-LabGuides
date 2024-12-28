@@ -186,7 +186,6 @@ You will use the same program to produce a voltage between 0 and and about 3 V u
 . Remove the LED and 330 {Omega} resistor from the breadboard.
 . Form an _RC_ low-pass filter by connecting the short leg of a 10 {micro}F capacitor to the ground bus. This is a polarized capacitor and will be damaged if you use it backwards. Connect the long leg of the capacitor to a socket in a terminals strip.
 . Connect a 10 k{Omega} resistor (brown-black-orange) to the same terminal strip as the capacitor. The other leg of the resistor should be connected to P0.03 (via a jumper wire).
-a 10 k{Omega} resistor (brown-black-orange) between p21 and a spot in the breadboard. From here connect a 10 {micro}F capacitor between the resistor and ground with its long leg at the resistor junction and the short leg at ground.  This is a polarized capacitor and it will be damaged if you use it backwards.
 . Set the period in the program to 10 ms.
 . Use the oscilloscope to observe the output of the low-pass filter (*1+* to the junction between the resistor and capacitor, *1-* to ground, and image:arrow-down.svg[] to ground). Use a time base of 2 s/div, a time position of 10 s, a channel 1 offset of -2 V, and a range of 500 mV/div.
 . Now observe what happens when you change the resistance.  Replace the 10 k{Omega} resistor with a 1 k{Omega} resistor (brown-black-red). What differences do you observe on the oscilloscope?
