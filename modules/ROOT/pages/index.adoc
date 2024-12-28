@@ -166,3 +166,18 @@ Additional hardware required:
 
 ****
 ====
+
+.xref::lab10.adoc[Lab 10 -- Event-based interrupts]
+[%collapsible]
+====
+****
+In this set of activities you will:
+
+* #learn stuff#
+
+Additional hardware required:
+
+* #stuff#
+
+****
+====
