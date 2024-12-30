@@ -9,3 +9,4 @@
 * xref:lab8.adoc[Lab 8]
 * xref:lab9.adoc[Lab 9]
 * xref:lab10.adoc[Lab 10]
+* xref:lab11.adoc[Lab 11]

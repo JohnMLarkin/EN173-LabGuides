@@ -181,3 +181,18 @@ Additional hardware required:
 
 ****
 ====
+
+.xref::lab11.adoc[Lab 11 -- Threads]
+[%collapsible]
+====
+****
+In this set of activities you will:
+
+* #learn stuff#
+
+Additional hardware required:
+
+* #stuff#
+
+****
+====
