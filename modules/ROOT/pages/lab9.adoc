@@ -143,7 +143,7 @@ After you have done that, modify the `while` loop in `main` so it stops after 10
 IMPORTANT: When your program and circuit are working successfully, demonstrate this.
 ====
 
-=== Introduction to one-shot timers
+== Introduction to one-shot timers
 
 When an external button is pushed, it will turn on a green LED.  A timer will be activated to turn that LED off after two seconds.  To illustrate how ISRs interact with normal program context, a red LED will be blinked off-and-on in the primary `while` loop using our old-style sleep approach.
 

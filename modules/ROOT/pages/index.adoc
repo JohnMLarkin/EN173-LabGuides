@@ -1,6 +1,10 @@
 :experimental:
 :icons: font
 :Omega: &#937;
+:Delta: &#916;
+:micro: &#181;
+:deg: &#176;
+:pm: &#177;
 :nrf-toolchain: v2.6.1
 :nrf-sdk: 2.6.1
 = Lab guides for _Introduction to Embedded Systems_
@@ -98,11 +102,21 @@ Additional hardware required:
 ****
 In this set of activities you will:
 
-* #learn stuff#
+* blink an LED using pulse-width modulation (PWM),
+* use PWM to control the brightness of an LED,
+* use PWM to control the position of a servo, and
+* observe the output of the PWM signal on an oscilloscope.
 
 Additional hardware required:
 
-* #stuff#
+* LED (described as red in the instructions but the color is not critical),
+* 330 {Omega} resistor,
+* 10 k{Omega} resistor,
+* 10 k{Omega} resistor,
+* 10 {micro}F capacitor,
+* oscilloscope (instructions describe usage of https://digilent.com/shop/analog-discovery-2-100ms-s-usb-oscilloscope-logic-analyzer-and-variable-power-supply[Digilent's _Analog Discovery 2_]),
+* servo (instructions describe a Hitec HS-422 servo), and
+* 6 V battery pack (optional if using a low-voltage servo such as the TowerPro SG92R that can be powered directly from the development board).
 
 ****
 ====
@@ -113,12 +127,18 @@ Additional hardware required:
 ****
 In this set of activities you will:
 
-* #learn stuff#
+* configure an ADC channel to read an analog voltage,
+* use a potentiometer to vary the voltage on an ADC channel,
+* measure light intensity with a light-dependent resistor (photocell), and
+* measure temperature with an analog temperature sensor.
 
 Additional hardware required:
 
-* #stuff#
-
+* 10 k{Omega} potentiometer,
+* voltmeter (instructions describe https://digilent.com/shop/analog-discovery-2-100ms-s-usb-oscilloscope-logic-analyzer-and-variable-power-supply[Digilent's _Analog Discovery 2_]),
+* oscilloscope (Digilent's _Analog Discovery 2_),
+* light-dependent resistor (photocell), and
+* TMP36 temperature sensor.
 ****
 ====
 
@@ -128,11 +148,13 @@ Additional hardware required:
 ****
 In this set of activities you will:
 
-* #learn stuff#
+* observe SPI communication using a logic analyzer and
+* communicate with an accelerometer using SPI.
 
 Additional hardware required:
 
-* #stuff#
+* logic analyzer (instructions describe usage of https://digilent.com/shop/analog-discovery-2-100ms-s-usb-oscilloscope-logic-analyzer-and-variable-power-supply[Digilent's _Analog Discovery 2_]) and
+* accelerometer (instructions describe usage of https://www.sparkfun.com/products/9836[SparkFun's _ADXL345_]).
 
 ****
 ====
@@ -143,11 +165,15 @@ Additional hardware required:
 ****
 In this set of activities you will:
 
-* #learn stuff#
+* communicate with a digital temperature sensor using I^2^C,
+* observe I^2^C communication using a logic analyzer, and
+* communicate with a magnetic field sensor using I^2^C.
 
 Additional hardware required:
 
-* #stuff#
+* TMP102 temperature sensor (instructions describe usage of https://www.sparkfun.com/products/13314[SparkFun's _TMP102_]),
+* logic analyzer (instructions describe usage of https://digilent.com/shop/analog-discovery-2-100ms-s-usb-oscilloscope-logic-analyzer-and-variable-power-supply[Digilent's _Analog Discovery 2_]), and
+* magnetic field sensor HMC5883L (no longer available on a breakout board) or LIS3MDL (available from https://www.adafruit.com/product/4479[Adafruit]).
 
 ****
 ====
@@ -158,12 +184,18 @@ Additional hardware required:
 ****
 In this set of activities you will:
 
-* #learn stuff#
+* use a timer with polling,
+* use a timer with a callback function,
+* measure latency, and
+* use timers to record temperature at periodic intervals.
 
 Additional hardware required:
 
-* #stuff#
-
+* 330 {Omega} resistors (2),
+* LEDs (2),
+* momentary push button,
+* oscilloscope (instructions describe usage of https://digilent.com/shop/analog-discovery-2-100ms-s-usb-oscilloscope-logic-analyzer-and-variable-power-supply[Digilent's _Analog Discovery 2_]),
+* and TMP36 analog temperature sensor.
 ****
 ====
 
@@ -173,11 +205,22 @@ Additional hardware required:
 ****
 In this set of activities you will:
 
-* #learn stuff#
+* respond to a button press with an interrupt,
+* use a timer to debounce a button,
+* use an _RC_ filter to debounce a button, and
+* use a comparator to generate a temperature-based interrupt.
 
 Additional hardware required:
 
-* #stuff#
+* LED,
+* 330 {Omega} resistor,
+* 1.5 k{Omega} resistor,
+* 10 k{Omega} resistor,
+* 10 {micro}F capacitor,
+* momentary push button,
+* TLC272 op amp,
+* TMP36 analog temperature sensor, and
+* oscilloscope (for example, https://digilent.com/shop/analog-discovery-2-100ms-s-usb-oscilloscope-logic-analyzer-and-variable-power-supply[Digilent's _Analog Discovery 2_]).
 
 ****
 ====
@@ -188,11 +231,37 @@ Additional hardware required:
 ****
 In this set of activities you will:
 
-* #learn stuff#
+* create a thread to blink an LED,
+* pass parameters to a thread at its creation,
+* compare the performance of threads and interrupts to button presses, and
+* use a thread to record temperature at periodic intervals.
 
 Additional hardware required:
 
-* #stuff#
+* LEDs (2),
+* 330 {Omega} resistors (2),
+* momentary push button,
+* TMP36 analog temperature sensor, and
+* oscilloscope (for example, https://digilent.com/shop/analog-discovery-2-100ms-s-usb-oscilloscope-logic-analyzer-and-variable-power-supply[Digilent's _Analog Discovery 2_]).
+
+****
+====
+
+.xref::lab12.adoc[Lab 12 -- Mutexes and Message Queues]
+[%collapsible]
+====
+****
+In this set of activities you will:
+
+* control access to a set of LEDs with a mutex,
+* use a message queue to pass data between threads, and
+* apply these concepts to a temperature logging application.
+
+Additional hardware required:
+
+* TMP36 analog temperature sensor,
+* TMP102 digital temperature sensor, and
+* #to be determined#.
 
 ****
 ====

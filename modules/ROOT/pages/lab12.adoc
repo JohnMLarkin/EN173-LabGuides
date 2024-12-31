@@ -1,0 +1,265 @@
+:lab: 12
+:page-downloadlink: lab-12.pdf
+:icons: font
+:sectnums:
+:imagesdir: ../images
+:source-language: c
+:listing-caption: Program
+:example-caption: Exercise
+:xrefstyle: short
+:experimental:
+:stem: latexmath
+:nrf-toolchain: v2.6.2
+:nrf-sdk: 2.6.2
+:Omega: &#937;
+:Delta: &#916;
+:micro: &#181;
+:deg: &#176;
+:pm: &#177;
+
+= Lab 12: Mutexes and Message Queues
+
+== Protecting access to a resource with a mutex
+
+If you have more than one thread that wants access to something but proper operation will only occur if that access is exclusive, it can be protected with a mutex. Whichever thread has control of the mutex is allowed to access that resource. In this example we have two threads that want to flash different patterns on the internal LEDs. You will explore how the behavior depends on the locking and unlocking of the mutex.
+
+[source, c]
+[[program-mutex-flasher]]
+.Protecting access to LEDs with a mutex
+----
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+
+void blinkHandler(void);
+K_THREAD_DEFINE(blinkThread_id, 1024, blinkHandler, NULL, NULL, NULL, 7, 0, 100); // <1>
+
+void rotateHandler(void);
+K_THREAD_DEFINE(rotateThread_id, 1024, rotateHandler, NULL, NULL, NULL, 7, 0, 10000); // <2>
+
+#define FIRST_PIN 13
+#define NUM_LEDS 4
+#define PORT0_NI DT_NODELABEL(gpio0)
+const struct device *port = DEVICE_DT_GET(PORT0_NI);
+gpio_port_value_t led_mask = ((1<<NUM_LEDS) - 1) << FIRST_PIN; // <3>
+K_MUTEX_DEFINE(ledMutex); // <4>
+
+int main(void) {
+    if (device_is_ready(port)) {
+        for (int pin = FIRST_PIN; pin < FIRST_PIN+NUM_LEDS; pin++) {
+            gpio_pin_configure(port, pin, GPIO_OUTPUT_INACTIVE | GPIO_ACTIVE_LOW);
+        }
+    } else return -1;
+    return 0;
+}
+
+void blinkHandler(void) {
+    while (true) {
+        k_mutex_lock(&ledMutex, K_FOREVER); // <5>
+        for (int i = 0; i < 10; i++) {
+            gpio_port_toggle_bits(port, led_mask);
+            k_msleep(500);
+        }
+        k_mutex_unlock(&ledMutex); // <6>
+        k_msleep(5000);
+    }
+}
+
+void rotateHandler(void) {
+    while (true) {
+        k_mutex_lock(&ledMutex, K_FOREVER);
+        for (int pin = FIRST_PIN; pin < FIRST_PIN + NUM_LEDS; pin++) {
+            gpio_port_set_masked(port, led_mask, BIT(pin));
+            k_msleep(200);
+        }
+        gpio_port_set_masked(port, led_mask, 0);
+        k_mutex_unlock(&ledMutex);
+    }
+}
+----
+<1> Thread that will blink all of the LEDs together is started after a delay of 100 ms. This gives the main thread time to set up the GPIO pins.
+<2> Thread that will rotate through the LEDs is started after a delay of 10 seconds.
+<3> Define the mask for the LEDs using bit-shifting.
+<4> Define a mutex to protect access to the LEDs.
+<5> Lock the mutex so that only this thread can access the LEDs.
+<6> Unlock the mutex so that other threads can access the LEDs.
+
+====
+[[exercise-mutex-flasher]]
+.Exercise {lab}.{counter:exercise}
+
+. Create an application with <<program-mutex-flasher>>.
+. While your program is building, predict what you will observe when it runs.
+. Upload and run the code. Compare the observed behavior to your predicted behavior.
+. Comment out the `k_mutex_lock` and `k_mutex_unlock` throughout the program.
+. While your program is compiling, predict if the behavior will change and if so, how.
+. Upload and run the code. Compare the observed behavior to your predicted behavior.
+====
+
+== Message in a queue
+
+Message queues are one way to pass data between threads (and ISRs). A pool of memory is set aside for the messages. Before putting a new message into the pool, the program first checks to see if a spot is available. Similarly, after a message has been read, the spot is cleared.
+
+In this example one thread will periodically store temperatures from a TMP36 as well as the time they were recorded (in milliseconds since power-up).
+
+[source, c]
+[[program-message-data]]
+.Use a message queue to collect and then print data from a TMP36 sensor
+----
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/drivers/adc.h>
+
+struct temp_data_t { // <1>
+    float temperature; // in Celsius
+    uint32_t timestamp; // in milliseconds
+};
+K_MSGQ_DEFINE(temp_msgq, sizeof(struct temp_data_t), 5, 1); // <2>
+
+void recordData(void);
+K_THREAD_DEFINE(recorderThread_id, 1024, recordData, NULL, NULL, NULL, 7, 0, 0);
+
+#define TMP36 DT_NODELABEL(temp0)
+#define MV_AT_25C DT_PROP(TMP36, vtemp25)
+#define MV_PER_DEG_C DT_PROP(TMP36, sensor_slope)
+#define NUM_ADC_READINGS 10
+const struct adc_dt_spec tmp36 = ADC_DT_SPEC_GET(TMP36);
+
+LOG_MODULE_REGISTER(Lab12b, LOG_LEVEL_DBG);
+
+int main(void) {
+    struct temp_data_t data;
+    while (true) {
+        while (k_msgq_get(&temp_msgq, &data, K_NO_WAIT) == 0) { // <3>
+            LOG_INF("Temperature: %.1f C, Timestamp: %u", data.temperature, data.timestamp);
+        }
+        k_msleep(10000);
+    }
+}
+
+void recordData(void) {
+    struct temp_data_t data;
+    int err;
+    uint16_t buf;
+    int val_mV;
+    float T_in_C;
+    struct adc_sequence tmp_reading = {
+        .buffer = &buf,
+        .buffer_size = sizeof(buf)
+    };
+    adc_channel_setup_dt(&tmp36);
+    adc_sequence_init_dt(&tmp36, &tmp_reading);
+
+    while (true) {
+        adc_read_dt(&tmp36, &tmp_reading);
+        val_mV = (int)buf;
+        adc_raw_to_millivolts_dt(&tmp36, &val_mV);
+        T_in_C = 25.0 + ((float)val_mV - (float)MV_AT_25C)/(float)MV_PER_DEG_C;
+        data.temperature = T_in_C; // <4>
+        data.timestamp = k_uptime_get_32(); // <5>
+        k_msgq_put(&temp_msgq, &data, K_FOREVER); // <6>
+        k_msleep(1000);
+    }
+}
+
+----
+<1> Define the format of a message (typically using a structure).
+<2> Set up a message queue with slots for 5 messages. The final argument specifies alignment of the messages slot addresses. A value of 1 means that the addresses will be aligned to the size of the message.
+<3> Try to get a message immediately (`K_NO_WAIT`). If there is one (a return value of 0), print it out. If not, wait 10 seconds before trying again.
+<4> Store the temperature in the data structure
+<5> Get the current time in milliseconds since power-up and store it.
+<6> Request an open slot in the message queue. In this case we are willing to wait forever, but you could set it to give up and do something else after a while. You can also use a message queue in an ISR, but in that case you would need to use `K_NO_WAIT` as the timeout.
+
+====
+[[exercise-mail-data]]
+.Exercise {lab}.{counter:exercise}
+
+. Create a new application, generate a build configuration, and create an overlay.
+. Add the following to the overlay:
++
+[source,dts]
+----
+&adc {
+  #address-cells = <1>;
+  #size-cells = <0>;
+  status = "okay";
+  channel@0 {
+    reg = <0>;
+    zephyr,gain = "ADC_GAIN_1_2";
+    zephyr,reference = "ADC_REF_INTERNAL";
+    zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+    zephyr,input-positive = <NRF_SAADC_AIN1>;
+    zephyr,resolution = <12>;
+  };
+};
+
+/{
+  temp0: temp0 {
+    compatible = "adi,tmp36";
+    io-channels = <&adc 0>;
+  };
+};
+----
++
+. Create a new folder named `dts` at the top-level of your application (not inside any folder other than the one holding application itself). Inside of the `dts` folder create another folder `bindings`.
+. Create a file named `adi,tmp36.yaml` inside of the `bindings` folder.
+. Add the following to the `adi,tmp36.yaml` file:
++
+[source,yaml]
+----
+description: Analog Devices analog temperature sensor TMP36
+compatible: "adi,tmp36"
+include: sensor-device.yaml
+properties:
+  io-channels:
+    required: true
+    description: ADC channel for temperature sensor
+  vtemp25:
+    type: int
+    default: 750
+    description: |
+      Temperature sensor voltage at 25 degrees Celsius
+      in millivolts
+  sensor-slope:
+    type: int
+    default: 10
+    description: |
+      Temperature sensor slope in millivolts per degree Celsius
+----
++
+. Create a `main.c` containing <<program-message-data>>.
+. While your program is compiling, predict what you will observe when it runs.
+. Upload and run the code. Compare the observed behavior to your predicted behavior. Watch for at least one minute.
+. Delete the `k_msleep(10000);` inside of `main`.
+. While your program is compiling, predict what you will observe when it runs.
+. Upload and run the code. Compare the observed behavior to your predicted behavior. Watch for at least one minute.
+====
+
+== Your Turn
+
+You will create a program that measures temperature with the digital TMP102. The temperature (in Celsius) will be measured every time a button is pushed and put in a message queue. At the same time, a log message should display the current number of messages stored.  The queue will have 20 slots for messages. If the queue gets full, you will want to free the oldest slot and replace it with the new measurement.
+
+#NEEDS WORK#
+
+When a **second** button is pushed, the character LCD display will be updated to show the average of the stored temperature data (including units). Your program needs to pay attention to the actual number of data points being averaged (it will be between 1 and 20). Your program should also gracefully handle the case of no data by displaying "`No data`" instead. Displaying the average should clear the mailbox.
+
+The console input will be used to select the displayed temperature units (from the characters `C`, `K`, `F`, and `R`). After being selected the character LCD should display that choice with a message of the form "`Units set to C`" for 10 seconds.
+
+#NOT DONE#
+
+====
+[[assignment-temperature-display]]
+.Assignment {lab}.{counter:assignment}
+
+Your program must also incorporate the following RTOS features:
+
+* a mutex to control access to the character LCD
+* appropriate use of threads
+* appropriate use of `Mail`
+
+Your program should also use your class-based interface to the TMP102 (with its files to be located in the `lib/TMP102` folder).
+
+The https://classroom.github.com/a/8vktYyEe[assignment template] is available on GitHub Classroom.
+
+====

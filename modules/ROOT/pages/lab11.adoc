@@ -133,7 +133,7 @@ void blink(void* led, void* delay) {
 <1> The `blink` function is declared at the top of the file. It takes two arguments: a pointer to a `gpio_dt_spec` structure and a pointer to an integer. However, because `K_THREAD_DEFINE` does not know the type of these arguments, they are declared as `void *`.
 <2> The `K_THREAD_DEFINE` macro is used to define three threads. Each thread runs the `blink` function with different arguments. The first user argument is a pointer to the `gpio_dt_spec` structure for the LED, and the second user argument is the delay in milliseconds. The third user argument is unused and must be set to `NULL`.
 <3> The delay is cast from a `void *` to an `int`.
-<4> The LED structure is cast from a `void *` to a `const struct gpio_dt_spec`. The memory address of the LED structure is passed to the thread, so we must dereference it to access the structure, thus the `*` in front of `(const struct gpio_dt_spec*)led`.
+<4> The LED structure is cast from a `pass:[void *]` to a `const struct gpio_dt_spec`. The memory address of the LED structure is passed to the thread, so we must dereference it to access the structure, thus the `pass:[*]` in front of `(const struct gpio_dt_spec*)led`.
 <5> The LED pin number and delay are printed to the console.
 
 IMPORTANT: Demonstrate successful blinking of LEDs with threads launched with user parameters.
