@@ -154,11 +154,9 @@ image::lab2/nrf-connect-generate-configuration.png[Generate configuration,526,20
   leds { // <1>
     red_led: led_4 { // <2>
       gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>; // <3>
-      label = "External red LED";
     };
     green_led: led_5 {
       gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
-      label = "External green LED";
     };
   };
   aliases {
@@ -168,7 +166,7 @@ image::lab2/nrf-connect-generate-configuration.png[Generate configuration,526,20
 };
 ----
 <1> We are adding entries to the `leds` section of the devicetree for this board.
-<2> Our first new entry is a node identifier of `led_4` and a label of `red_led`.
+<2> Our first new entry is a subnode with the name `led_4` and a label of `red_led`.
 <3> The red LED will be connected to P0.29. P0 is short for GPIO port 0, which in this code is identified by `&gpio0`. This is pin 29 connected to that port. The LED will be lit when the output of this pin is the high voltage state (around 3 V).
 <4> Defining the alias that will be used to access this using `DT_ALIAS` in `main.c`.
 +
