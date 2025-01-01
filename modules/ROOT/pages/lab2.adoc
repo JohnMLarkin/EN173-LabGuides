@@ -71,7 +71,7 @@ int main(void) {
 <8> The state of the button is read and its value (0 for released and 1 for pressed) is saved in the variable `btn_pressed`.
 <9> The LED is set to have the same value as the button (on if pressed, off if released).
 +
- Add the build configuration through the nRF Connect side bar and build the application.
+. Add the build configuration through the nRF Connect side bar and build the application.
 . Connect the development board to the computer and then use the btn:[Flash] action to send the program to it.
 . Verify that LED1 is only lit while BUTTON1 is held down.
 
