@@ -8,8 +8,8 @@
 :example-caption: Exercise
 :xrefstyle: short
 :experimental:
-:nrf-toolchain: v2.6.1
-:nrf-sdk: 2.6.1
+:nrf-toolchain: v2.6.2
+:nrf-sdk: 2.6.2
 = Lab 1: Getting Started
 
 == Installing the tools
@@ -19,7 +19,8 @@
 Nordic Semiconductor provides a collection of tools in a package called **nRF Command Line Tools** that perform important tasks including the transfer of a program from your development computer to the microcontroller. We will not use them directly, but they are required for the other tools that we will use.
 
 . Download the https://www.nordicsemi.com/Products/Development-tools/nRF-Command-Line-Tools/Download[nRF Command Line Tools] from Nordic Semiconductor.
-. Install the tools. This also includes a separate installer for the required SEGGER J-Link software.
+. Install the tools. This also includes a separate installer for the required SEGGER J-Link software. It is important to select the option to install legacy USB drivers, particularly if you are using a freshly unpackaged nRF52840 DK board. They frequently ship with outdated firmware that requires these drivers.
+. If this is your first time to use a particular nRF52840 DK board, you will need to update the firmware on the board. This is done by running J-Link Commander **after** the nRF52840 DK is connected to the computer via USB. You should get a message that the firmware is out of date and be given the option to update it. When it is done, you can close J-Link Commander.
 
 === Visual Studio Code
 
@@ -49,7 +50,7 @@ From the Extensions side bar you can search for the extensions listed above and 
 image::lab1/nrf-connect-manage-toolchain-sdk.png[Activity Bar, 284, 465]
 +
 . Click on btn:[Manage Toolchains] and then select the btn:[Install Toolchain] action.
-.. These guides were tested using {nrf-toolchain}. Avoid using a more recent major version (a different leading number) even if one is available but it should be safe to use a more recent minor version (a greater number after the first `.`) if you prefer.  
+.. These guides were tested using {nrf-toolchain}. Avoid using a more recent version as it may not be compatible with the directions provided.
 .. Once all selections have been made, it triggers a substantial download and install process so be prepared to wait for several minutes.
 . Click on btn:[Manage SDKs] and then select the btn:[Install SDK] action.
 .. These guides were tested using SDK {nrf-sdk}. You want a version that matches that of the toolchain you just installed. Avoid `main` or numbered versions ending in `-dev` or `-cs` as these are not intended for widespread use.
@@ -169,6 +170,7 @@ image::lab1/nrf-connect-set-build-configuration.png[Set build configuration, 523
 image::lab1/nrf-connect-build-actions-connecteddevices.png[New sections in the nRF Connect side bar, 179, 390]
 +
 . With a connected and powered microcontroller, you are now ready to transfer the program to it. Click on the btn:[Flash] action.
+. If you get an error message related to flashing, under **CONNECTED DEVICES** (in the nRF Connect side bar), reveal the _more actions_ menu by hovering over the righthand side of the entry for your board (a long number). Select **Recover Board**. This will reset the board and you can try flashing again. 
 . If all goes well LED1 on your development board will begin to flash twice a second.
 
 IMPORTANT: Demonstrate that you have successfully compiled and run the embedded system "`Hello, world`" program.
