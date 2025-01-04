@@ -252,7 +252,7 @@ CONFIG_LOG=y
 [source,dts]
 ----
 /{
-  servo: servo {
+  servo: hs422_servo {
     compatible = "pwm-servo"; // <1>
     pwms = <&pwm0 0 PWM_MSEC(20) PWM_POLARITY_NORMAL>; // <2>
     min-pulse = <PWM_USEC(600)>; // <3>
