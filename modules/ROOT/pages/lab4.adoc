@@ -276,7 +276,7 @@ The directions that follow are intended for students in my _Introduction to Embe
 [[assignment-letter-counter-seven-seg]]
 .Assignment {lab}.{counter:assignment}
 
-Your task is to create a system that counts "`letters`" using a photointerrupter, displaying the count on a seven-segment display. If a count greater than 9 occurs, turn on an internal LED to indicate that the true count is 10 plus whatever is displayed on the seven-segment displayed. This allows your application to indicate counts up to 19. An internal button is used to send a log message with the total count and then reset the count to zero.
+Your task is to create a system that counts "`letters`" using a photointerrupter, displaying the count on a seven-segment display. If a count greater than 9 occurs, turn on an internal LED to indicate that the true count is 10 plus whatever is displayed on the seven-segment display. This allows your application to indicate counts up to 19. An internal button is used to send a log message with the total count and then reset the count to zero.
 
 . Access the GitHub Classroom link for this assignment on Blackboard and create a repository for your work.
 +
@@ -285,8 +285,10 @@ NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a st
 . A code repository was created when you accessed the assignment. Copy the URL for the repository.
 . Open the Source Control side bar in VS Code and clone the repository.
 . Generate a build configuration and devicetree overlay. In the overlay file, add the code needed to configure the photointerrupter.
+. Edit the `prj.conf` file to include the necessary settings for logging.
 . Assemble the photointerrupter circuit on a breadboard.
-. Modify `main.cpp` so it accomplishes the task described above.
+. Assemble the seven-segment display circuit the same breadboard.
+. Modify `main.c` so it accomplishes the task described above.
 . Test your program.
 . Update the `README.md`.
 
