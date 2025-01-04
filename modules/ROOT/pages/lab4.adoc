@@ -73,7 +73,7 @@ Zephyr also provides a macro called `BIT` that make setting these bits easier. T
 const struct device *port = DEVICE_DT_GET(PORT0_NI);
 
 int main(void) {
-    int led_states;
+    int led_on;
     gpio_port_value_t led_mask = BIT(13) | BIT(14) | BIT(15) | BIT(16); // <1>
 
     if (device_is_ready(port)) {
@@ -83,11 +83,11 @@ int main(void) {
     } else return -1;
 
     while (true) {
-        led_states = 1;
-        while (led_states < 16) {
-            gpio_port_set_masked(port, led_mask, led_states << 13); // <3>
+        led_on = 0;
+        while (led_on < 4) {
+            gpio_port_set_masked(port, led_mask, BIT(led_on) << 13); // <3>
             k_msleep(SLEEP_TIME_MS);
-            led_states = 2*led_states;
+            led_on++;
         }
     }
 }
