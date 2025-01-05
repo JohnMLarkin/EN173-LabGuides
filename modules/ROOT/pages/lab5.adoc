@@ -382,7 +382,7 @@ CAUTION: The power bus on the breadboard should have no connections other than t
 ====
 [[assignment-servo-control]]
 .Assignment {lab}.{counter:assignment}
-In this exercise you will move the servo to a location selected button presses.
+In this exercise you will move the servo to a location selected by button presses.
 
 * BUTTON 1: decreases the current angle by 10{deg}
 * BUTTON 2: increases the current angle by 10{deg}
