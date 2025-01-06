@@ -47,7 +47,7 @@ CONFIG_PWM=y
 <1> First, we create an new entry in a section that already exists called pwmleds.
 <2> A hardware category known as `pwm-leds` already exists so we can use that.
 <3> The PWM-controlled LED is given the node identifier (and node label) `pwm_ext_led`.
-<4> There are four separate PWM controllers on the nRF52840 and each controller supports up to four channels. This will LED is connected to the first PWM controller (`pwm0` and is its channel 0). A default period of 1 ms is set and the channel has normal polarity (the pulse width specifies the time at a high voltage).
+<4> There are four separate PWM controllers on the nRF52840 and each controller supports up to four channels. This adds a channel to the first PWM controller (`pwm0`) for an external LED. The pin correspond to this channel will be set later. A default period of 1 ms is set and the channel has normal polarity (the pulse width specifies the time at a high voltage).
 +
 . Continuing to edit the overlay, create custom settings for the PWM controller so it knows what to do during normal power mode and during power-saving sleep mode.
 +
@@ -220,12 +220,22 @@ properties:
     required: true
     type: int
     description: Maximum pulse width (nanoseconds)
+  deg-to-pw: # <6>
+    required: true
+    type: int
+    description: Conversion factor from degrees to pulse width (nanoseconds)
+  center-pw: # <7>
+    required: true
+    type: int
+    description: Pulse width for center position (nanoseconds)
 ----
 <1> This is the name we will use in the devicetree overlay to indicate that this binding should be used.
 <2> Bindings can be layered on top of others. In this case this one is built on the `base` binding which provides properties expected for all bindings.
 <3> The servo requires a PWM specifier, the same as the `pwm-leds` used earlier.
 <4> A new property to hold the minimum pulse width is added. Because servos may be damaged if driven outside of their operating range it is a required property.
 <5> The maximum pulse width is also required.
+<6> The conversion factor from degrees to pulse width should be specified in the servo description.
+<7> The pulse width for the center position is the final property needed to describe operation of the servo.
 +
 . Edit `prj.conf` to enable both pulse-width modulation and logging. We will also set the logging level for the PWM module so that only errors will be displayed.
 +
@@ -242,18 +252,19 @@ CONFIG_LOG=y
 [source,dts]
 ----
 /{
-  servo: servo {
+  servo: hs422_servo {
     compatible = "pwm-servo"; // <1>
     pwms = <&pwm0 0 PWM_MSEC(20) PWM_POLARITY_NORMAL>; // <2>
     min-pulse = <PWM_USEC(600)>; // <3>
-    max-pulse = <PWM_USEC(2400)>; // <4>
+    max-pulse = <PWM_USEC(2400)>;
+    center-pw = <PWM_USEC(1500)>;
+    deg-to-pw = <PWM_USEC(10)>;
   };
 };
 ----
 <1> The `compatible` property indicates the binding that should be used.
 <2> The default period for a servo is set.
 <3> A property holding the minimum allowed pulse width is created and set to 600 {micro}s using one of the convenience macros (which actually converts this to a value in nanoseconds).
-<4> The maximum pulse width is also defined.
 +
 . Continuing to edit the overlay, create custom settings for the PWM controller so it knows what to do during normal power mode and during power-saving sleep mode. These also define which pin is controlled by the PWM controller.
 +
@@ -296,29 +307,28 @@ LOG_MODULE_REGISTER(Lab05_Servo, LOG_LEVEL_INF);
 
 #define SERVO DT_NODELABEL(servo)
 const struct pwm_dt_spec servo = PWM_DT_SPEC_GET(SERVO);
-#define PWM_PERIOD PWM_MSEC(20)
 
-/* Use DT_PROP() to get max and min pulse widths from overlay */
+/* Use DT_PROP() to get servo properties from overlay */
 #define SERVO_MIN_PULSE_WIDTH DT_PROP(SERVO, min_pulse) // <1>
 #define SERVO_MAX_PULSE_WIDTH DT_PROP(SERVO, max_pulse)
+#define SERVO_CENTER DT_PROP(SERVO, center_pw)
+#define SERVO_DEG_CONV DT_PROP(SERVO, deg_to_pw)
 
-/** <2>
+/** // <2>
  * @brief Convert angle to PWM pulse width
  * 
  * @param angle Servo angle (integer degrees)
  * @return int representing the pulse width (in nanoseconds)
  */
 int angle_to_pulsewidth(int angle) { // <3>
-    int pw0 = PWM_USEC(1500); // pulse width for 0 deg
-    int deg_to_pw = PWM_USEC(10); // 1 deg = 10 us
-    int pw = pw0 + angle*deg_to_pw;
+    int pw = SERVO_CENTER + angle*SERVO_DEG_CONV;
     if (pw < SERVO_MIN_PULSE_WIDTH) { // <4>
         pw = SERVO_MIN_PULSE_WIDTH;
-        LOG_ERR("Min servo angle is -90 deg. Attempted to set to %d", angle);
+        LOG_WRN("Out of servo range. Attempted to set to %d", angle);
     }
     if (pw > SERVO_MAX_PULSE_WIDTH) {
         pw = SERVO_MAX_PULSE_WIDTH;
-        LOG_ERR("Max servo angle is +90 deg. Attempted to set to %d", angle);
+        LOG_WRN("Out of servo range. Attempted to set to %d", angle);
     }
     return pw;
 }
@@ -334,14 +344,14 @@ int main(void) {
 
     while (true) {
         for (int i = 0; i < num_angles; i++) {
-            LOG_INF("Angle set to %d deg", angles[i]); // <6>
+            LOG_INF("Angle set to %d deg", angles[i]); // <6> 
             pwm_set_pulse_dt(&servo, angle_to_pulsewidth(angles[i]));
             k_msleep(2000);
         }
     }
 }
 ----
-<1> Access the `min-pulse` and `max-pulse` properties from the hardware overlay. Notice that the `-` found in the devicetree property name becomes `_` when referring to devicetree property names in the C code.
+<1> Access the servo-specific properties from the hardware overlay. Notice that the `-` found in the devicetree property name becomes `_` when referring to devicetree property names in the C code. Notice that the C code is now independent of the specific servo used. If you wanted to use a different servo you would only need to change the overlay file.
 <2> It is good practice to provide a comment block describing the inputs and output of a function as well as what it does. This one is formatted in the Doxygen style.
 <3> A function is defined that takes one input argument (an integer representing an angle in degrees) and the output is also an integer (the number of nanoseconds the pulse width should be for the servo to go to that angle).
 <4> The minimum and maximum pulse widths are not automatically enforced. The code you write needs to do that. In this case, if the pulse width is too small, the value is set to the minimum and an error message is sent to the logger module.
@@ -372,7 +382,7 @@ CAUTION: The power bus on the breadboard should have no connections other than t
 ====
 [[assignment-servo-control]]
 .Assignment {lab}.{counter:assignment}
-In this exercise you will move the servo to a location selected button presses.
+In this exercise you will move the servo to a location selected by button presses.
 
 * BUTTON 1: decreases the current angle by 10{deg}
 * BUTTON 2: increases the current angle by 10{deg}

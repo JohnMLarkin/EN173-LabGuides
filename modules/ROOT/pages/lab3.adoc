@@ -347,7 +347,7 @@ NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a st
 . Generate a build configuration and devicetree overlay. In the overlay file, add the code needed to configure the photointerrupter.
 . Enable the logger module in `prj.conf`.
 . Assemble the photointerrupter circuit on a breadboard.
-. Modify `main.cpp` so it accomplishes the task described above.
+. Modify `main.c` so it accomplishes the task described above.
 . Test your program.
 . Update the `README.md`.
 
