@@ -62,7 +62,14 @@ We will be using Git throughout these activities. If you do not already have it 
 
 You also need a https://github.com/[GitHub] account.
 
-After you have installed Git and created a GitHub account, open a terminal in VS Code by typing kbd:[Ctrl+`]. Note that this is the **left** single quote, typically located on the same key as kbd:[~]. It is not the right single quote/apostrophe (located on the same key as kbd:["]). You are now ready to tell the computer about the GitHub username that you are using and your email address.
+After you have installed Git and created a GitHub account, open a terminal in VS Code by typing kbd:[Ctrl+`]. Note that this is the **left** single quote, typically located on the same key as kbd:[~]. It is not the right single quote/apostrophe (located on the same key as kbd:["]). Begin by verifying that Git is installed and accessible.
+[source,shell]
+----
+git --version
+----
+If you see a version number, Git is installed.
+
+You are now ready to tell the computer about the GitHub username that you are using and your email address.
 [source,shell]
 ----
 git config --global user.name "yourusername" <1>
