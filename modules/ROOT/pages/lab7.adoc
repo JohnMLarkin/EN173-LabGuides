@@ -53,7 +53,6 @@ CONFIG_SPI=y
     compatible = "vnd,spi-device";
     reg = <0>;
     spi-max-frequency = <125000>; // <3>
-    label = "GenDev";
   };
 };
 
@@ -214,13 +213,12 @@ CONFIG_SPI=y
     pinctrl-1 = <&spi1_sleep>;
     pinctrl-names = "default", "sleep";
     cs-gpios = <&gpio0 30 GPIO_ACTIVE_LOW>;
-    acc: acc@0 {
+    acc: adxl345@0 {
         compatible = "vnd,spi-device";
         reg = <0>;
         spi-max-frequency = <2000000>; // <1>
         spi-cpol; // <2>
         spi-cpha; // <3>
-        label = "ADXL345";
     };
 };
 
