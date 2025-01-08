@@ -59,7 +59,7 @@ CONFIG_CBPRINTF_FP_SUPPORT=y
 . Edit the overlay file.
 +
 [source, dts]
-.The TMP102 is configured as an I^2C device with an address of 0x48.
+.The TMP102 is configured as an I^2^C device with an address of 0x48.
 ----
 &i2c0 {
   tempsensor: tmp102@48 { // <1>
