@@ -121,7 +121,7 @@ int main(void) {
 Your goal is to observe the output of your pulse-width-modulated output on the oscilloscope and compare to what is expected from the code.
 
 . Begin by connecting *1+* to junction between P0.03 and the resistor on the breadboard, *1-* to ground, and image:arrow-down.svg[] also to ground.
-. Set the Time base to 10 ms/div and the Trigger level to 2 V.  Choose appropriate Channel 1 settings so the PWM trace fills most of the display.
+. Set the Time base to 50 ms/div and the Trigger level to 2 V.  Choose appropriate Channel 1 settings so the PWM trace fills most of the display.
 . Open the Measurements tab and add the horizontal measurements *Period*, *PosDuty*, and *PosWidth*.
 . Acquire a single acquisition and compare the measured period, positive pulse width, and duty cycle to that expected from the code.
 . Change the code to produce a positive pulse width of 25 ms (a duty cycle of 10% when the period is 250 ms) and verify with the oscilloscope.
