@@ -157,7 +157,7 @@ If the period is decreased below the ability of your eye to see individual flash
 
     while (true) {
         for (int i = 0; i <= 10; ++i) {
-            err = pwm_set_pulse_dt(&pwm_led, i*PWM_PERIOD_NS/10); // <1>
+            err = pwm_set_dt(&pwm_led, PWM_PERIOD_NS, i*PWM_PERIOD_NS/10);
             if (err) {
                 LOG_ERR("Error %d in pwm_set_pulse_dt()", err);
                 return -1;
@@ -169,7 +169,6 @@ If the period is decreased below the ability of your eye to see individual flash
     }
 }
 ----
-<1> This function only changes the pulse width of the PWM. The period is unchanged.
 +
 . Build and flash the application. If you are a typical human being you should not be able to detect that the LED is actually turning off and on very rapidly.
 . Open a terminal connection (from Connected Devices) and observe the logger output.
