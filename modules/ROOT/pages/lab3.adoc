@@ -225,7 +225,7 @@ image::lab3/slide-counter-startup-log.png[Start up logs,536,123]
 ====
 [[exercise-momentary-button-selector]]
 .Exercise {lab}.{counter:exercise}
-Repeat <<program-led-selector>> (with the red and green LEDs) but replace the slide switch with a momentary push button.  This is a SPST (single pole, single throw) button despite having four terminals.  However, pairs of terminals are connected so there are really only two independent terminals.  When the button is pushed down, the terminals on opposite sides are connected. You want one of these terminals connected to VDD (the positive power bus) and the other terminal connected to pin P0.03.
+Using the same circuit as in the previous exercise (with the red and green LEDs), replace the slide switch with a momentary push button.  This is a SPST (single pole, single throw) button despite having four terminals.  However, pairs of terminals are connected so there are really only two independent terminals.  When the button is pushed down, the terminals on opposite sides are connected. You want one of these terminals connected to VDD (the positive power bus) and the other terminal connected to pin P0.03.
 
 With this configuration, the behavior when the button is released will be unpredictable. You need to modify the devicetree overlay to configure the input pin with an internal pull-down resistor (bringing the pin down to ground whenever the button is released).
 
