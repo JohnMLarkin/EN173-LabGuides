@@ -243,7 +243,7 @@ int main(void) {
     } else return -1;
 
     while (true) {
-        for (int i = 0; i<9; i++) {
+        for (int i = 0; i<= 9; i++) {
             gpio_port_set_masked(port, pin_mask, sevenSegConvert(i) << 1);
             k_msleep(SLEEP_TIME_MS);
         }
