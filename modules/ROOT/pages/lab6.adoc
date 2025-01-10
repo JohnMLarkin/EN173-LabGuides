@@ -385,7 +385,7 @@ In this exercise you will revisit digital input, using the potentiometer to crea
 #include <zephyr/drivers/gpio.h>
 
 #define LED_NI  DT_ALIAS(led0)
-#define EXT_INPUT_NI  DT_ALIAS(ext_input)
+#define EXT_INPUT_NI  DT_LABEL(ext_input)
 
 const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED_NI, gpios);
 const struct gpio_dt_spec ext_input = GPIO_DT_SPEC_GET(EXT_INPUT_NI, gpios);
@@ -395,10 +395,10 @@ int main(void) {
     gpio_pin_configure_dt(&ext_input, GPIO_INPUT);
 
     while (true) {
-        if (gpio_pin_get(&ext_input)) {
-            gpio_pin_set(&led, 1);
+        if (gpio_pin_get_dt(&ext_input)) {
+            gpio_pin_set_dt(&led, 1);
         } else {
-            gpio_pin_set(&led, 0);
+            gpio_pin_set_dt(&led, 0);
         }
     }
 }
