@@ -80,7 +80,7 @@ CONFIG_ADC=y
 <1> The `zephyr,user` node of the devicetree is a special node that does not require a corresponding binding file.
 <2> Channel 0 of the ADC is connected to the `io-channels` property.
 <3> Uses a 0.6 V reference that is internal to the ADC.
-<4> Sets the gain to 1/6 so the voltage on the input pin is scaled to not exceed the reference voltage. There are additional limits on an input pin:  its voltage should never fall below ground or exceed the board's VDD (nominally 3.3 V).
+<4> Sets the gain to 1/6 so the voltage on the input pin is scaled to not exceed the reference voltage. There are additional limits on an input pin:  its voltage should never fall below ground or exceed the board's VDD (nominally 3.0 V).
 <5> If using the nRF52840, this connects P0.02 to this channel of the ADC. See <<table-adc-pin-names>>.
 <6> Use the full 12-bit resolution of the ADC. The analog-to-digital converter (ADC) on the nRF52840 has a maximum resolution (in normal operating mode) of 12 bits.
 +
@@ -123,8 +123,6 @@ int main(void) {
     }
 
     while (true) {
-        
-
         err = adc_read_dt(&adc_channel, &pot_reading); // <9>
         if (err < 0) {
             LOG_ERR("Could not read");
@@ -361,28 +359,57 @@ int main(void) {
 
 In this exercise you will revisit digital input, using the potentiometer to create a variable voltage but with the input now configured as digital, rather than analog. You will observe the digital logic levels.
 
-#NEEDS WORK#
-
 ====
 [[exercise-digital-logic-levels]]
 .Exercise {lab}.{counter:exercise}
 
-. Move the green lead of the potentiometer to row 30 of the breadboard.  Connect a lead from row 30 to mbed p20. Also connect the *1+* flywire of the _Analog Discovery 2_ to row 30.
-. Connect *1-* and icon:arrow-down[] to the ground bus.
-. Create a new project containing <<program-logic-levels>> and upload it to the mbed.
+. Connect VDD to the power bus on the breadboard, GND to the ground bus, and P0.02 to row 30.
+. Connect the potentiometer with the red lead to the power bus, the black lead to the ground bus, and the green lead to row 30.
+. Connect the *1+* flywire of the _Analog Discovery 2_ to row 30. Connect *1-* and icon:arrow-down[] to the ground bus.
+. Create a new project containing <<program-logic-levels>>. You will also need to generate an overlay defining P0.02 as a digital input called `ext_input` (no pull-up or pull-down resistors are needed).
+. Build and flash the application to your microcontroller.
 . Start _Waveforms_ and open the Voltmeter application. Click btn:[Run] to continuously update the readings.
 . Turn the potentiometer knob until the DC voltage reads 0.
 . Slowly turn the potentiometer knob until the LED turns on.  Record the voltage.
-. Continue turning the potentiometer to produce an increasing voltage until the DC voltage reads 3.3 V.
+. Continue turning the potentiometer to produce an increasing voltage until the DC voltage reads 3.0 V.
 . Slowly turn the potentiometer knob the other way until the LED turns off. Record this voltage.
 . Starting from here, increase the voltage again until the LED turns on. Do you get the same voltage as you did the first time?
 . Decrease the voltage until the LED turns off. Is the voltage consistent with what you found earlier?
 ====
 
+[source,c]
+[[program-logic-levels]]
+.Read a digital input and turn an LED on or off based on the input.
+----
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/gpio.h>
+
+#define LED_NI  DT_ALIAS(led0)
+#define EXT_INPUT_NI  DT_ALIAS(ext_input)
+
+const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED_NI, gpios);
+const struct gpio_dt_spec ext_input = GPIO_DT_SPEC_GET(EXT_INPUT_NI, gpios);
+
+int main(void) {
+    gpio_pin_configure_dt(&led, GPIO_OUTPUT_INACTIVE);
+    gpio_pin_configure_dt(&ext_input, GPIO_INPUT);
+
+    while (true) {
+        if (gpio_pin_get(&ext_input)) {
+            gpio_pin_set(&led, 1);
+        } else {
+            gpio_pin_set(&led, 0);
+        }
+    }
+}
+----
+
 == Your Turn
 
-[NOTE]
-====
-The directions that follow are intended for students in my _Introduction to Embedded Systems_ course at https://www.whitworth.edu[Whitworth University]. However, an alternative link to a template is provided for non-Whitworth students.
-====
+None today. Enjoy your weekend.
+
+// [NOTE]
+// ====
+// The directions that follow are intended for students in my _Introduction to Embedded Systems_ course at https://www.whitworth.edu[Whitworth University]. However, an alternative link to a template is provided for non-Whitworth students.
+// ====
 
