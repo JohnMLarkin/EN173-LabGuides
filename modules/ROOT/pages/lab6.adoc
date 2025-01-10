@@ -149,7 +149,7 @@ int main(void) {
 <6> It is possible for an ADC to read multiple values. When it does that, it starts writing the first value at the address specified by `buffer` and subsequent values are placed in the following memory addresses. The ADC needs to be told how many memory addresses have been set aside for this so it doesn't write to a memory address that is being used for something else. The `sizeof` returns the number of bytes associated with a particular variable. For a 16-bit unsigned integer, that is 2 bytes.
 <7> Preparing the ADC for use is a two-step process. First, the ADC channel is configured.
 <8> The second step is to link an `adc_sequence` structure to the ADC channel.
-<9> Calling `adc_read_dt` triggers the actual analog-to-digital conversion. That value is stored in `buf` (emember that `pot_reading` contained its memory address).
+<9> Calling `adc_read_dt` triggers the actual analog-to-digital conversion. That value is stored in `buf` (remember that `pot_reading` contained its memory address).
 <10> This is an example of _type casting_. It takes a 16-bit unsigned integer and reformats it as a 32-bit signed integer. At this point `val_mV` holds the same value as `buf`, but in a different sized container.
 <11> The memory location of `val_mV` is given to `adc_raw_to_millivolts_dt`. It uses this to read the raw value stored there. It then uses its knowledge of the ADC settings to convert that raw value to one in millivolts. The memory location is then used to update `val_mV` so it instead has the value in millivolts.
 +
