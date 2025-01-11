@@ -192,7 +192,7 @@ Don't forget the pull-up resistors.  A 2.2 k{Omega} is required connecting SDA t
 There are two configuration registers with addresses of 0x00 and 0x01.  You can use those to select the number of samples averaged per measurement output, the data output rate, the sensor gain, and some other less important things.  The defaults (1 sample per output, 15 Hz data rate, and 0.092 {micro}T multiplier) are fine for this program so no need to write anything!
 +
 [discrete]
-==== Mode register
+=== Mode register
 +
 The address of the mode register is 0x02.  Sending it a data byte of 0x01 will place it into single measurement mode (which will then require the mode to be reset before each new measurement).  In this program you want continuous measurement mode, so send it a data byte of 0x00.
 +
