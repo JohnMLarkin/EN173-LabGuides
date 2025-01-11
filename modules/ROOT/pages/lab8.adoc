@@ -166,12 +166,11 @@ You will use the _Analog Discovery_'s logic analyzer to observe the I^2^C betwee
 
 === Digital compass
 
-In this assignment you will communicate with a digital compass using I^2^C. Two versions of instructions are provided: one for the HMC5883 and one for the LIS3MDL.  You will only need to complete one of these assignments.
+In this assignment you will communicate with a digital compass using I^2^C. Two versions of instructions are provided: one for the HMC5883 and one for the LIS3MDL.  You will only need to complete the one that corresponds to the sensor you have.
 
-
+======
 [[assignment-magSensor-i2c]]
 .Assignment {lab}.{counter:assignment}
-======
 
 . Access the assignment link on Blackboard.
 .	Declare the following in your main function:
