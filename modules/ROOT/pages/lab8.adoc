@@ -188,13 +188,16 @@ The digital compass (HMC5883) has a 7-bit address of 0x1E.  You will read the th
 +
 Don't forget the pull-up resistors.  A 2.2 k{Omega} is required connecting SDA to the power bus.  The same is true of SCL.
 +
+[discrete]
 ==== Configuration registers (not needed for this program)
 There are two configuration registers with addresses of 0x00 and 0x01.  You can use those to select the number of samples averaged per measurement output, the data output rate, the sensor gain, and some other less important things.  The defaults (1 sample per output, 15 Hz data rate, and 0.092 {micro}T multiplier) are fine for this program so no need to write anything!
 +
+[discrete]
 ==== Mode register
 +
 The address of the mode register is 0x02.  Sending it a data byte of 0x01 will place it into single measurement mode (which will then require the mode to be reset before each new measurement).  In this program you want continuous measurement mode, so send it a data byte of 0x00.
 +
+[discrete]
 ==== Data output registers
 +
 The data output register addresses begin at 0x03.  Read 6 bytes from this to get the three magnetic field components (two bytes per component).
@@ -205,6 +208,7 @@ In this assignment you will communicate with a digital compass using I^2^C.  The
 +
 There are weak (10 k{Omega}) pull-up resistors integrated into Adafruit's breakout board for the LIS3ML so you might not need any external. If you do run into problems with communication you might find external 4.7 k{Omega} resistors for SDA and SCL do the trick.
 +
+[discrete]
 ==== Control registers
 There are five control registers on the LIS3MDL that configure its features.
 +
@@ -214,6 +218,7 @@ The default settings of control register 2 (with an address of 0x21) are also ok
 +
 You need to change the settings of control register 3 (with an address of 0x22) to enable continuous conversion mode. The default is single conversion mode. You can do this by writing 0x00 to this register.
 +
+[discrete]
 ==== Data output registers
 +
 The data output register addresses begin at 0x28.  Read 6 bytes from this to get the three magnetic field components (two bytes per component).
@@ -269,7 +274,6 @@ LIS3MDL::
 IMPORTANT: Take a video demonstrating successful completion of this project and upload that to Blackboard. Also, don't forget to push your final code to the remote repository.
 
 NOTE: To get truly accurate results you would also need to apply a temperature-dependent calibration factor and trigger a calibration (see the product data sheet if you are truly curious but the uncompensated results are good enough for this class).
-====
 
 // === Digital compass (LIS3MDL version)
 
