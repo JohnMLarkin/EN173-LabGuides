@@ -359,7 +359,7 @@ In this assignment you will demonstrate your ability to use SPI and to extract i
 
 ==== Project requirements:
 
-* The majority of your code will be spent configuring the accelerometer prior to putting it into Measure mode and entering a `while` loop.  A summary of the configuration commands for the tap features of the ADXL345 appears below, but full details are on the data sheet https://www.analog.com/media/en/technical-documentation/data-sheets/adxl345.pdf[available from the manufacturer.]
+* The majority of your code will be spent configuring the accelerometer prior to putting it into Measure mode and entering a `while` loop.  A summary of the configuration commands for the tap features of the ADXL345 appears below, but full details are on the data sheet https://www.analog.com/media/en/technical-documentation/data-sheets/adxl345.pdf[available from the manufacturer^].
 * The ADXL345 interrupts will be configured to set INT2 high when either a single or double tap event has occurred. INT2 will be connected to nRF52840 p0.04 (configured as a GPIO).
 * Inside of the `while` loop, you will check to see if the accelerometer has indicated something happened (p0.04 switches from high to low). If it did, you will communicate with the ADXL345 via SPI and determine whether a single or double tap was detected. Note: when a double tap occurs the ADXL345 will also say a single tap occurred (because a double tap consists of at least one tap). We want **our** single tap indicator to mean that one and only one tap was detected so be careful with the logic.
 * It will turn on LED1 if a single tap was detected (but not one that was part of a double tap) and LED2 if a double tap was detected. These will remain lit for 1 second.
