@@ -207,7 +207,7 @@ You will now use the _Analog Discovery 2_ oscilloscope to understand the behavio
 .. *Mode* = Normal
 .. *Level* = 2 V
 . In the Time settings, set Base to 1 s/div.
-In the settings for both Channel 1 and 2, set the offset to - 2 V and the range to 500 mV/div.
+In the settings for both Channel 1 and 2, set the offset to -2 V and the range to 500 mV/div.
 . Click the btn:[Single] acquisition button and wait for the oscilloscope display to show the message "`Armed`" in the upper left of the graph (next to C1 and C2).  Once it is armed, push the momentary push button (just a quick push and release). If the green LED doesn't turn on, continue with a series of quick pushes (roughly 0.5 s pauses between them) until it does turn on.  Wait patiently for the oscilloscope capture to display.
 . The blue trace shows the button voltage and the yellow trace is the green LED voltage.  You should notice that the yellow trace goes high while the blue trace is high. If it took more than one button push to activate the green LED, you should see those previous attempts as well.
 . The yellow trace should remain high for two seconds.  Verify this using the *PosWidth* measurement on channel 1.
