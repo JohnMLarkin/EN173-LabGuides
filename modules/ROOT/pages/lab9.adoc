@@ -213,8 +213,7 @@ In the settings for both Channel 1 and 2, set the offset to -2 V and the range t
 . The yellow trace should remain high for two seconds.  Verify this using the *PosWidth* measurement on channel 1.
 . You will at the variability of this behavior.  Repeat the btn:[Single] acquisition 4 more times and pay attention to the LED "`on`" time.  Do you get 2.0000 s each time?
 . You will now look at the time of the LED activation in more detail.  Change the Time base to 50 ms/div and click btn:[Single] followed by pushing the momentary push button until you get an oscilloscope capture.
-. Turn on the *Quick Measure: Vertical* tool by clicking on its icon in the upper right of the oscilloscope graph. +
-image:lab9/Measure-Vertical-Tool.png[Vertical measure tool,100]
+. Turn on the *Quick Measure: Horizontal* tool by clicking on its icon in the upper right of the oscilloscope graph.
 . Click on the left side of the blue trace transition from low to high (this marks the instant the button was first pushed down).  Now move right until the vertical red line (usually called a cursor in the context of oscilloscope measurements) indicates you are over the off-to-on transition for the LED.  You should see something like the following: +
 image:lab9/Measure-the-gap.png[Measure the button-to-LED gap,450]
 . The time from when the button was pushed to when the LED was activated is display as {Delta}X by this tool.  Record this time, called the _latency_, on your Lab 9 worksheet.
