@@ -163,9 +163,9 @@ When an external button is pushed, it will turn on a green LED.  A timer will be
 
 #define SLEEP_TIME_MS   300
 
-#define RED_NI DT_ALIAS(redled)
-#define GREEN_NI DT_ALIAS(greenled)
-#define BTN_NI DT_ALIAS(pb)
+#define RED_NI DT_NODELABEL(redled)
+#define GREEN_NI DT_NODELABEL(greenled)
+#define BTN_NI DT_NODELABEL(pb)
 const struct gpio_dt_spec redLED = GPIO_DT_SPEC_GET(RED_NI, gpios);
 const struct gpio_dt_spec greenLED = GPIO_DT_SPEC_GET(GREEN_NI, gpios);
 const struct gpio_dt_spec btn = GPIO_DT_SPEC_GET(BTN_NI, gpios);
