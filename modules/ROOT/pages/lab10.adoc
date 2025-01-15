@@ -41,8 +41,8 @@ void alertOff(struct k_timer *timer);
 void buttonPressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins);
 
 #define LED0_NI DT_ALIAS(led0)
-#define GREEN_NI DT_ALIAS(greenled)
-#define BTN_NI DT_ALIAS(pb)
+#define GREEN_NI DT_NODELABEL(greenled)
+#define BTN_NI DT_NODELABEL(pb)
 const struct gpio_dt_spec heartbeat = GPIO_DT_SPEC_GET(LED0_NI, gpios);
 const struct gpio_dt_spec alertLED = GPIO_DT_SPEC_GET(GREEN_NI, gpios);
 const struct gpio_dt_spec btn = GPIO_DT_SPEC_GET(BTN_NI, gpios);
@@ -115,7 +115,7 @@ You will see that our counting variable has the keyword `volatile` added in fron
 /* ISR prototype */
 void buttonPressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins);
 
-#define BTN_NI DT_ALIAS(pb)
+#define BTN_NI DT_NODELABEL(pb)
 const struct gpio_dt_spec btn = GPIO_DT_SPEC_GET(BTN_NI, gpios);
 static struct gpio_callback btn_cb_data;
 
