@@ -209,7 +209,7 @@ image::lab10/RC-button-debounce.png[Low-pass filtered button, 350]
 . Place a push button on your breadboard and connect one its pins to VDD.
 . Connect a diagonally located pin on the push button to a 10 k{Omega} resistor.
 . The other leg of the resistor should be connected to P0.03 *and* the long leg of a 10 {micro}F capacitor. The short leg of the capacitor should be connected to ground.
-. Use the oscilloscope to observe the output of the low-pass filter (*1+* to the junction between the resistor and capacitor, *1-* to ground, and icon:arrow-down[] to ground).
+. Use the oscilloscope to observe the output of the low-pass filter (*1+* to the junction between the resistor and capacitor, *1-* to ground, and image:arrow-down.svg[12] to ground).
 . In the Trigger settings (above the graph), set Mode to Repeated and Normal and set Level to 2 V.
 . In the Channel 1 settings, change Offset to -2 V and Range to 500 mV/div.
 . Adjust the Time settings to capture details of the off-to-on transition when the button is pressed.

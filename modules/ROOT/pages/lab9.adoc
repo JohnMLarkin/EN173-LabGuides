@@ -200,7 +200,7 @@ void alertOff(struct k_timer *timer) {
 
 You will now use the _Analog Discovery 2_ oscilloscope to understand the behavior of <<program-basic-timeout>>.
 
-. Connect icon:arrow-down[] to the ground bus.
+. Connect image:arrow-down.svg[12] to the ground bus.
 . Connect *1+* to the junction between P0.28 and the green LED/resistor combo and *1-* to ground.
 . Connect *2+* to the junction between the button and P0.03 and *2-* to ground.
 . In the oscilloscope app, make the following Trigger settings:
