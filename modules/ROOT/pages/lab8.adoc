@@ -185,7 +185,7 @@ HMC5883::
 +
 The digital compass (HMC5883) has a 7-bit address of 0x1E.  You will read the three magnetic field components from the compass.
 +
-Don't forget the pull-up resistors.  A 2.2 k{Omega} is required connecting SDA to the power bus.  The same is true of SCL.
+IMPORTANT: This breakout board does not include pull-up resistors for SDA or SCL so you must provide them externally. A low- to mid-kilohm resistor (for example, 2.2 k{Omega}) is required connecting SDA to the power bus.  The same is true of SCL.
 +
 [discrete]
 ==== **Configuration registers (not needed for this program)**
