@@ -205,7 +205,7 @@ LIS3MDL::
 +
 In this assignment you will communicate with a digital compass using I^2^C.  The digital compass (LIS3MDL) has a 7-bit address of 0x1C (or 0x1E if the solder jumper AD1 on the back of the board is connected). You will read the three magnetic field components from the compass and then print those.
 +
-There are weak (10 k{Omega}) pull-up resistors integrated into Adafruit's breakout board for the LIS3ML so you might not need any external. If you do run into problems with communication you might find external 4.7 k{Omega} resistors for SDA and SCL do the trick.
+There are weak (10 k{Omega}) pull-up resistors integrated into Adafruit's breakout board for the LIS3MDL so you might not need any external. If you do run into problems with communication you might find external 4.7 k{Omega} resistors for SDA and SCL do the trick.
 +
 [discrete]
 ==== **Control registers**
