@@ -206,7 +206,7 @@ image::lab10/RC-button-debounce.png[Low-pass filtered button, 350]
 .Exercise {lab}.{counter:exercise}
 
 . Reopen the application with <<program-button-counting-1>> (counting button presses with an ISR but no software debounce).
-. Place a push button on your breadboard and connect one its pins to VDD.
+. Place a push button on your breadboard and connect one of its pins to VDD.
 . Connect a diagonally located pin on the push button to a 10 k{Omega} resistor.
 . The other leg of the resistor should be connected to P0.03 *and* the long leg of a 10 {micro}F capacitor. The short leg of the capacitor should be connected to ground.
 . Use the oscilloscope to observe the output of the low-pass filter (*1+* to the junction between the resistor and capacitor, *1-* to ground, and image:arrow-down.svg[12] to ground).
