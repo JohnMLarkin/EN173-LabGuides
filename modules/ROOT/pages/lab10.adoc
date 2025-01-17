@@ -160,7 +160,7 @@ Modify <<program-button-counting-1>> by doing the following:
 +
 [source,c]
 ----
-DEBOUNCE_TIME_MS 100
+#define DEBOUNCE_TIME_MS 100
 K_TIMER_DEFINE(debounce_timer, NULL, NULL);
 ----
 +
