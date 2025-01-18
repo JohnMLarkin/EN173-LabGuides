@@ -189,7 +189,7 @@ IMPORTANT: Demonstrate successful blinking of LEDs with threads passed a structu
 void blink(void* blink_param);
 
 struct blinkParam { // <1>
-    const struct gpio_dt_spec* led;
+    const struct gpio_dt_spec led;
     int on_time;
     int off_time;
     int max_count;
@@ -204,8 +204,8 @@ const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET(LED0_NI, gpios);
 const struct gpio_dt_spec led1 = GPIO_DT_SPEC_GET(LED1_NI, gpios);
 
 #define STACKSIZE 1024
-struct blinkParam fastBlinker = {&led0, 200, 100, 100, 0}; // <3>
-struct blinkParam slowBlinker = {&led1, 1500, 500, 30, 0};
+struct blinkParam fastBlinker = {led0, 200, 100, 100, 0}; // <3>
+struct blinkParam slowBlinker = {led1, 1500, 500, 30, 0};
 K_THREAD_DEFINE(thread0_id, STACKSIZE, blink, (void*)&fastBlinker, NULL, NULL, 7, 0, 0);
 K_THREAD_DEFINE(thread1_id, STACKSIZE, blink, (void*)&slowBlinker, NULL, NULL, 7, 0, 0);
 
@@ -220,13 +220,12 @@ int main(void) {
 
 void blink(void* blink_param) {
     struct blinkParam* p = (struct blinkParam*)blink_param; // <4>
-    const struct gpio_dt_spec led_spec = *(p->led); // <5>
-    LOG_DBG("LED P0.%d has an on-time of %d ms and a off-time of %d ms", led_spec.pin, p->on_time, p->off_time);
-    gpio_pin_configure_dt(&led_spec, GPIO_OUTPUT_ACTIVE);
+    LOG_DBG("LED P0.%d has an on-time of %d ms and a off-time of %d ms", (p->led).pin, p->on_time, p->off_time);
+    gpio_pin_configure_dt(&(p->led), GPIO_OUTPUT_ACTIVE);
     while (p->count < p->max_count) {
-        gpio_pin_set_dt(&led_spec, 1);
+        gpio_pin_set_dt(&(p->led), 1);
         k_msleep(p->on_time);
-        gpio_pin_set_dt(&led_spec, 0);
+        gpio_pin_set_dt(&(p->led), 0);
         k_msleep(p->off_time);
         p->count++;
     }
@@ -236,7 +235,6 @@ void blink(void* blink_param) {
 <2> The `count` variable is declared as `volatile` because it is modified by the thread and read by the main thread.
 <3> Two `blinkParam` structures are declared and initialized with the LED, on-time, off-time, maximum count, and count.
 <4> The `blink` function takes a `void*` argument and casts it to a `struct blinkParam*`.
-<5> The LED structure is dereferenced from the `blinkParam` structure and stored in a local variable.
 
 == Return to the Button Responder
 
@@ -400,9 +398,9 @@ Although there are ways to complete the assigned task without those features, th
 // Also change so tapping during the display period immediately starts data gathering rather than waiting for 20 seconds after previous.
 // Give clearer instructions on what should be shown in video: continuous cylon throughout, ability to trigger another temperature gathering during the display period, time-based transition from display back to waiting
 
-You will create a program that blinks an LED (with a period of 1 s) while it waits for an interrupt triggered by a single tap (as detected by our accelerometer). The LED is then held on while twenty temperature data points, spaced 500 ms apart, with the analog TMP36. Upon completion the average temperature (in either Celsius or Fahrenheit, your choice) is logged to the console, the accelerometer is reset to wait for the next tap, and LED blinking resumes.
+You will create a program that blinks an LED (with a period of 1 s) while it waits for an interrupt triggered by a single tap (as detected by our accelerometer). The LED is then held on while twenty temperature data points are gathered, spaced 500 ms apart, with the analog TMP36. Upon completion the average temperature (in either Celsius or Fahrenheit, your choice) is logged to the console, the accelerometer is reset to wait for the next tap, and LED blinking resumes.
 
-NOTE: The communication with the accelerometer cannot take place in the interrupt service routine. It must be done in a separate thread because I^2^C communication is not allowed in an ISR.
+NOTE: The communication with the accelerometer cannot take place in the interrupt service routine. It must be done in a separate thread because SPI communication is not allowed in an ISR.
 
 The assignment link is available on Blackboard.
 
