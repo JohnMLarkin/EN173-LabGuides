@@ -365,7 +365,7 @@ In this exercise you will revisit digital input, using the potentiometer to crea
 
 . Connect VDD to the power bus on the breadboard, GND to the ground bus, and P0.02 to row 30.
 . Connect the potentiometer with the red lead to the power bus, the black lead to the ground bus, and the green lead to row 30.
-. Connect the *1+* flywire of the _Analog Discovery 2_ to row 30. Connect *1-* and icon:arrow-down[] to the ground bus.
+. Connect the *1+* flywire of the _Analog Discovery 2_ to row 30. Connect *1-* and image:arrow-down.svg[12] to the ground bus.
 . Create a new project containing <<program-logic-levels>>. You will also need to generate an overlay defining P0.02 as a digital input called `ext_input` (no pull-up or pull-down resistors are needed).
 . Build and flash the application to your microcontroller.
 . Start _Waveforms_ and open the Voltmeter application. Click btn:[Run] to continuously update the readings.

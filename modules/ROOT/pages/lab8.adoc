@@ -185,7 +185,7 @@ HMC5883::
 +
 The digital compass (HMC5883) has a 7-bit address of 0x1E.  You will read the three magnetic field components from the compass.
 +
-Don't forget the pull-up resistors.  A 2.2 k{Omega} is required connecting SDA to the power bus.  The same is true of SCL.
+IMPORTANT: This breakout board does not include pull-up resistors for SDA or SCL so you must provide them externally. A low- to mid-kilohm resistor (for example, 2.2 k{Omega}) is required connecting SDA to the power bus.  The same is true of SCL.
 +
 [discrete]
 ==== **Configuration registers (not needed for this program)**
@@ -205,7 +205,7 @@ LIS3MDL::
 +
 In this assignment you will communicate with a digital compass using I^2^C.  The digital compass (LIS3MDL) has a 7-bit address of 0x1C (or 0x1E if the solder jumper AD1 on the back of the board is connected). You will read the three magnetic field components from the compass and then print those.
 +
-There are weak (10 k{Omega}) pull-up resistors integrated into Adafruit's breakout board for the LIS3ML so you might not need any external. If you do run into problems with communication you might find external 4.7 k{Omega} resistors for SDA and SCL do the trick.
+There are weak (10 k{Omega}) pull-up resistors integrated into Adafruit's breakout board for the LIS3MDL so you might not need any external. If you do run into problems with communication you might find external 4.7 k{Omega} resistors for SDA and SCL do the trick.
 +
 [discrete]
 ==== **Control registers**
@@ -250,7 +250,6 @@ LIS3MDL::
 
 
 
-
 // Following the directions outlined below, create a digital compass.
 
 // . Access the assignment link on Blackboard.
@@ -274,31 +273,34 @@ IMPORTANT: Take a video demonstrating successful completion of this project and 
 
 NOTE: To get truly accurate results you would also need to apply a temperature-dependent calibration factor and trigger a calibration (see the product data sheet if you are truly curious but the uncompensated results are good enough for this class).
 
-// === Digital compass (LIS3MDL version)
+=== Tap Detection, Revisited
 
+In this assignment you will revisit the tap detection program from Lab 7.  You will change the program so that communication takes place using I^2^C.
 
+====
+[[assignment-tapdetector-i2c]]
+.Assignment {lab}.{counter:assignment}
 
-// ====
-// [[assignment-magSensor-i2c-lis3mdl]]
-// .Assignment {lab}.{counter:assignment}
+[discrete]
+==== **Project requirements**
 
-// Following the directions outlined below, create a digital compass.
+* You will configure an accelerometer to detect single and double taps.  Internal nRF52840 LEDs will be used to indicate whether a single tap or a double tap event has occurred.
+* The majority of your code will be spent configuring the accelerometer prior to putting it into Measure mode and entering a `while` loop.
+* The ADXL345 interrupts will be configured to set INT2 high when either a single or double tap event has occurred. INT2 will be connected to nRF52840 P0.04 (configured as a GPIO).
+* Inside of the `while` loop, you will check to see if the accelerometer has indicated something happened (P0.04 switches from high to low). If it did, you will communicate with the ADXL345 via **I^2^C** and determine whether a single or double tap was detected. Note: when a double tap occurs the ADXL345 will also say a single tap occurred (because a double tap consists of at least one tap). We want **our** single tap indicator to mean that one and only one tap was detected so be careful with the logic.
+* It will turn on LED1 if a single tap was detected (but not one that was part of a double tap) and LED2 if a double tap was detected. These will remain lit for 1 second.
 
-// . Access the assignment on Blackboard.
-// .	Declare the following in your main function:
-// ..	`uint8_t buffer[6]`
-// ..	`int16_t magComponents[3]`
-// ..	`float magMicroT[3]`
-// . Configure the sensor as described above.
-// . The I^2^C interface must read in data from the sensor as data type `uint8_t`.  That is why you needed `buffer`.
-// . The raw magnetic components are stored as `int16_t`.  The data type `int16_t` encodes integers using 16 bits and includes both positive and negative numbers (along with other particular details about how it is encoded).
-// . Next, combine pairs of data words to get the x, y, and z components using our bitshift and OR method.  Assign these to `magComponents`. The LIS3MDL uses little endian format so the first byte is the LSB and the second byte is the MSB. +
-// `magComponent[0] = data[1]<<8 | data[0];`
-// . You can now calculate the actual magnetic field (in {micro}T) by dividing the raw data by 6.842.  This is the default multiplier for the LIS3MDL.
-// . Print these three components to the computer.
-// . Test your digital compass.  Are the components plausible?
+[discrete]
+==== **Tasks**
 
-// IMPORTANT: Take a video demonstrating successful completion of this project and upload that to Blackboard. Also, don't forget to push your final code to the remote repository.
+. Access the GitHub Classroom link for this assignment on Blackboard.
+. Follow the usual steps for getting started with a repository from GitHub Classroom.
+. The configuration of the accelerometer should occur once, outside of the `while` loop.
+. Don't forget to set the power control register to Measure mode as the last step before entering the `while` loop.
+. Inside of the `while` loop, your program should check to see if there is an alert on P0.04. If there is, then communicate with the accelerometer and read the interrupt source byte.
+. Set the LEDs if a tap has been detected and then keep them on for 1 second.
+. When you are satisfied with its operation, finish documenting your code with comments and a detailed `README.md`.
 
-// NOTE: To get truly accurate results you would also need to apply a temperature-dependent calibration factor and trigger a calibration (see the product data sheet if you are truly curious but the uncompensated results are good enough for this class).
-// ====
+IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation (along with your reflection) and upload this to Blackboard.
+
+====

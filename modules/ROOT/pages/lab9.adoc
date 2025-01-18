@@ -163,9 +163,9 @@ When an external button is pushed, it will turn on a green LED.  A timer will be
 
 #define SLEEP_TIME_MS   300
 
-#define RED_NI DT_ALIAS(redled)
-#define GREEN_NI DT_ALIAS(greenled)
-#define BTN_NI DT_ALIAS(pb)
+#define RED_NI DT_NODELABEL(redled)
+#define GREEN_NI DT_NODELABEL(greenled)
+#define BTN_NI DT_NODELABEL(pb)
 const struct gpio_dt_spec redLED = GPIO_DT_SPEC_GET(RED_NI, gpios);
 const struct gpio_dt_spec greenLED = GPIO_DT_SPEC_GET(GREEN_NI, gpios);
 const struct gpio_dt_spec btn = GPIO_DT_SPEC_GET(BTN_NI, gpios);
@@ -200,21 +200,20 @@ void alertOff(struct k_timer *timer) {
 
 You will now use the _Analog Discovery 2_ oscilloscope to understand the behavior of <<program-basic-timeout>>.
 
-. Connect icon:arrow-down[] to the ground bus.
+. Connect image:arrow-down.svg[12] to the ground bus.
 . Connect *1+* to the junction between P0.28 and the green LED/resistor combo and *1-* to ground.
 . Connect *2+* to the junction between the button and P0.03 and *2-* to ground.
 . In the oscilloscope app, make the following Trigger settings:
 .. *Mode* = Normal
 .. *Level* = 2 V
 . In the Time settings, set Base to 1 s/div.
-In the settings for both Channel 1 and 2, set the offset to - 2 V and the range to 500 mV/div.
+In the settings for both Channel 1 and 2, set the offset to -2 V and the range to 500 mV/div.
 . Click the btn:[Single] acquisition button and wait for the oscilloscope display to show the message "`Armed`" in the upper left of the graph (next to C1 and C2).  Once it is armed, push the momentary push button (just a quick push and release). If the green LED doesn't turn on, continue with a series of quick pushes (roughly 0.5 s pauses between them) until it does turn on.  Wait patiently for the oscilloscope capture to display.
 . The blue trace shows the button voltage and the yellow trace is the green LED voltage.  You should notice that the yellow trace goes high while the blue trace is high. If it took more than one button push to activate the green LED, you should see those previous attempts as well.
 . The yellow trace should remain high for two seconds.  Verify this using the *PosWidth* measurement on channel 1.
 . You will at the variability of this behavior.  Repeat the btn:[Single] acquisition 4 more times and pay attention to the LED "`on`" time.  Do you get 2.0000 s each time?
 . You will now look at the time of the LED activation in more detail.  Change the Time base to 50 ms/div and click btn:[Single] followed by pushing the momentary push button until you get an oscilloscope capture.
-. Turn on the *Quick Measure: Vertical* tool by clicking on its icon in the upper right of the oscilloscope graph. +
-image:lab9/Measure-Vertical-Tool.png[Vertical measure tool,100]
+. Turn on the *Quick Measure: Horizontal* tool by clicking on its icon in the upper right of the oscilloscope graph.
 . Click on the left side of the blue trace transition from low to high (this marks the instant the button was first pushed down).  Now move right until the vertical red line (usually called a cursor in the context of oscilloscope measurements) indicates you are over the off-to-on transition for the LED.  You should see something like the following: +
 image:lab9/Measure-the-gap.png[Measure the button-to-LED gap,450]
 . The time from when the button was pushed to when the LED was activated is display as {Delta}X by this tool.  Record this time, called the _latency_, on your Lab 9 worksheet.

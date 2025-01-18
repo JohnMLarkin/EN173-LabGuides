@@ -41,8 +41,8 @@ void alertOff(struct k_timer *timer);
 void buttonPressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins);
 
 #define LED0_NI DT_ALIAS(led0)
-#define GREEN_NI DT_ALIAS(greenled)
-#define BTN_NI DT_ALIAS(pb)
+#define GREEN_NI DT_NODELABEL(greenled)
+#define BTN_NI DT_NODELABEL(pb)
 const struct gpio_dt_spec heartbeat = GPIO_DT_SPEC_GET(LED0_NI, gpios);
 const struct gpio_dt_spec alertLED = GPIO_DT_SPEC_GET(GREEN_NI, gpios);
 const struct gpio_dt_spec btn = GPIO_DT_SPEC_GET(BTN_NI, gpios);
@@ -115,7 +115,7 @@ You will see that our counting variable has the keyword `volatile` added in fron
 /* ISR prototype */
 void buttonPressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins);
 
-#define BTN_NI DT_ALIAS(pb)
+#define BTN_NI DT_NODELABEL(pb)
 const struct gpio_dt_spec btn = GPIO_DT_SPEC_GET(BTN_NI, gpios);
 static struct gpio_callback btn_cb_data;
 
@@ -160,7 +160,7 @@ Modify <<program-button-counting-1>> by doing the following:
 +
 [source,c]
 ----
-DEBOUNCE_TIME_MS 100
+#define DEBOUNCE_TIME_MS 100
 K_TIMER_DEFINE(debounce_timer, NULL, NULL);
 ----
 +
@@ -206,10 +206,10 @@ image::lab10/RC-button-debounce.png[Low-pass filtered button, 350]
 .Exercise {lab}.{counter:exercise}
 
 . Reopen the application with <<program-button-counting-1>> (counting button presses with an ISR but no software debounce).
-. Place a push button on your breadboard and connect one its pins to VDD.
+. Place a push button on your breadboard and connect one of its pins to VDD.
 . Connect a diagonally located pin on the push button to a 10 k{Omega} resistor.
 . The other leg of the resistor should be connected to P0.03 *and* the long leg of a 10 {micro}F capacitor. The short leg of the capacitor should be connected to ground.
-. Use the oscilloscope to observe the output of the low-pass filter (*1+* to the junction between the resistor and capacitor, *1-* to ground, and icon:arrow-down[] to ground).
+. Use the oscilloscope to observe the output of the low-pass filter (*1+* to the junction between the resistor and capacitor, *1-* to ground, and image:arrow-down.svg[12] to ground).
 . In the Trigger settings (above the graph), set Mode to Repeated and Normal and set Level to 2 V.
 . In the Channel 1 settings, change Offset to -2 V and Range to 500 mV/div.
 . Adjust the Time settings to capture details of the off-to-on transition when the button is pressed.
