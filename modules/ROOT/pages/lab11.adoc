@@ -339,6 +339,7 @@ void buttonISR(const struct device *dev, struct gpio_callback *cb, uint32_t pins
 const struct gpio_dt_spec heartbeat = GPIO_DT_SPEC_GET(REDLED_NI, gpios);
 const struct gpio_dt_spec alert = GPIO_DT_SPEC_GET(GREENLED_NI, gpios);
 
+#define BTN_EVENT BIT(0) // <1>
 K_EVENT_DEFINE(eventManager);
 
 int main(void) {
@@ -351,7 +352,7 @@ int main(void) {
 
 void buttonISR(const struct device *dev, struct gpio_callback *cb, uint32_t pins) {
     gpio_pin_set_dt(&alert, 1);
-    k_event_post(&eventManager, BIT(0));
+    k_event_post(&eventManager, BTN_EVENT);
 }
 
 void heartbeatHandler(void) {
@@ -364,13 +365,14 @@ void heartbeatHandler(void) {
 
 void alertHandler(void) {
     while (true) {
-        k_event_wait(&eventManager, BIT(0), false, K_FOREVER);
-        k_event_clear(&eventManager, BIT(0));
+        k_event_wait(&eventManager, BTN_EVENT, false, K_FOREVER);
+        k_event_clear(&eventManager, BTN_EVENT);
         k_msleep(3000);
         gpio_pin_set_dt(&alert, 0);
     }
 }
 ----
+<1> Although events correspond to bits, it is more readable to label them in a human-friendly way.
 
 ====
 [[exercise-interrupt-responder-with-thread]]
@@ -393,14 +395,9 @@ Although there are ways to complete the assigned task without those features, th
 [[assignment-temperature-display]]
 .Assignment {lab}.{counter:assignment}
 
-// Note for 2023
-// Change to using the TMP36 so data can be gathered in an ISR. I2C is forbidden in that context.
-// Also change so tapping during the display period immediately starts data gathering rather than waiting for 20 seconds after previous.
-// Give clearer instructions on what should be shown in video: continuous cylon throughout, ability to trigger another temperature gathering during the display period, time-based transition from display back to waiting
+You will create a program that blinks an LED (with a period of 1 s) while it waits for an interrupt triggered by a single tap (as detected by our accelerometer). The LED is then held on while twenty temperature data points are gathered, spaced 500 ms apart, with a temperature sensor (either the analog TMP36 or the digital TMP102, your choice). Upon completion the average temperature (in either Celsius or Fahrenheit, your choice) is logged to the console, the accelerometer is reset to wait for the next tap, and LED blinking resumes.
 
-You will create a program that blinks an LED (with a period of 1 s) while it waits for an interrupt triggered by a single tap (as detected by our accelerometer). The LED is then held on while twenty temperature data points are gathered, spaced 500 ms apart, with the analog TMP36. Upon completion the average temperature (in either Celsius or Fahrenheit, your choice) is logged to the console, the accelerometer is reset to wait for the next tap, and LED blinking resumes.
-
-NOTE: The communication with the accelerometer cannot take place in the interrupt service routine. It must be done in a separate thread because SPI communication is not allowed in an ISR.
+NOTE: The communication with the accelerometer cannot take place in the interrupt service routine. It must be done in a separate thread because SPI and I^2^C communication are not allowed in an ISR. You get to decide which protocol to use.
 
 The assignment link is available on Blackboard.
 
