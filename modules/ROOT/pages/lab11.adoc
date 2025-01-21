@@ -274,11 +274,11 @@ K_THREAD_DEFINE(buttonThread_id, 1024, buttonHandler, NULL, NULL, NULL, 7, 0, 0)
 void heartbeatHandler(void);
 K_THREAD_DEFINE(heartBeatThread_id, 1024, heartbeatHandler, NULL, NULL, NULL, 8, 0, 0); // <2>
 
-#define BUTTON_NI DT_ALIAS(pb)
+#define BUTTON_NI DT_NODELABEL(pb)
 const struct gpio_dt_spec button = GPIO_DT_SPEC_GET(BUTTON_NI, gpios);
 
-#define REDLED_NI DT_ALIAS(redled)
-#define GREENLED_NI DT_ALIAS(greenled)
+#define REDLED_NI DT_NODELABEL(redled)
+#define GREENLED_NI DT_NODELABEL(greenled)
 const struct gpio_dt_spec heartbeat = GPIO_DT_SPEC_GET(REDLED_NI, gpios);
 const struct gpio_dt_spec buttonAlert = GPIO_DT_SPEC_GET(GREENLED_NI, gpios);
 
