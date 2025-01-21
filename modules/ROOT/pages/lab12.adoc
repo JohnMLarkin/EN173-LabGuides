@@ -238,15 +238,13 @@ properties:
 
 == Your Turn
 
-You will create a program that measures temperature with the digital TMP102. The temperature (in Celsius) will be measured every time a button is pushed and put in a message queue. At the same time, a log message should display the current number of messages stored.  The queue will have 20 slots for messages. If the queue gets full, you will want to free the oldest slot and replace it with the new measurement.
+You will create a program that measures temperature with the digital TMP102. The temperature (in Celsius) will be measured every time a true single tap (not a tap part of a double tap) is detected by the ADXL345 accelerometer is detected and the temperature will be put in a message queue. At the same time, a log message should display the current number of messages stored.  The queue will have 20 slots for messages. If the queue gets full, you will want to free the oldest slot and replace it with the new measurement.
 
-#NEEDS WORK#
+You may find it helpful to consult the https://docs.nordicsemi.com/bundle/zephyr-apis-latest/page/group_msgq_apis.html[Message Queue API documentation^].
 
-When a **second** button is pushed, the character LCD display will be updated to show the average of the stored temperature data (including units). Your program needs to pay attention to the actual number of data points being averaged (it will be between 1 and 20). Your program should also gracefully handle the case of no data by displaying "`No data`" instead. Displaying the average should clear the mailbox.
+When a double tap is detected, the console will be updated to show the average of the stored temperature data (including units). Your program needs to pay attention to the actual number of data points being averaged (it will be between 1 and 20). Your program should also gracefully handle the case of no data by displaying "`No data`" instead. Displaying the average should clear the message queue.
 
-The console input will be used to select the displayed temperature units (from the characters `C`, `K`, `F`, and `R`). After being selected the character LCD should display that choice with a message of the form "`Units set to C`" for 10 seconds.
-
-#NOT DONE#
+A button will be used to select the displayed temperature units (rotating through the options `C`, `K`, `F`, and `R`). After being selected the console should display that choice with a message of the form "`Units set to C`".
 
 ====
 [[assignment-temperature-display]]
@@ -254,12 +252,7 @@ The console input will be used to select the displayed temperature units (from t
 
 Your program must also incorporate the following RTOS features:
 
-* a mutex to control access to the character LCD
+* a mutex to control access to the I2C bus
 * appropriate use of threads
-* appropriate use of `Mail`
-
-Your program should also use your class-based interface to the TMP102 (with its files to be located in the `lib/TMP102` folder).
-
-The https://classroom.github.com/a/8vktYyEe[assignment template] is available on GitHub Classroom.
-
+* appropriate use of a message queue
 ====
