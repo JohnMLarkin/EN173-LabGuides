@@ -8,19 +8,44 @@
 :example-caption: Exercise
 :xrefstyle: short
 :experimental:
-:nrf-toolchain: v2.6.2
-:nrf-sdk: 2.6.2
+:nrf-toolchain: v2.9.0
+:nrf-sdk: 2.9.0
 = Lab 1: Getting Started
 
 == Installing the tools
 
 === nRF Command Line Tools
 
-Nordic Semiconductor provides a collection of tools in a package called **nRF Command Line Tools** that perform important tasks including the transfer of a program from your development computer to the microcontroller. We will not use them directly, but they are required for the other tools that we will use.
+Nordic Semiconductor provides a collection of tools in a package called **nRF Command Line Tools** that perform important tasks including the transfer of a program from your development computer to the microcontroller. We will not use them directly, but they are required for the other tools that we will use. Tools in this collection are gradually being replaced by **nRF Util** (see below), but during the transition period both are needed.
 
 . Download the https://www.nordicsemi.com/Products/Development-tools/nRF-Command-Line-Tools/Download[nRF Command Line Tools] from Nordic Semiconductor.
-. Install the tools. This also includes a separate installer for the required SEGGER J-Link software. It is important to select the option to install legacy USB drivers, particularly if you are using a freshly unpackaged nRF52840 DK board. They frequently ship with outdated firmware that requires these drivers.
+. Install the tools. However, do not install SEGGER J-Link from this package. We will install a more recent version later.
+
+=== SEGGER J-Link
+
+. Download the SEGGER J-Link software from https://www.segger.com/downloads/jlink[SEGGER]. These instructions have been tested using v8.16. 
+. It is important to select the option to install legacy USB drivers, particularly if you are using a freshly unpackaged nRF52840 DK board. They frequently ship with outdated firmware that requires these drivers.
 . If this is your first time to use a particular nRF52840 DK board, you will need to update the firmware on the board. This is done by running J-Link Commander **after** the nRF52840 DK is connected to the computer via USB. You should get a message that the firmware is out of date and be given the option to update it. When it is done, you can close J-Link Commander.
+
+=== nRF Util
+
+Nordic Semiconductor provides a tool called **nRF Util** that is used to package the program you have created into a form that can be transferred to the microcontroller.
+
+. Download the file `nrfutil` from https://www.nordicsemi.com/Products/Development-tools/nRF-Util[Nordic Semiconductor's nRF Util page]. This file should be saved in a folder with a name similar to `C:\nordic_tools`.
+. You will need to add this folder to your system's PATH variable. This is done by opening the System Properties dialog box, selecting the Advanced tab, and then clicking on the Environment Variables button. In the System variables section, find the PATH variable and click on the Edit button. Add the path to the folder where `nrfutil` is located.
+. Open a terminal (on Windows that would be either Command Prompt or PowerShell). To update `nrfutil` to the latest version, run the following command:
++
+[source,shell]
+----
+nrfutil self-upgrade
+----
++
+. Next, install the `nrfutil device` command by running the command:
++
+[source,shell]
+----
+nrfutil install device
+----
 
 === Visual Studio Code
 
@@ -54,7 +79,7 @@ image::lab1/nrf-connect-manage-toolchain-sdk.png[Activity Bar, 284, 465]
 .. Once all selections have been made, it triggers a substantial download and install process so be prepared to wait for several minutes.
 . Click on btn:[Manage SDKs] and then select the btn:[Install SDK] action.
 .. These guides were tested using SDK {nrf-sdk}. You want a version that matches that of the toolchain you just installed. Avoid `main` or numbered versions ending in `-dev` or `-cs` as these are not intended for widespread use.
-.. You will be asked to select a location for the SDK. The goal is to have a short path name and avoid folder names that have spaces.
+.. You will be asked to select a location for the SDK. The goal is to have a short path name and avoid folder names that have spaces. I have put mine in `C:\ncs`.
 
 === Git and GitHub
 
@@ -110,7 +135,7 @@ image::lab1/nrf-connect-create-new-app.png[Create new application, 790, 371]
 
 Replace the contents of `main.c` (in the `src` folder) with the following code. You are encouraged to **type** the code from these lab guides into the editor yourself; don't copy and paste it. You will pay more attention to the details of the code and learn it better if you do this.
 
-// Verified with SDK 2.6.1 and nRF52840 DK on 9/16/2024
+// Verified with SDK 2.9.0 and nRF52840 DK on 3/4/2025
 [source,c]
 [[program-blink-internal-LED]]
 .A program to blink an internal LED.
@@ -124,7 +149,7 @@ Replace the contents of `main.c` (in the `src` folder) with the following code. 
 #include <zephyr/drivers/gpio.h>
 
 #define LED0_NI DT_ALIAS(led0)    // <2>
-const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NI, gpios);  // <3>
+static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NI, gpios);  // <3>
 
 int main(void) {  // <4>
 	gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);  // <5>
@@ -309,8 +334,8 @@ The code to implement this flow chart uses `while` loops that test for a conditi
 
 #define LED0_NI DT_ALIAS(led0)
 #define LED1_NI DT_ALIAS(led1)
-const struct gpio_dt_spec leftLED = GPIO_DT_SPEC_GET(LED0_NI, gpios); // <2>
-const struct gpio_dt_spec rightLED = GPIO_DT_SPEC_GET(LED1_NI, gpios);
+static const struct gpio_dt_spec leftLED = GPIO_DT_SPEC_GET(LED0_NI, gpios); // <2>
+static const struct gpio_dt_spec rightLED = GPIO_DT_SPEC_GET(LED1_NI, gpios);
 
 int main(void) {
     int i = 0; // <3>
@@ -331,7 +356,7 @@ int main(void) {
 }
 ----
 <1> The `#define` pre-compiler directive associates a name, `SLEEP_TIME_MS`, with a value, `250`. Before the program is compiled, the pre-compiler will replace all occurrences of `SLEEP_TIME_MS` with its value. This means that no variable memory space is associated with `SLEEP_TIME_MS`. In this program `SLEEP_TIME` is used to control the on/off time for the LEDs. If a different on/off time was desired, only this definition would need to be changed rather than hunting through the code for all occurrences of a particular number.
-<2> There is usually only one connection to any particular hardware element.  Therefore, our usual design style will be to declare all objects that connect to hardware _outside_ of the `main` function.  This means that they are *global* variables accessible by any function. 
+<2> There is usually only one connection to any particular hardware element.  Therefore, our usual design style will be to declare all objects that connect to hardware _outside_ of the `main` function.  This means that they are *global* variables accessible by any function. The `static` keyword is used to limit the scope of these variables to this file.
 <3> The integer variable `i` is declared within the `main` function.  This means that this particular definition of `i` is *local*.  We will explore this in more detail later.
 <4> The `main` function is called after the rest of the Zephyr RTOS initialization has finished. We want to wait until that is completed before we attempt to configure any hardware. Here the pins connected to the LEDs are configured as outputs and initially are turned off (inactive).
 <5> The inner `while` loop for flashing the left LED begins here. This also illustrates the toggle method a digital output. Toggle changes the state from off to on or from on to off. Doing this twice is one flash of the LED. That is why the loop runs 10 times to flash the LED five times.
