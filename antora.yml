@@ -1,6 +1,6 @@
 name: lab-guides
 title: EN 173 Lab Guides
-version: '2025'
+version: '2026'
 nav:
 - modules/ROOT/nav.adoc
 asciidoc:

@@ -5,15 +5,15 @@
 :micro: &#181;
 :deg: &#176;
 :pm: &#177;
-:nrf-toolchain: v2.6.1
-:nrf-sdk: 2.6.1
+:nrf-toolchain: v2.9.0
+:nrf-sdk: 2.9.0
 = Lab guides for _Introduction to Embedded Systems_
 John M. Larkin <jlarkin@whitworth.edu>
 :navtitle: About
 
 [IMPORTANT]
 ====
-This site is under development with an expected completion of January 1, 2025. Until then, all content is subject to change without warning.
+This version is under development with an expected completion of January 1, 2026. Until then, all content is subject to change without warning.
 ====
 
 This is a collection of lab guides for the course _EN 173: Introduction to Embedded Systems_ taught by John Larkin at https://www.whitworth.edu[Whitworth University]. The development board used throughout these guides is https://www.nordicsemi.com/Products/Development-hardware/nRF52840-DK[Nordic Semiconductor's nRF52840 DK]. In addition, Nordic Semiconductor's https://www.nordicsemi.com/Products/Development-software/nRF-Connect-SDK[nRF Connect SDK] and the associated https://www.nordicsemi.com/Products/Development-tools/nRF-Connect-for-VS-Code[Visual Studio Code extension] are used to provide a development environment that is relatively accessible for a student first encountering embedded systems. However, the course also targets the https://zephyrproject.org/[Zephyr RTOS] which is designed to be portable across a broad selection of platforms so much of what is found in these guides should be applicable to other microcontrollers with only minor changes.
