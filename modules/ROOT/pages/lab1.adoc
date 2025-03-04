@@ -316,7 +316,7 @@ graph TD
 
 The code to implement this flow chart uses `while` loops that test for a condition.  While the condition is true, the content of the loop is repeated.  Create a new application (`two-hearts`) with this code and verify that it works as claimed.
 
-// Verified with SDK 2.6.1 and nRF52840 DK on 9/17/2024
+// Verified with SDK 2.9.0 and nRF52840 DK on 3/4/2025
 [source,c]
 [[program-blink-LED-while-loops]]
 .Exploring `while` loops with blinking LEDs.
