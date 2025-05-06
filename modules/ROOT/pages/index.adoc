@@ -5,8 +5,8 @@
 :micro: &#181;
 :deg: &#176;
 :pm: &#177;
-:nrf-toolchain: v2.9.0
-:nrf-sdk: 2.9.0
+:nrf-toolchain: v3.0.1
+:nrf-sdk: 3.0.0
 = Lab guides for _Introduction to Embedded Systems_
 John M. Larkin <jlarkin@whitworth.edu>
 :navtitle: About
