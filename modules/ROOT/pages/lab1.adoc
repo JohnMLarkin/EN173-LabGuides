@@ -8,8 +8,8 @@
 :example-caption: Exercise
 :xrefstyle: short
 :experimental:
-:nrf-toolchain: v2.9.0
-:nrf-sdk: 2.9.0
+:nrf-toolchain: v3.0.1
+:nrf-sdk: 3.0.0
 = Lab 1: Getting Started
 
 == Installing the tools
@@ -32,7 +32,7 @@ Nordic Semiconductor provides a collection of tools in a package called **nRF Co
 Nordic Semiconductor provides a tool called **nRF Util** that is used to package the program you have created into a form that can be transferred to the microcontroller.
 
 . Download the file `nrfutil` from https://www.nordicsemi.com/Products/Development-tools/nRF-Util[Nordic Semiconductor's nRF Util page]. This file should be saved in a folder with a name similar to `C:\nordic_tools`.
-. You will need to add this folder to your system's PATH variable. This is done by opening the System Properties dialog box, selecting the Advanced tab, and then clicking on the Environment Variables button. In the System variables section, find the PATH variable and click on the Edit button. Add the path to the folder where `nrfutil` is located.
+. You will need to add this folder to your system's PATH variable. This is done by opening the Environment Variables dialog box, selecting the Advanced tab, and then clicking on the Environment Variables button. In the user variables section, find the `Path`` variable and click on the Edit button. Add the path to the folder where `nrfutil` is located.
 . Open a terminal (on Windows that would be either Command Prompt or PowerShell). To update `nrfutil` to the latest version, run the following command:
 +
 [source,shell]
@@ -121,7 +121,7 @@ graph LR
 
 === Creating a new application
 
-. Create a folder to hold all of your programs that will be associated with this series of lab guides. It should be close to the root of a drive and have a short name that is all lowercase and does not contain any spaces. An example would be `C:\embedlabs`.
+. Create a folder to hold all of your programs that will be associated with this series of lab guides. It should be close to the root of a drive and have a short name that is all lowercase letteres and does not contain any spaces. An example would be `C:\embedlabs`.
 . Open the nRF Connect side bar by clicking on its icon in the Activity bar.
 +
 [#img-create-new-application]
@@ -135,7 +135,7 @@ image::lab1/nrf-connect-create-new-app.png[Create new application, 790, 371]
 
 Replace the contents of `main.c` (in the `src` folder) with the following code. You are encouraged to **type** the code from these lab guides into the editor yourself; don't copy and paste it. You will pay more attention to the details of the code and learn it better if you do this.
 
-// Verified with SDK 2.9.0 and nRF52840 DK on 3/4/2025
+// Verified with SDK 3.0.0 and nRF52840 DK on 5/6/2025
 [source,c]
 [[program-blink-internal-LED]]
 .A program to blink an internal LED.
@@ -316,7 +316,7 @@ graph TD
 
 The code to implement this flow chart uses `while` loops that test for a condition.  While the condition is true, the content of the loop is repeated.  Create a new application (`two-hearts`) with this code and verify that it works as claimed.
 
-// Verified with SDK 2.9.0 and nRF52840 DK on 3/4/2025
+// Verified with SDK 3.0.0 and nRF52840 DK on 5/6/2025
 [source,c]
 [[program-blink-LED-while-loops]]
 .Exploring `while` loops with blinking LEDs.
