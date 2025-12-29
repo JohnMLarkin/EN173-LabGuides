@@ -8,44 +8,23 @@
 :example-caption: Exercise
 :xrefstyle: short
 :experimental:
-:nrf-toolchain: v3.0.1
-:nrf-sdk: 3.0.0
+:nrf-toolchain: v3.2.0
+:nrf-sdk: 3.2.0
 = Lab 1: Getting Started
 
 == Installing the tools
-
-=== nRF Command Line Tools
-
-Nordic Semiconductor provides a collection of tools in a package called **nRF Command Line Tools** that perform important tasks including the transfer of a program from your development computer to the microcontroller. We will not use them directly, but they are required for the other tools that we will use. Tools in this collection are gradually being replaced by **nRF Util** (see below), but during the transition period both are needed.
-
-. Download the https://www.nordicsemi.com/Products/Development-tools/nRF-Command-Line-Tools/Download[nRF Command Line Tools] from Nordic Semiconductor.
-. Install the tools. However, do not install SEGGER J-Link from this package. We will install a more recent version later.
+Before you can begin writing and running code on your microcontroller development board, you need to install several software tools. These include:
 
 === SEGGER J-Link
 
-. Download the SEGGER J-Link software from https://www.segger.com/downloads/jlink[SEGGER]. These instructions have been tested using v8.16. 
+. Download the SEGGER J-Link software from https://www.segger.com/downloads/jlink[SEGGER]. These instructions have been tested using v8.96. 
 . It is important to select the option to install legacy USB drivers, particularly if you are using a freshly unpackaged nRF52840 DK board. They frequently ship with outdated firmware that requires these drivers.
++
+[#img-segger-jlink-install-legacy-drivers]
+.SEGGER J-Link 'Choose Optional Components' dialog.
+image::lab1/segger-j-link-install.png[J-Link Install, 644, 382]
++
 . If this is your first time to use a particular nRF52840 DK board, you will need to update the firmware on the board. This is done by running J-Link Commander **after** the nRF52840 DK is connected to the computer via USB. You should get a message that the firmware is out of date and be given the option to update it. When it is done, you can close J-Link Commander.
-
-=== nRF Util
-
-Nordic Semiconductor provides a tool called **nRF Util** that is used to package the program you have created into a form that can be transferred to the microcontroller.
-
-. Download the file `nrfutil` from https://www.nordicsemi.com/Products/Development-tools/nRF-Util[Nordic Semiconductor's nRF Util page]. This file should be saved in a folder with a name similar to `C:\nordic_tools`.
-. You will need to add this folder to your system's PATH variable. This is done by opening the Environment Variables dialog box, selecting the Advanced tab, and then clicking on the Environment Variables button. In the user variables section, find the `Path`` variable and click on the Edit button. Add the path to the folder where `nrfutil` is located.
-. Open a terminal (on Windows that would be either Command Prompt or PowerShell). To update `nrfutil` to the latest version, run the following command:
-+
-[source,shell]
-----
-nrfutil self-upgrade
-----
-+
-. Next, install the `nrfutil device` command by running the command:
-+
-[source,shell]
-----
-nrfutil install device
-----
 
 === Visual Studio Code
 
@@ -56,7 +35,6 @@ Once you have VS Code running, you need to install several extensions:
 * https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools[C/C++]
 * https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid[Markdown Preview Mermaid Support]
 * https://marketplace.visualstudio.com/items?itemName=nordic-semiconductor.nrf-connect-extension-pack[nRF Connect for VS Code Extension Pack]
-* https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare[Live Share] (only required for pair programming activities)
 
 You can install by following the links above or from within VS Code using the Extensions side bar. You open this by clicking on the Extensions icon in the Activity bar.
 
@@ -76,9 +54,9 @@ image::lab1/nrf-connect-manage-toolchain-sdk.png[Activity Bar, 284, 465]
 +
 . Click on btn:[Manage Toolchains] and then select the btn:[Install Toolchain] action.
 .. These guides were tested using {nrf-toolchain}. Avoid using a more recent version as it may not be compatible with the directions provided.
-.. Once all selections have been made, it triggers a substantial download and install process so be prepared to wait for several minutes.
+.. Once all selections have been made, it triggers a substantial download and install process so be prepared to wait for ten or more minutes.
 . Click on btn:[Manage SDKs] and then select the btn:[Install SDK] action.
-.. These guides were tested using SDK {nrf-sdk}. You want a version that matches that of the toolchain you just installed. Avoid `main` or numbered versions ending in `-dev` or `-cs` as these are not intended for widespread use.
+.. These guides were tested using SDK {nrf-sdk}. You want a version that matches that of the toolchain you just installed.
 .. You will be asked to select a location for the SDK. The goal is to have a short path name and avoid folder names that have spaces. I have put mine in `C:\ncs`.
 
 === Git and GitHub
@@ -185,13 +163,7 @@ image::lab1/nrf-connect-add-build-config.png[Add build configuration, 222, 154]
 .Add a build configuration from the nRF Connect side bar.
 image::lab1/nrf-connect-set-board-target.png[Set board target, 541, 198]
 +
-. Scroll to the bottom of this window and verify that the box before **Build after generating configuration** is checked.
-+
-[#img-set-build-configuration]
-.Set build after configuration option.
-image::lab1/nrf-connect-set-build-configuration.png[Set build configuration, 523, 204]
-+
-. Finish by clicking the btn:[Build Configuration] button. The initial generation of a configuration and building of an application may take several minutes.
+. Finish by clicking the btn:[Generate and Build] button. The initial generation of a configuration and building of an application may take several minutes.
 . After a build configuration has been generated you will have new entries in the nRF Connect side bar. These new sections are labeled **BUILD** and **ACTIONS**.
 . If you get an error message related to your code, try to find the error in the `main.c` file. After fixing it, save the file and click on the btn:[Build] action. This will go much faster than the original build process.
 . Connect the microcontroller to the computer via a USB cable. The nRF52840 DK board has two micro USB ports. You want to use the one labeled **IMCU USB**.
