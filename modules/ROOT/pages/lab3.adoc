@@ -9,8 +9,8 @@
 :xrefstyle: short
 :experimental:
 :stem: latexmath
-:nrf-toolchain: v2.6.1
-:nrf-sdk: 2.6.1
+:nrf-toolchain: v3.2.0
+:nrf-sdk: 3.2.0
 :Omega: &#937;
 :Delta: &#916;
 :micro: &#181;
@@ -77,8 +77,9 @@ int main() {
 <2> All of the pins that were selected are on the same port. If the port controller is ready, it is ready for all of them. The `device_is_ready` method is a more general test of readiness that works with both GPIO controllers and much more.
 <3> Get the state of slide switch. A value of `true` (equivalent to 1) means the middle pin of the slide switch is connected to the high voltage. If that is the case, flash the red LED. Otherwise, flash the green LED.
 +
-. Select btn:[Add build configuration panel] through the nRF Connect side bar and select our board as the target. Uncheck the **Build after generating configuration** box so the final button becomes btn:[Generate Configuration]. Click on this button.
-. In the **Actions** section of the nRF Connect side panel, hover over the **Devicetree** entry to reveal the more options indicator (three dots) on the right. From that, select **Create overlay**.
+. Select btn:[Add build configuration panel] through the nRF Connect side bar and select our board as the target. Check the **Generate only** box so the final button becomes btn:[Generate]. Click on this button.
+. In the **APPLICATIONS** section of the nRF Connect side panel, select the entry for your particular build configuration under the **build** subsection
+. In the section of the nRF Connect side panel for your particular build configuration, expand **Devicetree** entry (under **Config files**) to reveal **+ Create overlay file** option. Click on this.
 . Select btn:[Skip] as the next step from the **Overlay file created** dialog.
 . Add the following to the `nrf52840dk_nrf52840.overlay` file that was created.
 +
