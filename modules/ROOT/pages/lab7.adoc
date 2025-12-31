@@ -366,15 +366,15 @@ In this assignment you will demonstrate your ability to use SPI and to extract i
 
 ==== Tasks
 
-. Access the GitHub Classroom link for this assignment on Blackboard.
+. Access the GitHub Classroom link for this assignment on Canvas.
 . Follow the usual steps for getting started with a repository from GitHub Classroom.
-. Your first task is to edit the `Accelerometer-Info-Summary.md` file in the template project and fill in the missing parts by looking at the ADXL345 data sheet (available through Blackboard).
+. Your first task is to edit the `Accelerometer-Info-Summary.md` file in the template project and fill in the missing parts by looking at the ADXL345 data sheet (available through Canvas).
 . The configuration of the accelerometer should occur once, outside of the `while` loop.
 . Don't forget to set the power control register to Measure mode as the last step before entering the `while` loop.
 . Inside of the `while` loop, your program should check to see if there is an alert on p0.04. If there is, then communicate with the accelerometer and read the interrupt source byte.
 . Set the LEDs if a tap has been detected and then keep them on for 1 second.
 . When you are satisfied with its operation, finish documenting your code with comments and a detailed `README.md`.
 
-IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation (along with your reflection) and upload this to Blackboard.
+IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation (along with your reflection) and upload this to Canvas.
 
 

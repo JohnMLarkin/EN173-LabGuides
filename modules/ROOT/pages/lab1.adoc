@@ -360,14 +360,14 @@ but this is not what the compiler will see. Instead the preprocessor will replac
 
 [IMPORTANT]
 ====
-In the _Introduction to Embedded Systems_ course that I teach at https://www.whitworth.edu[Whitworth University], students complete **Your Turn** assignments using repository template created through a GitHub Classroom assignment link on Blackboard (our CMS). The directions that follow are intended for those students. However, an alternative link to a template is provided for non-Whitworth students.
+In the _Introduction to Embedded Systems_ course that I teach at https://www.whitworth.edu[Whitworth University], students complete **Your Turn** assignments using repository template created through a GitHub Classroom assignment link on Canvas (our CMS). The directions that follow are intended for those students. However, an alternative link to a template is provided for non-Whitworth students.
 ====
 
 ====
 [[assignment-internal-led-while-loops]]
 .Assignment {lab}.{counter:assignment}
 
-. You need to begin by accessing the GitHub Classroom assignment link (as found on Blackboard).
+. You need to begin by accessing the GitHub Classroom assignment link (as found on Canvas).
 +
 NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a starting template at https://github.com/EmbedUni/lab01-yt1. You will want to click on the btn:[Use this template] button.
 . A code repository was created for you when you accessed the assignment. Copy the URL for the repository.

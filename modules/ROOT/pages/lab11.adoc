@@ -400,7 +400,7 @@ You will create a program that blinks an LED (with a period of 1 s) while it wai
 
 NOTE: The communication with the accelerometer cannot take place in the interrupt service routine. It must be done in a separate thread because SPI and I^2^C communication are not allowed in an ISR. You get to decide which protocol to use.
 
-The assignment link is available on Blackboard.
+The assignment link is available on Canvas.
 
-IMPORTANT: When your program and circuit are working, create a video demonstrating this. The video should show the LED blinking, a tap on the accelerometer, the LED staying on as temperature data is gathered, the average temperature displayed, and the LED blinking again. The video should be uploaded to Blackboard.
+IMPORTANT: When your program and circuit are working, create a video demonstrating this. The video should show the LED blinking, a tap on the accelerometer, the LED staying on as temperature data is gathered, the average temperature displayed, and the LED blinking again. The video should be uploaded to Canvas.
 ====

@@ -172,7 +172,7 @@ In this assignment you will communicate with a digital compass using I^2^C. Two 
 [[assignment-magSensor-i2c]]
 .Assignment {lab}.{counter:assignment}
 
-. Access the assignment link on Blackboard.
+. Access the assignment link on Canvas.
 .	Declare the following in your main function:
 ..	`uint8_t buffer[6]`
 ..	`int16_t magComponents[3]`
@@ -252,7 +252,7 @@ LIS3MDL::
 
 // Following the directions outlined below, create a digital compass.
 
-// . Access the assignment link on Blackboard.
+// . Access the assignment link on Canvas.
 // .	Declare the following in your main function:
 // ..	`uint8_t buffer[6]`
 // ..	`int16_t magComponents[3]`
@@ -269,7 +269,7 @@ LIS3MDL::
 // . Print these three components to the computer.
 // . Test your digital compass.  Are the components plausible?
 
-IMPORTANT: Take a video demonstrating successful completion of this project and upload that to Blackboard. Also, don't forget to push your final code to the remote repository.
+IMPORTANT: Take a video demonstrating successful completion of this project and upload that to Canvas. Also, don't forget to push your final code to the remote repository.
 
 NOTE: To get truly accurate results you would also need to apply a temperature-dependent calibration factor and trigger a calibration (see the product data sheet if you are truly curious but the uncompensated results are good enough for this class).
 
@@ -293,7 +293,7 @@ In this assignment you will revisit the tap detection program from Lab 7.  You w
 [discrete]
 ==== **Tasks**
 
-. Access the GitHub Classroom link for this assignment on Blackboard.
+. Access the GitHub Classroom link for this assignment on Canvas.
 . Follow the usual steps for getting started with a repository from GitHub Classroom.
 . The configuration of the accelerometer should occur once, outside of the `while` loop.
 . Don't forget to set the power control register to Measure mode as the last step before entering the `while` loop.
@@ -301,6 +301,6 @@ In this assignment you will revisit the tap detection program from Lab 7.  You w
 . Set the LEDs if a tap has been detected and then keep them on for 1 second.
 . When you are satisfied with its operation, finish documenting your code with comments and a detailed `README.md`.
 
-IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation (along with your reflection) and upload this to Blackboard.
+IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation (along with your reflection) and upload this to Canvas.
 
 ====

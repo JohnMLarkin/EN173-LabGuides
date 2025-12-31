@@ -278,7 +278,7 @@ The directions that follow are intended for students in my _Introduction to Embe
 
 Your task is to create a system that counts "`letters`" using a photointerrupter, displaying the count on a seven-segment display. If a count greater than 9 occurs, turn on an internal LED to indicate that the true count is 10 plus whatever is displayed on the seven-segment display. This allows your application to indicate counts up to 19. An internal button is used to send a log message with the total count and then reset the count to zero.
 
-. Access the GitHub Classroom link for this assignment on Blackboard and create a repository for your work.
+. Access the GitHub Classroom link for this assignment on Canvas and create a repository for your work.
 +
 NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a starting template at https://github.com/EmbedUni/lab04-yt1. You will want to click on the btn:[Use this template] button.
 +
@@ -292,5 +292,5 @@ NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a st
 . Test your program.
 . Update the `README.md`.
 
-IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation and upload this to Blackboard.
+IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation and upload this to Canvas.
 ====

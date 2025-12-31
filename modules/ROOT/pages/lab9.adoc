@@ -233,7 +233,7 @@ In this assignment you will demonstrate your ability to use time-based interrupt
 [[assignment-temperature-averager]]
 .Assignment {lab}.{counter:assignment}
 
-Get the link to the template on Blackboard.
+Get the link to the template on Canvas.
 
 You will use the TMP36 analog temperature sensor to record the temperature (in Fahrenheit) once every 5 seconds. When a button is pushed all of the saved temperatures (up to a maximum of 12) should be printed to the screen as well as their average value. This event also clears the memory. When 12 temperatures have been saved, an LED should be lit to indicate that the temperature buffer has reached its maximum capacity. If additional measurements are received, they should progressively replace the oldest ones such that only the twelve most recent measurements are retained. Remember, the "`full buffer`" LED should be turned off when the button is pressed.
 

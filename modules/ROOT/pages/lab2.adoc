@@ -278,7 +278,7 @@ IMPORTANT: Show your worksheet to the instructor when you have completed both ex
 
 [NOTE]
 ====
-In the _Introduction to Embedded Systems_ course that I teach at https://www.whitworth.edu[Whitworth University], students complete **Your Turn** assignments using repository template created through a GitHub Classroom assignment link on Blackboard (our CMS). The directions that follow are intended for those students. However, an alternative link to a template is provided for non-Whitworth students.
+In the _Introduction to Embedded Systems_ course that I teach at https://www.whitworth.edu[Whitworth University], students complete **Your Turn** assignments using repository template created through a GitHub Classroom assignment link on Canvas (our CMS). The directions that follow are intended for those students. However, an alternative link to a template is provided for non-Whitworth students.
 ====
 
 ====
@@ -358,7 +358,7 @@ Question 3:: The question "`Are the answers to questions 1 and 2 both yes`" requ
 if ((currBtn != prevBtn) && (!currBtn)) {
 ----
 
-. Access the GitHub Classroom assignment link (found on Blackboard) and create the repository for this assignment.
+. Access the GitHub Classroom assignment link (found on Canvas) and create the repository for this assignment.
 +
 NOTE: If you are [.red]#*not*# a Whitworth student in EN 173 you may access a starting template at https://github.com/EmbedUni/lab02-yt1. You will want to click on the btn:[Use this template] button.
 +

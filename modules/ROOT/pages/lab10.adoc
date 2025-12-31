@@ -243,7 +243,7 @@ image::lab10/comparator-TMP36-pinout.png[TMP36 with comparator,450]
 [[assignment-TMP36-with-comparator]]
 .Assignment {lab}.{counter:assignment}
 
-Get the GitHub Classroom link from Blackboard.
+Get the GitHub Classroom link from Canvas.
 
 Write a program that flashes LED4, on for 0.25 s and off for 0.25 s, using a timer with polling.  Set up an interrupt to turn on LED1 if the temperature rises across the threshold.  Set up a second interrupt to turn on LED2 and turn off LED1 if the temperature falls below the threshold. This means that LED1 indicates that it is currently too hot and LED2 tells us that the temperature may be fine now but was too hot at some time in the past.
 
@@ -258,7 +258,7 @@ In this assignment you will demonstrate your ability to use both event- and time
 [[assignment-night-light]]
 .Assignment {lab}.{counter:assignment}
 
-Get the GitHub Classroom link from Blackboard.
+Get the GitHub Classroom link from Canvas.
 
 You will use an LDR to detect light levels.  When the light drops below normal room lighting levels, the microcontroller will turn on an LED for 30 seconds (though in actually operation we would want a longer time, say 10-15 minutes). An external push button can be used to turn off the LED sooner.
 

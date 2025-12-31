@@ -389,13 +389,13 @@ In this exercise you will move the servo to a location selected by button presse
 * BUTTON 4: sets the angle to 90{deg} if the current angle is positive or -90{deg} if the current angle is negative
 
 
-. Access the GitHub Classroom link for this assignment on Blackboard.
+. Access the GitHub Classroom link for this assignment on Canvas.
 . Follow the usual steps for getting started with a repository from GitHub Classroom.
 . Write your code to control the servo. A button should only perform the specified behavior when it has been pressed and then released.
 . Test your program.
 . Update the `README.md`.
 
-IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation (along with your reflection) and upload this to Blackboard.
+IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation (along with your reflection) and upload this to Canvas.
 ====
 
 === Dimmer control
@@ -412,11 +412,11 @@ In this assignment you will use three buttons to control the brightness of an ex
 
 Each button press and release should trigger the corresponding action just once. 
 
-. Create the repository using the GitHub Classroom link on Blackboard.
+. Create the repository using the GitHub Classroom link on Canvas.
 . Update `main.c` and `README.md`.
 . Test your program.
 
-IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation (along with your reflection) and upload this to Blackboard.
+IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation (along with your reflection) and upload this to Canvas.
 ====
 
 
