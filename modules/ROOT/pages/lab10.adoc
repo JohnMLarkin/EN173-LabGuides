@@ -233,7 +233,7 @@ We will use the TLC272 op amp to create a comparator. This is an operational amp
 .Circuit diagram for the TLC272 comparator.
 image::lab10/comparator-circuit.png[Comparator circuit,400]
 
-Discrete resistors could be chosen to set the threshold voltage (using the voltage divider equation seen earlier in this course).  Or, instead of trying to find the perfect resistors, you can just replace the two resistors with a potentiometer and adjust the knob until you get the desired voltage. This is shown in the pin connection diagram, <<img-comparator-TMP-pinout>>.
+Discrete resistors could be chosen to set the threshold voltage (using the voltage divider equation seen earlier in this course).  Or, instead of trying to find the perfect resistors, you can just replace the two resistors with a potentiometer and adjust the knob until you get the desired voltage. This is shown in the pin connection diagram, <<img-comparator-TMP-pinout>>. Note that the orientation of the TLC272 is important. The half-circle indentation (or full circle, depending on the manufacturer) defines the end with pin 1. The pin numbers then proceed counter-clockwise around the chip. Do not use the text on the chip to determine orientation.
 
 [#img-comparator-TMP-pinout]
 .Pinout diagram using the TMP36 with a comparator to produce an interrupt
