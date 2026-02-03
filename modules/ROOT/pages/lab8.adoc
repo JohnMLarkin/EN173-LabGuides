@@ -297,6 +297,7 @@ In this assignment you will revisit the tap detection program from Lab 7.  You w
 
 . Access the GitHub Classroom link for this assignment on Canvas.
 . Follow the usual steps for getting started with a repository from GitHub Classroom.
+. When using the ADXL345 accelerometer with I^2^C communication, it must be wired differently than when using SPI.  The connections between the ADXL345 and the nRF52840 are given in <<table-ADXL345-I2C>>.
 . The configuration of the accelerometer should occur once, outside of the `while` loop.
 . Don't forget to set the power control register to Measure mode as the last step before entering the `while` loop.
 . Inside of the `while` loop, your program should check to see if there is an alert on P0.04. If there is, then communicate with the accelerometer and read the interrupt source byte.
@@ -306,3 +307,18 @@ In this assignment you will revisit the tap detection program from Lab 7.  You w
 IMPORTANT: When your program and circuit are working successfully, remember to push the commits to the remote repository. Also, take a video of its successful operation (along with your reflection) and upload this to Canvas.
 
 ====
+
+.ADXL345 to nRF52840 DK connections for I^2^C
+[[table-ADXL345-I2C]]
+|===
+| Signal | nRF52840 pin
+
+| GND | GND (via ground bus)
+| VCC | VDD (via power bus)
+| CS | VDD (via power bus)
+| INT1 | no connection required
+| INT2 | p0.04
+| SDO | GND (via ground bus)
+| SDA | p0.26 **and** 4.7 k{Omega} pull-up resistor to VDD
+| SCL | p0.27 **and** 4.7 k{Omega} pull-up resistor to VDD
+|===
