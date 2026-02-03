@@ -136,7 +136,7 @@ void toggler_slow(struct k_timer *timer) {
 [[exercise-ticker-flash]]
 .Exercise {lab}.{counter:exercise}
 
-Modify <<program-ticker-two-flash>> by create a timer-has-stopped callback that turns off the fast LED in the event that the fast timer is stopped and prints a log message about being stopped.
+Modify <<program-ticker-two-flash>> by creating a timer-has-stopped callback that turns off the fast LED in the event that the fast timer is stopped and prints a log message about being stopped.
 
 After you have done that, modify the `while` loop in `main` so it stops after 10 on-off cycles of the slow LED. After exiting the `while` loop, the fast timer should be stopped. The slow LED should continue to flash until the program is reset.
 
