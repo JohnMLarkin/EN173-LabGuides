@@ -379,7 +379,9 @@ void alertHandler(void) {
 [[exercise-interrupt-responder-with-thread]]
 .Exercise {lab}.{counter:exercise}
 
-. Create an application based on <<program-interrupt-responder-with-thread>> and upload it to your nRF52840 DK.
+. Create an application based on <<program-interrupt-responder-with-thread>>.
+. Use of the events subsystem requires adding the appropriate entry (`CONFIG_EVENTS=y`) to your `prj.conf` file.
+. Build and flash the application to your nRF52840 DK.
 . Using the _Analog Discovery 2_ measure the latency.
 ====
 

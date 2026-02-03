@@ -140,7 +140,6 @@ int main(void) {
 
 void recordData(void) {
     struct temp_data_t data;
-    int err;
     uint16_t buf;
     int val_mV;
     float T_in_C;
@@ -228,6 +227,7 @@ properties:
       Temperature sensor slope in millivolts per degree Celsius
 ----
 +
+. You will be using both ADC and logging subsystems so add the appropriate entries to your `prj.conf`.
 . Create a `main.c` containing <<program-message-data>>.
 . While your program is compiling, predict what you will observe when it runs.
 . Upload and run the code. Compare the observed behavior to your predicted behavior. Watch for at least one minute.
@@ -238,7 +238,7 @@ properties:
 
 == Your Turn
 
-You will create a program that measures temperature with the digital TMP102. The temperature (in Celsius) will be measured every time a true single tap (not a tap part of a double tap) is detected by the ADXL345 accelerometer is detected and the temperature will be put in a message queue. At the same time, a log message should display the current number of messages stored.  The queue will have 20 slots for messages. If the queue gets full, you will want to free the oldest slot and replace it with the new measurement.
+You will create a program that measures temperature with the digital TMP102. The temperature (in Celsius) will be measured every time a true single tap (not a tap part of a double tap) is detected by the ADXL345 accelerometer and the temperature will be put in a message queue. At the same time, a log message should display the current number of messages stored.  The queue will have 20 slots for messages. If the queue gets full, you will want to free the oldest slot and replace it with the new measurement.
 
 You may find it helpful to consult the https://docs.nordicsemi.com/bundle/zephyr-apis-latest/page/group_msgq_apis.html[Message Queue API documentation^].
 
