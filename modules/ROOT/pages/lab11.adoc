@@ -220,13 +220,13 @@ int main(void) {
 
 void blink(void* blink_param) {
     struct blinkParam* p = (struct blinkParam*)blink_param; // <4>
-    const struct gpio_dt_spec led_spec = *(p->led); // <5>
+    const struct gpio_dt_spec led_spec = p->led;
     LOG_DBG("LED P0.%d has an on-time of %d ms and an off-time of %d ms", led_spec.pin, p->on_time, p->off_time);
     gpio_pin_configure_dt(&led_spec, GPIO_OUTPUT_ACTIVE);
     while (p->count < p->max_count) {
-        gpio_pin_set_dt(&(p->led), 1);
+        gpio_pin_set_dt(&led_spec, 1);
         k_msleep(p->on_time);
-        gpio_pin_set_dt(&(p->led), 0);
+        gpio_pin_set_dt(&led_spec, 0);
         k_msleep(p->off_time);
         p->count++;
     }
