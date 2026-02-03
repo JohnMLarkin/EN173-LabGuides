@@ -180,7 +180,7 @@ IMPORTANT: When you have finished your observations, discuss the results with th
 ====
 [[exercise-RC-average]]
 .Exercise {lab}.{counter:exercise}
-You will use the same program to produce a voltage between 0 and and about 3 V using a resistor and a capacitor.  The results will be observed with the oscilloscope.
+You will use the same program to produce a voltage between 0 and about 3 V using a resistor and a capacitor.  The results will be observed with the oscilloscope.
 
 . Remove the LED and 330 {Omega} resistor from the breadboard.
 . Form an _RC_ low-pass filter by connecting the short leg of a 10 {micro}F capacitor to the ground bus. This is a polarized capacitor and will be damaged if you use it backwards. Connect the long leg of the capacitor to a socket in a terminals strip.
