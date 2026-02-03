@@ -63,15 +63,17 @@ CONFIG_CBPRINTF_FP_SUPPORT=y
 .The TMP102 is configured as an I^2^C device with an address of 0x48.
 ----
 &i2c0 {
-  tempsensor: tmp102@48 { // <1>
+  compatible = "nordic,nrf-twim"; // <1>
+  tempsensor: tmp102@48 { // <2>
     compatible = "i2c-device";
-    reg = <0x48>; // <2>
+    reg = <0x48>; // <3>
     status = "okay";
   };
 };
 ----
-<1> The device name is `tmp102` and the address is 0x48.
-<2> The address is 0x48.
+<1> In nRF SDKs v3.2.0 and later this line is required. Earlier versions of the SDK do not need it.
+<2> The device name is `tmp102` and the address is 0x48.
+<3> The address is 0x48.
 +
 . Enter <<program-tmp102>> into your `main.c` file.
 +
