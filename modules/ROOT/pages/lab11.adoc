@@ -141,7 +141,7 @@ IMPORTANT: Demonstrate successful blinking of LEDs with threads launched with us
 
 == Threads with custom structures as parameters
 
-The functions we use with a thread can have only three argument but we can smuggle in multiple variables if we package them into a structure. In this example we use a structure to package a reference to an LED, an on-time for the blink, an off-time for the blink, the number of times it has flashed, and the maximum number of times to flash it.
+The functions we use with a thread can have only three arguments but we can smuggle in multiple variables if we package them into a structure. In this example we use a structure to package a reference to an LED, an on-time for the blink, an off-time for the blink, the number of times it has flashed, and the maximum number of times to flash it.
 
 A structure is declared with the keyword `struct`, followed by the name for this **type** of structure. Inside of curly braces you then define the variables held by this type of structure.
 
