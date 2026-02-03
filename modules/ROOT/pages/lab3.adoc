@@ -240,7 +240,7 @@ In the `buttons` section of the overlay, replace the slider switch configuration
     };
   };
 ----
-<1> The node label was been changed to `pb`, short for push button. You will need to change your code in `main.c` accordingly.
+<1> The node label has been changed to `pb`, short for push button. You will need to change your code in `main.c` accordingly.
 <2> The additional pull-down configuration is added using C's bit-wise OR (`|`) to combine the two settings. We will learn about bit-wise logic later.
 
 You should observe that a single push of the button sometimes results in more than a change of 2 in the counts. This occurs because of something called button bounce.
