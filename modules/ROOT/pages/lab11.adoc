@@ -312,7 +312,7 @@ void buttonHandler(void) {
 
 === Threads plus interrupts
 
-You have explored various versions of the button responder. In a previous day we used an all-interrupt approach: using an event-based interrupt to respond to the button push and then an time-based interrupt to turn off the LED. The button push might be time-critical event but turning off the LED is probably not and it should not interrupt other things. A hybrid approach, combining interrupts and threads may be best.
+You have explored various versions of the button responder. In a previous day we used an all-interrupt approach: using an event-based interrupt to respond to the button push and then a time-based interrupt to turn off the LED. The button push might be time-critical event but turning off the LED is probably not and it should not interrupt other things. A hybrid approach, combining interrupts and threads may be best.
 
 The interrupt will communicate with a thread by posting an **event**. The thread waits for an event to be set and then responds when it is (and also clears the event).
 
