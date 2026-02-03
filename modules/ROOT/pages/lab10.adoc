@@ -260,7 +260,7 @@ In this assignment you will demonstrate your ability to use both event- and time
 
 Get the GitHub Classroom link from Canvas.
 
-You will use an LDR to detect light levels.  When the light drops below normal room lighting levels, the microcontroller will turn on an LED for 30 seconds (though in actually operation we would want a longer time, say 10-15 minutes). An external push button can be used to turn off the LED sooner.
+You will use an LDR to detect light levels.  When the light drops below normal room lighting levels, the microcontroller will turn on an LED for 15 seconds (though in actual operation we would want a longer time, say 10-15 minutes). An external push button can be used to turn off the LED sooner.
 
 You are to demonstrate your ability to use appropriate microcontroller design for responsive programming so you may not use the `k_msleep` commands for timing purposes.  You should use one or more of the following: time-based interrupts, event-based interrupts, and hardware debounce.
 
