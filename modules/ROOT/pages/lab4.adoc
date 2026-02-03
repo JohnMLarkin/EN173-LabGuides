@@ -234,7 +234,6 @@ const struct device *port = DEVICE_DT_GET(PORT1_NI);
 
 int main(void) {
     int pin_mask = BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) | BIT(6) | BIT(7);
-    int display;
 
     if (device_is_ready(port)) {
         for (int pin = 1; pin <= 7; pin++) {
