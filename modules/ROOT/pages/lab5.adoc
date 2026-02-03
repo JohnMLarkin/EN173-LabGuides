@@ -187,7 +187,7 @@ You will use the same program to produce a voltage between 0 and about 3 V using
 . Connect a 10 k{Omega} resistor (brown-black-orange) to the same terminal strip as the capacitor. The other leg of the resistor should be connected to P0.03 (via a jumper wire).
 . Set the period in the program to 10 ms.
 . Use the oscilloscope to observe the output of the low-pass filter (*1+* to the junction between the resistor and capacitor, *1-* to ground, and image:arrow-down.svg[] to ground). Use a time base of 2 s/div, a time position of 10 s, a channel 1 offset of -2 V, and a range of 500 mV/div.
-. Now observe what happens when you change the resistance.  Replace the 10 k{Omega} resistor with a 1 k{Omega} resistor (brown-black-red). What differences do you observe on the oscilloscope?
+. Now observe what happens when you change the resistance.  Replace the 10 k{Omega} resistor with a 1.5 k{Omega} resistor (brown-green-red). What differences do you observe on the oscilloscope?
 . Replace the resistor with a 330 {Omega} one.  What differences do you observe on the oscilloscope?
 
 IMPORTANT: When you have finished your observations, discuss the results with the instructor.
