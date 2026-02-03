@@ -87,7 +87,7 @@ You will now examine the behavior of <<program-timeout-with-button-interrupt>>.
 
 . Use the same oscilloscope settings as with the previous latency measurements (in Lab 9).
 . Click btn:[Single] followed by pushing the momentary push button.  Compare this oscilloscope capture to what you observed before.  You should notice that the latency is decreased substantially.
-. The decrease in latency is so great that you need to change your oscilloscope settings so you can make some worthwhile measurements.  Change the Time base setting to 1 us/div.  The old setting was 50 ms (0.050 seconds) and this new setting is 10^-6^ seconds,  a reduction by a factor of 50,000.  The Position should also be zero in the Time settings.
+. The decrease in latency is so great that you need to change your oscilloscope settings so you can make some worthwhile measurements.  Change the Time base setting to 5 us/div.  The old setting was 50 ms (0.050 seconds) and this new setting is 10^-6^ seconds,  a reduction by a factor of 50,000.  The Position should also be zero in the Time settings.
 . Click btn:[Single] followed by pushing the momentary push button. You should now be able to measure the latency.  Do this a total of ten times.
 . Summarize these results by identifying the maximum latency, the minimum latency, and the average latency.
 ====
